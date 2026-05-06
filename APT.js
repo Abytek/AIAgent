@@ -1,6 +1,8 @@
 
 const LocalContext = this;
 
+APT.Extensions.ScopeLinker.Setup(this);
+
 APT.On(
     "Import",
     function()
@@ -12,7 +14,5 @@ APT.On(
         LocalContext.AbytekAIAgent = AbytekAIAgent;
 
         APT.Import("./Server");
-
-        AbytekAIAgent.Server = new AbytekAIAgent.F_Server();
     }
 );

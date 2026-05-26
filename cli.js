@@ -46,6 +46,22 @@ function prepareCodex()
         }
     }
 }
+function prepare9Router()
+{
+    const targetDir = path.join(__dirname, ".9router");
+    const templateDir = path.join(__dirname, "templates/.9router");
+    if (fs.existsSync(templateDir))
+    {
+        if (!fs.existsSync(targetDir))
+        {
+            fs.cpSync(
+                templateDir,
+                targetDir,
+                { recursive: true }
+            );
+        }
+    }
+}
 
 switch (command) {
     case "codex":
@@ -59,7 +75,8 @@ switch (command) {
                 "--",
                 "codex",
                 "--model",
-                "general-coding"
+                "general-coding",
+                ...args
             ],
             {
                 CODEX_HOME: path.join(__dirname, ".codex")
@@ -68,9 +85,17 @@ switch (command) {
         break;
 
     case "9router":
+        prepare9Router();
         run(
-            routerBin,
-            args,
+            "npm",
+            [
+                "exec",
+                "--prefix",
+                __dirname,
+                "--",
+                "9router",
+                ...args
+            ],
             {
                 DATA_DIR: path.join(__dirname, ".9router")
             }

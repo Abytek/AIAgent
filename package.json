@@ -26,5 +26,8 @@
     "@openai/codex": "^0.134.0",
     "9router": "^0.4.62",
     "cross-env": "^10.1.0"
+  },
+  "bin": {
+    "abytek-aiagent-cli": "cli.js"
   }
 }

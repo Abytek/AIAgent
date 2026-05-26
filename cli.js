@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const path = require("path");
+const fs = require("fs");
 const { spawn } = require("child_process");
 
 const userCwd = process.cwd();
@@ -29,8 +30,26 @@ function run(bin, binArgs, extraEnv = {}) {
     });
 }
 
+function prepareCodex()
+{
+    const targetDir = path.join(__dirname, ".codex");
+    const templateDir = path.join(__dirname, "templates/.codex");
+    if (fs.existsSync(templateDir))
+    {
+        if (!fs.existsSync(targetDir))
+        {
+            fs.cpSync(
+                templateDir,
+                targetDir,
+                { recursive: true }
+            );
+        }
+    }
+}
+
 switch (command) {
     case "codex":
+        prepareCodex();
         run(
             "npm",
             [

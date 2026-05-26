@@ -74,8 +74,6 @@ switch (command) {
                 __dirname,
                 "--",
                 "codex",
-                "--model",
-                "general-coding",
                 ...args
             ],
             {

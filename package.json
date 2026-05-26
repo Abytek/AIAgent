@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "router": "cross-env DATA_DIR=./.9router 9router",
-    "router:no-browser": "cross-env DATA_DIR=./.9router 9router --no-browser",
-    "router:port": "cross-env DATA_DIR=./.9router 9router --port 20129"
+    "codex": "cross-env CODEX_HOME=./.codex codex --model general-coding",
+    "9router": "cross-env DATA_DIR=./.9router 9router",
+    "9router:no-browser": "cross-env DATA_DIR=./.9router 9router --no-browser",
+    "9router:port": "cross-env DATA_DIR=./.9router 9router --port 20129"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/Abytek/AIAgent#readme",
   "dependencies": {
+    "@openai/codex": "^0.134.0",
     "9router": "^0.4.62",
     "cross-env": "^10.1.0"
   }

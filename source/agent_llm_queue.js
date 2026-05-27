@@ -33,7 +33,10 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.sendMessages = async function(messages)
     {
-        console.log(`Sending messages:`, messages);
+        if (agent.config.debug)
+        {
+            console.log(`Sending messages:`, messages);
+        }
 
         for (const message of messages)
         {
@@ -54,25 +57,39 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.push = function(message)
     {
-        if (agent.config.debug)
+        if (agent.config.debug || (message.role != "system"))
         {
             console.log(`Pending message:`, message);
         }
-
         agentLLMQueue.pendingMessages.push(message);
     };
 
     agentLLMQueue.flush = async function()
     {
+        if (agentLLMQueue.pendingMessages.length == 0)
+        {
+            return;
+        }
+        {
+            let hasNonSystemMessage = false;
+            for (const message of agentLLMQueue.pendingMessages)
+            {
+                if (message.role != "system")
+                {
+                    hasNonSystemMessage = true;
+                    break;
+                }
+            }
+            if (!hasNonSystemMessage)
+            {
+                return;
+            }
+        }
+
         const cachedMessages = [
             ...agentLLMQueue.pendingMessages
         ];
         agentLLMQueue.pendingMessages = [];
-
-        if (cachedMessages.length == 0)
-        {
-            return;
-        }
 
         const response = await agentLLMQueue.sendMessages(
             cachedMessages

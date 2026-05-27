@@ -3,6 +3,7 @@
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
+const deasync = require("deasync");
 
 const userCwd = process.cwd();
 
@@ -25,9 +26,15 @@ function run(bin, binArgs, extraEnv = {}) {
         }
     );
 
+    let isDone = false;
     child.on("exit", code => {
-        process.exit(code ?? 0);
+        isDone = true;
     });
+
+    while (!isDone)
+    {
+        deasync.runLoopOnce();
+    }
 }
 
 function prepareCodex()
@@ -65,6 +72,19 @@ function prepare9Router()
 
 switch (command) {
     case "agent":
+        run(
+            "npm",
+            [
+                "--prefix",
+                path.join(__dirname, ".."),
+                "exec",
+                "npm",
+                "install"
+            ],
+            {
+                NODE_PATH: path.join(__dirname, "../module_trick")
+            }
+        );
         run(
             "npm",
             [

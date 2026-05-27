@@ -21,15 +21,12 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.sendMessage = async function(message)
     {
-        if (agent.config.debug)
-        {
-            console.log(`Sending message:`, message);
-        }
+        console.log(`Sending message:`, message);
 
-        const response = await agentLLMQueue.model.invoke([
-            message
-        ]);
+        agent.context.messages.push(message);
+        const response = await agentLLMQueue.model.invoke(agent.context.messages);
 
+        agent.context.messages.push(response);
         if (agent.config.debug)
         {
             console.log(`LLM response:`, response);

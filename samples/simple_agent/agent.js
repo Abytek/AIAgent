@@ -5,6 +5,10 @@ const agent = createAgent({
 });
 agent.message({
     role: "user",
-    content: "hello"
+    content: "my name is Hung"
+});
+agent.message({
+    role: "user",
+    content: "tell me my name"
 });
 agent.run();

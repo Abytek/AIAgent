@@ -4,6 +4,7 @@ const deasync = require("deasync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./agent_config");
 const { createAgentLLMQueue } = require("./agent_llm_queue");
+const { createAgentContext } = require("./agent_context");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -23,6 +24,7 @@ function createAgent(Options) {
     agent.tools = new Object();
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);
+    agent.context = createAgentContext(agent);
     agent.run = function () {
         while (!agent.shouldShutdown) {
             let tickDone = false;

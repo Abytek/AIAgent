@@ -25,6 +25,11 @@ const configSchema = {
       default: "http://localhost:39999",
     },
 
+    debug: {
+      type: "boolean",
+      default: false,
+    },
+
     model: {
       type: "string",
       default: "general-coding-small",

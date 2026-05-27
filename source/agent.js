@@ -34,6 +34,10 @@ function createAgent(Options) {
             throw new Error(`Already added tool ${toolName} to agent ${agent.id}`);
         }
         agent.tools[toolName] = tool;
+        if (agent.config.debug)
+        {
+            console.log(`Added tool ${toolName} to agent ${agent.id}`);
+        }
         return tool;
     };
 

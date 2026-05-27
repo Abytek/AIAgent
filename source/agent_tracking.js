@@ -57,12 +57,7 @@ function createAgentTracking(agent)
         {
             return;
         }
-
-        let isDone = false;
-        agentTracking.socket.close(() => {
-            isDone = true;
-        });
-        deasync.loopWhile(() => !isDone);
+        agentTracking.socket.close();
     }
 
     return agentTracking;

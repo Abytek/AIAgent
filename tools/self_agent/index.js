@@ -1,15 +1,15 @@
 const { tool } = require("@langchain/core/tools");
 
-module.exports = function stop_self_agent(agent) {
+module.exports = agent => {
     agent.tool(
         tool(
             async () => {
-                console.log(`Agent calls "stop_self_agent" tool, shutting down...`);
+                console.log(`Agent calls "self_agent.stop" tool, shutting down...`);
                 agent.signalShutdown();
                 return ``;
             },
             {
-                name: "stop_self_agent",
+                name: "self_agent.stop",
                 description: "Stop your agent lifecycle",
             }
         )

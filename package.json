@@ -4,11 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "codex": "cross-env CODEX_HOME=./.codex codex --model general-coding",
-    "9router": "cross-env DATA_DIR=./.9router 9router",
-    "9router:no-browser": "cross-env DATA_DIR=./.9router 9router --no-browser",
-    "9router:port": "cross-env DATA_DIR=./.9router 9router --port 20129"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -28,6 +24,6 @@
     "cross-env": "^10.1.0"
   },
   "bin": {
-    "abytek-aiagent-cli": "cli.js"
+    "abytek-aiagent-cli": "source/cli.js"
   }
 }

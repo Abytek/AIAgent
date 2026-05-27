@@ -32,8 +32,8 @@ function run(bin, binArgs, extraEnv = {}) {
 
 function prepareCodex()
 {
-    const targetDir = path.join(__dirname, ".codex");
-    const templateDir = path.join(__dirname, "templates/.codex");
+    const targetDir = path.join(__dirname, "../.codex");
+    const templateDir = path.join(__dirname, "../templates/.codex");
     if (fs.existsSync(templateDir))
     {
         if (!fs.existsSync(targetDir))
@@ -48,8 +48,8 @@ function prepareCodex()
 }
 function prepare9Router()
 {
-    const targetDir = path.join(__dirname, ".9router");
-    const templateDir = path.join(__dirname, "templates/.9router");
+    const targetDir = path.join(__dirname, "../.9router");
+    const templateDir = path.join(__dirname, "../templates/.9router");
     if (fs.existsSync(templateDir))
     {
         if (!fs.existsSync(targetDir))
@@ -71,13 +71,13 @@ switch (command) {
             [
                 "exec",
                 "--prefix",
-                __dirname,
+                path.join(__dirname, ".."),
                 "--",
                 "codex",
                 ...args
             ],
             {
-                CODEX_HOME: path.join(__dirname, ".codex")
+                CODEX_HOME: path.join(__dirname, "../.codex")
             }
         );
         break;
@@ -89,13 +89,13 @@ switch (command) {
             [
                 "exec",
                 "--prefix",
-                __dirname,
+                path.join(__dirname, ".."),
                 "--",
                 "9router",
                 ...args
             ],
             {
-                DATA_DIR: path.join(__dirname, ".9router")
+                DATA_DIR: path.join(__dirname, "../.9router")
             }
         );
         break;

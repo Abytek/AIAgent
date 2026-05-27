@@ -6,6 +6,7 @@ const { loadAgentConfig } = require("./agent_config");
 const { createAgentLLMQueue } = require("./agent_llm_queue");
 const { createAgentContext } = require("./agent_context");
 const { createAgentTracking } = require("./agent_tracking");
+const { addCoreSystemPrompt } = require("./agent_core_system_prompt");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -67,6 +68,11 @@ function createAgent(Options) {
     agent.message = function(message)
     {
         agent.llmQueue.push(message);
+    }
+
+    // System prompts
+    {
+        addCoreSystemPrompt(agent);
     }
 
     // Load tools

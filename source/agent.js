@@ -31,6 +31,7 @@ function createAgent(Options) {
 
             (async () => {
                 await agent.llmQueue.flush();
+                tickDone = true;
             })();
 
             while (!tickDone)
@@ -68,6 +69,8 @@ function createAgent(Options) {
         importTools(agent, path.join(__dirname, "../tools"));
         importTools(agent, path.join(agentPath, "tools"));
     }
+
+    agent.llmQueue.setup();
     return agent;
 }
 

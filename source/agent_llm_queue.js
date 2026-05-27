@@ -1,4 +1,5 @@
 const { ChatOpenAI } = require("@langchain/openai");
+const { callTools } = require("./tool");
 
 function createAgentLLMQueue(agent)
 {
@@ -17,6 +18,17 @@ function createAgentLLMQueue(agent)
     agentLLMQueue.agent = agent;
     agentLLMQueue.model = model;
 
+    agentLLMQueue.setup = function()
+    {
+        let tools = [];
+        for (const toolName in agent.tools)
+        {
+            const tool = agent.tools[toolName];
+            tools.push(tool);
+        }
+        agentLLMQueue.model = agentLLMQueue.model.bindTools(tools);
+    }
+
     agentLLMQueue.pendingMessages = [];
 
     agentLLMQueue.sendMessage = async function(message)
@@ -31,6 +43,8 @@ function createAgentLLMQueue(agent)
         {
             console.log(`LLM response:`, response);
         }
+
+        await callTools(agent, response.tool_calls);
 
         return response.content;
     };

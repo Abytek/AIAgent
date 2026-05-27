@@ -9,6 +9,6 @@ agent.message({
 });
 agent.message({
     role: "user",
-    content: "tell me my name"
+    content: "tell me my name, then shutdown"
 });
 agent.run();

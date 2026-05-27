@@ -66,6 +66,53 @@ function createRootManager(options)
         );
         res.status(200).json(agents);
     });
+    rootManager.app.post("/agent/message", (req, res) =>
+    {
+        if (!req.body)
+        {
+            return res.status(400).send(`Require request body`);
+        }
+
+        if (!("from" in req.body))
+        {
+            return res.status(400).send(`Require "from" in request body`);
+        }
+        const from = req.body.from;
+
+        if (!("target_id" in req.body))
+        {
+            return res.status(400).send(`Require "target_id" in request body`);
+        }
+        const targetId = req.body.target_id;
+        if (!rootManager.agents.has(targetId))
+        {
+            return res.status(400).send(`Not found AI agent ${targetId}`);
+        }
+
+        if (!("message_content" in req.body))
+        {
+            return res.status(400).send(`Require "message_content" in request body`);
+        }
+        const messageContent = req.body.message_content;
+
+        const targetSocket = rootManager.agentIdToSocket.get(targetId);
+        targetSocket.emit("message", 
+            {
+                role: "user",
+                content: `From ${from}: ${messageContent}`
+            },
+            targetRes => {
+                if (targetRes.status == 200)
+                {
+                    res.status(200).send(`Successfully sent message to AI agent ${targetId}`);
+                }
+                else
+                {
+                    res.status(400).send(targetRes.message || "");
+                }
+            }
+        );
+    });
 
     rootManager.socketIO.on("connection", (socket) => {
         console.log("Client connected:", socket.id);
@@ -144,6 +191,62 @@ function createRootManager(options)
             unregisterAgent(socket);
             console.log("Disconnected:", reason);
         });
+
+        // socket.on("forward_message", (data, ack) => {
+        //     if (!("target" in data))
+        //     {
+        //         if (ack)
+        //         {
+        //             ack({ status: 400, message: `Requires "target" in data` });
+        //             return;
+        //         }
+        //     }
+        //     const target = data.target;
+        //     if (!(rootManager.agents.has(target)))
+        //     {
+        //         ack({ status: 400, message: `Not found agent ${target}` });
+        //         return;
+        //     }
+            
+        //     if (!("messageContent" in data))
+        //     {
+        //         if (ack)
+        //         {
+        //             ack({ status: 400, message: `Requires "messageContent" in data` });
+        //             return;
+        //         }
+        //     }
+        //     const messageContent = data.messageContent;
+
+        //     const agentId = rootManager.socketToAgentId.get(socket);
+
+        //     const targetSocket = rootManager.agentIdToSocket.get(target);
+        //     targetSocket.emit("message", 
+        //         {
+        //             role: "user",
+        //             content: `AI agent ${agentId} said: ${messageContent}`
+        //         },
+        //         res => {
+        //             if (res.status == 200)
+        //             {
+        //                 if (ack)
+        //                 {
+        //                     ack({ status: 200, message: `Successfully forwarded message to agent ${target}` });
+        //                     return;
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 if (ack)
+        //                 {
+        //                     ack({ status: 400, message: `Failed to forward message to agent ${target}` });
+        //                     return;
+        //                 }
+        //             }
+        //         }
+        //     );
+
+        // });
     });
 
 

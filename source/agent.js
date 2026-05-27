@@ -38,11 +38,7 @@ function createAgent(Options) {
                 tickDone = true;
             })();
 
-            while (!tickDone)
-            {
-                deasync.runLoopOnce();
-            }
-            deasync.runLoopOnce();
+            deasync.loopWhile(() => !tickDone);
         }
 
         agent.tracking.close();

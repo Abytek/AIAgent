@@ -1,4 +1,6 @@
 const { tool } = require("@langchain/core/tools");
+const { z } = require("zod");
+const { sendMessageToAnotherAgent } = require("../../source/agent_communication");
 
 module.exports = agent => {
     agent.tool(
@@ -46,6 +48,44 @@ module.exports = agent => {
             {
                 name: "rootManager.agent_list",
                 description: "Query agent list",
+            }
+        )
+    );
+    agent.tool(
+        tool(
+            async ({
+                targetId,
+                messageContent
+            }) => {
+                try
+                {
+                    return await sendMessageToAnotherAgent(
+                        agent,
+                        targetId,
+                        messageContent
+                    );
+                }
+                catch (error)
+                {
+                    return (
+                        error instanceof Error
+                            ? error.message
+                            : String(error)
+                    );
+                }
+            },
+            {
+                name: "rootManager.agent_message",
+                description: "Send message to another agent",
+                schema: z.object({
+                    targetId: z
+                        .string()
+                        .describe("Target AI agent ID"),
+
+                    messageContent: z
+                        .string()
+                        .describe("Message content to send"),
+                }),
             }
         )
     );

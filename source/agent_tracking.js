@@ -48,6 +48,15 @@ function createAgentTracking(agent)
             console.log("Disconnected from root manager:", reason);
             isDone = true;
         });
+
+        agentTracking.socket.on("message", (message, ack) => {
+            agent.message(message);
+            if (ack)
+            {
+                ack({ status: 200, message: `Got the message` });
+                return;
+            }
+        });
         deasync.loopWhile(() => !isDone);
     }
 

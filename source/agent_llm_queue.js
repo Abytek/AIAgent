@@ -71,16 +71,16 @@ function createAgentLLMQueue(agent)
             return;
         }
         {
-            let hasNonSystemMessage = false;
+            let shouldFlush = false;
             for (const message of agentLLMQueue.pendingMessages)
             {
-                if (message.role != "system")
+                if ((message.role != "system") || message.force)
                 {
-                    hasNonSystemMessage = true;
+                    shouldFlush = true;
                     break;
                 }
             }
-            if (!hasNonSystemMessage)
+            if (!shouldFlush)
             {
                 return;
             }

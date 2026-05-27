@@ -31,11 +31,14 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.pendingMessages = [];
 
-    agentLLMQueue.sendMessage = async function(message)
+    agentLLMQueue.sendMessages = async function(messages)
     {
-        console.log(`Sending message:`, message);
+        console.log(`Sending messages:`, messages);
 
-        agent.context.messages.push(message);
+        for (const message of messages)
+        {
+            agent.context.messages.push(message);
+        }
         const response = await agentLLMQueue.model.invoke(agent.context.messages);
 
         agent.context.messages.push(response);
@@ -66,15 +69,15 @@ function createAgentLLMQueue(agent)
         ];
         agentLLMQueue.pendingMessages = [];
 
-        for (const message of cachedMessages)
+        if (cachedMessages.length == 0)
         {
-            const response =
-                await agentLLMQueue.sendMessage(
-                    message
-                );
-
-            console.log(`Agent:`, response);
+            return;
         }
+
+        const response = await agentLLMQueue.sendMessages(
+            cachedMessages
+        );
+        console.log(`Agent:`, response);
     };
 
     return agentLLMQueue;

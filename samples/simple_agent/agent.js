@@ -4,6 +4,6 @@ const { createAgent } = require("abytek-aiagent");
 const agent = createAgent();
 agent.message({
     role: "user",
-    content: "Hello, tell me about yourself"
+    content: "Hello, can you check the agent list?"
 });
 agent.run();

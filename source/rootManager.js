@@ -36,6 +36,7 @@ function createRootManager(options)
         }
     });
     rootManager.socketToAgentId = new Map();
+    rootManager.agentIdToSocket = new Map();
 
 
     // =====================================
@@ -100,11 +101,11 @@ function createRootManager(options)
 
             const agent = {
                 id: agentId,
-                url: agentURL,
-                socket: socket
+                url: agentURL
             };
             rootManager.agents.set(agentId, agent);
             rootManager.socketToAgentId.set(socket, agentId);
+            rootManager.agentIdToSocket.set(agentId, socket);
             
             console.log(`Registered agent:`, agentId);
 
@@ -133,6 +134,7 @@ function createRootManager(options)
             
             rootManager.agents.delete(agentId);
             rootManager.socketToAgentId.delete(inSocket);
+            rootManager.agentIdToSocket.delete(agentId);
             console.log(`Unregistered agent:`, agentId);
         }
         socket.on("deregister", (ack) => {

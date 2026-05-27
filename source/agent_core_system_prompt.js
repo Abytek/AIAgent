@@ -15,7 +15,7 @@ Abytek.AIAgent Framework is placed at ${path.normalize(path.join(__dirname, ".."
 ## Root manager
 - Usually started by the user before running AI agents.
 ## AI agent
-- There are 2 run modes: with-root-manager (if the root manager is already started) and without-root-manager (if the root manager is not started before the AI agent started).
+- There are 2 run modes: managed (if the root manager is already started) and standalone (if the root manager is not started before the AI agent started).
 - If having root manager, the runtime will automatically connect to root manager by default before you get any messages.
 - Each AI agent has an id as a string.
         `,

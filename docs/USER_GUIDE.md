@@ -17,23 +17,40 @@ npm ci   # installs all dependencies, including the native `deasync`
 
 ## 2️⃣ (Optional) Add custom tools
 
-If you want the LLM to call functions you define, create a **tools** directory either next to your project root or inside the directory you pass to `createAgent({path: "…"})`.
+To let the LLM call your own functionality, create a **tools** directory either next to your project root or inside the directory you pass to `createAgent({path: "…"})`.
 
-Each tool is a plain Node module that exports an object with at least the following properties:
+### Tool contract
+Each tool must be a **function** that receives the `agent` instance and registers one or more LangChain tools on it.  The typical pattern uses `@langchain/core/tools`’s `tool` helper:
 
 ```js
-module.exports = {
-  name: "myTool",                // unique identifier used by the LLM
-  description: "Does something useful",
-  // `run` receives the LLM‑generated arguments and must return a value or a Promise.
-  run: async (input) => {
-    // …your implementation…
-    return { result: "ok" };
-  }
+// my_tool.js (placed in your tools directory)
+const { tool } = require("@langchain/core/tools");
+
+module.exports = function myTool(agent) {
+  agent.tool(
+    tool(
+      // async function that performs the work – receives the arguments from the LLM
+      async (input) => {
+        // …your implementation…
+        return "your tool message to AI agent";
+      },
+      {
+        name: "my_tool",            // unique identifier used by the LLM
+        description: "Does something useful"
+      }
+    )
+  );
 };
 ```
 
-The framework automatically loads tools from the built‑in `tools/` folder **and** from the user‑provided directory.
+The returned object from `tool(...)` conforms to LangChain’s `Tool` interface, exposing a `run` method that the LLM can invoke.
+
+### Where tools are loaded
+The framework automatically loads tools from two locations:
+1. **Built‑in tools** located in the repository’s `tools/` directory (they follow the same factory‑function pattern).
+2. **User‑provided tools** from the directory you created above.
+
+Both sets of tools are imported via `importTools(agent, <path>)` and become available to the agent’s LLM.
 
 ---
 

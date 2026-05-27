@@ -1,8 +1,7 @@
 
 const { createAgent } = require("abytek-aiagent");
 
-const agent = createAgent({
-});
+const agent = createAgent();
 agent.message({
     role: "user",
     content: "my name is Hung"

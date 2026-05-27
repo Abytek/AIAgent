@@ -64,6 +64,7 @@ function createAgentLLMQueue(agent)
         const cachedMessages = [
             ...agentLLMQueue.pendingMessages
         ];
+        agentLLMQueue.pendingMessages = [];
 
         for (const message of cachedMessages)
         {
@@ -74,8 +75,6 @@ function createAgentLLMQueue(agent)
 
             console.log(`Agent:`, response);
         }
-
-        agentLLMQueue.pendingMessages = [];
     };
 
     return agentLLMQueue;

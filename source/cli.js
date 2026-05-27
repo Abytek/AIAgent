@@ -71,6 +71,12 @@ function prepare9Router()
 }
 
 switch (command) {
+    case "root":
+        const { createRootManager } = require("./index");
+        const rootManager = createRootManager();
+        rootManager.run();
+        break;
+
     case "agent":
         run(
             "npm",

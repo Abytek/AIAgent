@@ -20,7 +20,7 @@ const configSchema = {
       default: 0,
     },
 
-    manager_url: {
+    root_manager_url: {
       type: "string",
       default: "http://localhost:39999",
     },

@@ -82,7 +82,7 @@ The repository ships a tiny command‑line wrapper (`abytek-aiagent-cli`).  Comm
 
 ```bash
 # Run the sample agent directly
-abytek-aiagent-cli agent
+abytek-aiagent-cli agent <args>
 
 # Run the Codex helper (used internally for code generation)
 abytek-aiagent-cli codex <args>

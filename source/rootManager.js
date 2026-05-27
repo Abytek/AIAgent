@@ -3,6 +3,7 @@ const http = require("http");
 const path = require("path");
 const os = require("os");
 const deasync = require("deasync");
+const { Server } = require("socket.io");
 
 
 // only the framework can execute this function to create the manager server that manages agents.
@@ -28,6 +29,13 @@ function createRootManager(options)
     rootManager.agents = new Map();
 
     rootManager.app.use(express.json());
+
+    rootManager.socketIO = new Server(rootManager.server, {
+        cors: {
+            origin: "*"
+        }
+    });
+    rootManager.socketToAgentId = new Map();
 
 
     // =====================================
@@ -57,66 +65,83 @@ function createRootManager(options)
         );
         res.status(200).json(agents);
     });
-    rootManager.app.post("/agent/register", (req, res) =>
-    {
-        if (!req.body)
-        {
-            res.status(400).json({ error: `Requires request body` });
-            return;
-        }
 
-        if (!("id" in req.body))
-        {
-            res.status(400).json({ error: `Requires "id" in request body` });
-            return;
-        }
-        const agentId = req.body.id;
-       
-        if (rootManager.agents.has(agentId))
-        {
-            res.status(400).json({ error: `Cannot register agent, already registered an agent with id: ${agentId}` });
-            return;
-        }
+    rootManager.socketIO.on("connection", (socket) => {
+        console.log("Client connected:", socket.id);
 
-        if (!("url" in req.body))
-        {
-            res.status(400).json({ error: `Requires "url" in request body` });
-            return;
-        }
-        const agentURL = req.body.url;
+        socket.on("register", (data, ack) => {
+            if (!("id" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "id" in data` });
+                }
+                return;
+            }
+            const agentId = data.id;
+            if (rootManager.agents.has(agentId))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Cannot register agent, already registered an agent with id: ${agentId}` });
+                }
+                return;
+            }
 
-        const agent = {
-            id: agentId,
-            url: agentURL
-        };
-        rootManager.agents.set(agentId, agent);
-        console.log(`Registered agent:`, agent);
-        res.status(200).json({ message: `Registered agent` });
-    });
-    rootManager.app.post("/agent/unregister", (req, res) =>
-    {
-        if (!req.body)
-        {
-            res.status(400).json({ error: `Requires request body` });
-            return;
-        }
+            if (!("url" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "url" in data` });
+                }
+                return;
+            }
+            const agentURL = data.url;
 
-        if (!("id" in req.body))
+            const agent = {
+                id: agentId,
+                url: agentURL,
+                socket: socket
+            };
+            rootManager.agents.set(agentId, agent);
+            rootManager.socketToAgentId.set(socket, agentId);
+            
+            console.log(`Registered agent:`, agentId);
+
+            if (ack)
+            {
+                ack({ status: 200, message: `Registered agent` });
+            }
+        });
+
+        function unregisterAgent(inSocket, ack)
         {
-            res.status(400).json({ error: `Requires "id" in request body` });
-            return;
+            if (!(rootManager.socketToAgentId.has(inSocket)))
+            {
+                return;
+            }
+
+            const agentId = rootManager.socketToAgentId.get(inSocket);
+            if (!rootManager.agents.has(agentId))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Not found agent with id: ${agentId}` });
+                }
+                return;
+            }
+            
+            rootManager.agents.delete(agentId);
+            rootManager.socketToAgentId.delete(inSocket);
+            console.log(`Unregistered agent:`, agentId);
         }
-        const agentId = req.body.id;
-       
-        if (!rootManager.agents.has(agentId))
-        {
-            res.status(400).json({ error: `Not found agent with id: ${agentId}` });
-            return;
-        }
-        
-        rootManager.agents.delete(agentId);
-        console.log(`Unregistered agent:`, agentId);
-        res.status(200).json({ message: `Unregistered agent` });
+        socket.on("deregister", (ack) => {
+            unregisterAgent(socket, ack);
+        });
+        socket.on("disconnect", (reason) => {
+            unregisterAgent(socket);
+            console.log("Disconnected:", reason);
+        });
     });
 
 
@@ -130,14 +155,16 @@ function createRootManager(options)
     {
         rootManager.server.close(() =>
         {
-            rootManager.isRunning = false;
+            rootManager.socketIO.close(() => {
+                rootManager.isRunning = false;
 
-            console.log("[RootManager] server stopped.");
+                console.log("[RootManager] server stopped.");
 
-            if (typeof callback === "function")
-            {
-                callback();
-            }
+                if (typeof callback === "function")
+                {
+                    callback();
+                }
+            })
         });
     };
 

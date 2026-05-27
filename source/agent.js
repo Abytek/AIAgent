@@ -5,98 +5,7 @@ const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./agent_config");
 const { createAgentLLMQueue } = require("./agent_llm_queue");
 const { createAgentContext } = require("./agent_context");
-
-function registerAgent(agent) {
-    let tickDone = false;
-
-    (async () => {
-        let stop = function()
-        {
-            tickDone = true;
-        }
-
-        try {
-            const response = await fetch(agent.config.rootManager.url);
-            console.log(`Found root manager at:`, agent.config.rootManager.url);
-        }
-        catch (error) {
-            console.log(`Not found root manager`);
-            return stop();
-        }
-
-        try {
-            const response = await fetch(
-                `${agent.config.rootManager.url}/agent/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: agent.id,
-                        url: "dummy"
-                    }),
-                }
-            );
-            agent.registered = true;
-            console.log(`Registered agent`);
-        }
-        catch (error) {
-            console.log(`Cannot register agent:`, error);
-            return stop();
-        }
-
-        return stop();
-    })();
-
-    while (!tickDone)
-    {
-        deasync.runLoopOnce();
-    }
-}
-function unregisterAgent(agent) {
-    let tickDone = false;
-
-    (async () => {
-        let stop = function()
-        {
-            tickDone = true;
-        }
-
-        if (!agent.registered)
-        {
-            return stop();
-        }
-
-        try {
-            const response = await fetch(
-                `${agent.config.rootManager.url}/agent/unregister`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: agent.id
-                    }),
-                }
-            );
-            agent.registered = true;
-            console.log(`Unregistered agent`);
-        }
-        catch (error) {
-            console.log(`Cannot unregister agent:`, error);
-            return stop();
-        }
-
-        return stop();
-    })();
-
-    while (!tickDone)
-    {
-        deasync.runLoopOnce();
-    }
-}
+const { createAgentTracking } = require("./agent_tracking");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -117,22 +26,7 @@ function createAgent(Options) {
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
-    agent.registered = false;
-
-    registerAgent(agent);
-
-    const stopAgentProcess = () => {
-        console.log("Received Ctrl+C");
-        unregisterAgent(agent);
-        process.exit(0);
-    };
-    process.on("SIGINT", stopAgentProcess);
-    process.on("SIGTERM", stopAgentProcess);
-    process.on("SIGBREAK", stopAgentProcess);
-    process.on("SIGHUP", stopAgentProcess);
-    process.on("exit", stopAgentProcess);
-    process.on("uncaughtException", stopAgentProcess);
-    process.on("unhandledRejection", stopAgentProcess);
+    agent.tracking = createAgentTracking(agent);
 
     agent.run = function () {
         while (!agent.shouldShutdown) {
@@ -150,7 +44,7 @@ function createAgent(Options) {
             deasync.runLoopOnce();
         }
 
-        unregisterAgent(agent);
+        agent.tracking.close();
     };
     agent.signalShutdown = function()
     {

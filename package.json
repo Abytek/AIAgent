@@ -1,8 +1,8 @@
 {
-  "name": "aiagent",
+  "name": "abytek-aiagent",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "abytek-aiagent.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,9 +19,16 @@
   },
   "homepage": "https://github.com/Abytek/AIAgent#readme",
   "dependencies": {
+    "@langchain/core": "^1.1.48",
+    "@langchain/openai": "^1.4.7",
     "@openai/codex": "^0.134.0",
     "9router": "^0.4.62",
-    "cross-env": "^10.1.0"
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "cross-env": "^10.1.0",
+    "deasync": "^0.1.31",
+    "langchain": "^1.4.2",
+    "zod": "^4.4.3"
   },
   "bin": {
     "abytek-aiagent-cli": "source/cli.js"

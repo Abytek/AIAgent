@@ -64,6 +64,24 @@ function prepare9Router()
 }
 
 switch (command) {
+    case "agent":
+        run(
+            "npm",
+            [
+                "--prefix",
+                path.join(__dirname, ".."),
+                "exec",
+                "npm",
+                "run",
+                "agent",
+                ...args
+            ],
+            {
+                NODE_PATH: path.join(__dirname, "../module_trick")
+            }
+        );
+        break;
+
     case "codex":
         prepareCodex();
         run(

@@ -15,14 +15,38 @@ const configSchema = {
   type: "object",
 
   properties: {
-    server_port: {
-      type: "integer",
-      default: 0,
+    server: {
+      type: "object",
+
+      properties: {
+        port: {
+          type: "integer",
+          default: 0,
+        }
+      },
+
+      required: [],
+
+      additionalProperties: false,
+
+      default: {},
     },
 
-    root_manager_url: {
-      type: "string",
-      default: "http://localhost:39999",
+    root_manager: {
+      type: "object",
+
+      properties: {
+        url: {
+          type: "string",
+          default: "http://localhost:39999",
+        }
+      },
+
+      required: [],
+
+      additionalProperties: false,
+
+      default: {},
     },
 
     debug: {

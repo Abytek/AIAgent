@@ -14,7 +14,7 @@ function createRootManager(options)
     }
 
     options.host ??= "0.0.0.0";
-    options.port ??= 3000;
+    options.port ??= 39999;
 
     let rootManager = new Object();
 
@@ -48,6 +48,75 @@ function createRootManager(options)
     {
         res.status(200);
         rootManager.stop();
+    });
+    rootManager.app.get("/agent/list", (req, res) =>
+    {
+        let agents = [];
+        rootManager.agents.forEach(
+            value => agents.push(value)
+        );
+        res.status(200).json(agents);
+    });
+    rootManager.app.post("/agent/register", (req, res) =>
+    {
+        if (!req.body)
+        {
+            res.status(400).json({ error: `Requires request body` });
+            return;
+        }
+
+        if (!("id" in req.body))
+        {
+            res.status(400).json({ error: `Requires "id" in request body` });
+            return;
+        }
+        const agentId = req.body.id;
+       
+        if (rootManager.agents.has(agentId))
+        {
+            res.status(400).json({ error: `Cannot register agent, already registered an agent with id: ${agentId}` });
+            return;
+        }
+
+        if (!("url" in req.body))
+        {
+            res.status(400).json({ error: `Requires "url" in request body` });
+            return;
+        }
+        const agentURL = req.body.url;
+
+        const agent = {
+            id: agentId,
+            url: agentURL
+        };
+        rootManager.agents.set(agentId, agent);
+        console.log(`Registered agent:`, agent);
+        res.status(200).json({ message: `Registered agent` });
+    });
+    rootManager.app.post("/agent/unregister", (req, res) =>
+    {
+        if (!req.body)
+        {
+            res.status(400).json({ error: `Requires request body` });
+            return;
+        }
+
+        if (!("id" in req.body))
+        {
+            res.status(400).json({ error: `Requires "id" in request body` });
+            return;
+        }
+        const agentId = req.body.id;
+       
+        if (!rootManager.agents.has(agentId))
+        {
+            res.status(400).json({ error: `Not found agent with id: ${agentId}` });
+            return;
+        }
+        
+        rootManager.agents.delete(agentId);
+        console.log(`Unregistered agent:`, agentId);
+        res.status(200).json({ message: `Unregistered agent` });
     });
 
 

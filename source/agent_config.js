@@ -34,6 +34,28 @@ const configSchema = {
       type: "string",
       default: "general-coding-small",
     },
+
+    provider: {
+      type: "object",
+
+      properties: {
+        apiKey: {
+          type: "string",
+          default: "",
+        },
+
+        baseURL: {
+          type: "string",
+          default: "http://localhost:20128/v1",
+        },
+      },
+
+      required: [],
+
+      additionalProperties: false,
+
+      default: {},
+    },
   },
 
   additionalProperties: false,

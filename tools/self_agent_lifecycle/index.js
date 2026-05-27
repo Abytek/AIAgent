@@ -5,6 +5,7 @@ module.exports = function stop_self_agent(agent) {
         tool(
             async () => {
                 console.log(`Agent calls "stop_self_agent" tool, shutting down...`);
+                agent.signalShutdown();
                 return `"stop_self_agent" tool was successfully called, shutting down...`;
             },
             {

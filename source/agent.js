@@ -3,6 +3,7 @@ const path = require("path");
 const deasync = require("deasync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./agent_config");
+const { createAgentLLMQueue } = require("./agent_llm_queue");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -21,11 +22,26 @@ function createAgent(Options) {
     agent.config = loadAgentConfig(agent.path);
     agent.tools = new Object();
     agent.shouldShutdown = false;
+    agent.llmQueue = createAgentLLMQueue(agent);
     agent.run = function () {
         while (!agent.shouldShutdown) {
+            let tickDone = false;
+
+            (async () => {
+                await agent.llmQueue.flush();
+            })();
+
+            while (!tickDone)
+            {
+                deasync.runLoopOnce();
+            }
             deasync.runLoopOnce();
         }
     };
+    agent.signalShutdown = function()
+    {
+        agent.shouldShutdown = true;
+    }
     agent.tool = function(tool)
     {
         const toolName = tool.name;
@@ -40,6 +56,10 @@ function createAgent(Options) {
         }
         return tool;
     };
+    agent.message = function(message)
+    {
+        agent.llmQueue.push(message);
+    }
 
     // Load tools
     {

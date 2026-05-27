@@ -16,7 +16,7 @@ This document is for **maintainers** of the `abytek-aiagent` repository. It cove
 │   ├─ agent_config.js        # Loads JSON config
 │   ├─ agent_context.js       # Context handling for LLM
 │   ├─ agent_llm_queue.js     # Queue that talks to LangChain
-│   └─ tool.js                # Dynamic tool loader
+│   └─ tool.js                # Dynamic tool loader (importTools)
 ├─ tools/                 # Built‑in tools shipped with the framework
 ├─ samples/               # Example projects (e.g. simple_agent)
 ├─ templates/             # Templates used to bootstrap .codex/.9router
@@ -25,15 +25,13 @@ This document is for **maintainers** of the `abytek-aiagent` repository. It cove
 ```
 
 ### Important files
-
-* **`source/agent.js`** – central factory that assembles the agent, loads tools, and starts the LLM queue.
-* **`source/tool.js`** – helper that recursively loads every `.js` file from a directory and registers it on the agent.
-* **`templates/`** – initial content for the auto‑created runtime dirs.
+- **`source/agent.js`** – central factory that assembles the agent, loads tools via `importTools`, and starts the LLM queue.
+- **`source/tool.js`** – implements `importTools(agent, dir)` which recursively `require`s every `.js` file in *dir* and calls it with the `agent` instance.  This is the mechanism that makes both built‑in and user‑provided tools available.
+- **`templates/`** – seed files copied to `.codex` and `.9router` when the CLI runs for the first time.
 
 ---
 
 ## 2️⃣ Development workflow
-
 1. **Clone the repo**
    ```bash
    git clone https://github.com/Abytek/AIAgent.git
@@ -43,77 +41,54 @@ This document is for **maintainers** of the `abytek-aiagent` repository. It cove
    ```bash
    npm ci
    ```
-3. **Run the sample** to make sure the setup works
+3. **Run the sample** to verify the environment
    ```bash
    npx abytek-aiagent-cli agent
    ```
-   You should see the LLM respond to the messages defined in
-   `samples/simple_agent/agent.js`.
+   You should see the LLM respond to the messages defined in `samples/simple_agent/agent.js`.
 
 ---
 
 ## 3️⃣ Adding a new built‑in tool
+Built‑in tools live under the repository’s `tools/` directory and must follow the **factory‑function** pattern used by the framework.
 
-1. Create a file under `tools/` (e.g. `tools/my_tool.js`).
-2. Export an object with `name`, `description`, and an async `run` function.
-
+### Correct tool shape
 ```js
-module.exports = {
-  name: "weather",
-  description: "Fetch current weather for a city",
-  run: async ({city}) => {
-    // Example implementation …
-    return { temperature: 23, condition: "clear" };
-  }
+// tools/my_tool.js
+const { tool } = require("@langchain/core/tools");
+
+module.exports = function myTool(agent) {
+  agent.tool(
+    tool(
+      // async function executed by the LLM – receives the arguments object
+      async (input) => {
+        // Your implementation here
+        return "your tool message to AI agent";
+      },
+      {
+        name: "my_tool",            // unique identifier the LLM will refer to
+        description: "Does something useful"
+      }
+    )
+  );
 };
 ```
 
-The tool will be automatically loaded by `importTools(agent, path.join(__dirname, "../tools"));`.
-Commit the file and update the changelog.
+The exported function receives the `agent` instance, registers a LangChain `Tool` via `agent.tool(...)`, and therefore becomes callable from the LLM.  No additional registration code is required – `importTools(agent, path.join(__dirname, "../tools"))` in `source/agent.js` will automatically pick it up.
 
----
-
-## 4️⃣ Testing & CI
-
-The repository currently does **not** include a test suite, but adding one is highly encouraged.  A minimal Jest configuration works well with the existing CommonJS modules.
-
-```bash
-npm install --save-dev jest
-```
-
-Create a `tests/` folder and write unit tests for critical modules such as `agent_llm_queue.js` and any new tools you add.  Update `package.json`:
-
-```json
-"scripts": { "test": "jest" }
-```
-
-CI (GitHub Actions) can run `npm test` on each pull request.
-
----
-
-## 5️⃣ Release process
-
-1. **Update version** in `package.json` following semantic‑versioning.
-2. Run `npm ci` locally to ensure the lockfile is up‑to‑date.
-3. Commit changes with a message like `chore: release vX.Y.Z`.
-4. Tag the commit:
-   ```bash
-   git tag -a vX.Y.Z -m "Release vX.Y.Z"
-   git push origin main --tags
-   ```
-5. Publish to npm (if public):
-   ```bash
-   npm publish --access public
-   ```
+### Steps to add a tool
+1. Create `tools/<your_tool>/index.js` following the pattern above.
+2. Ensure the file exports a function that registers the tool on the agent.
+3. Run the test suite (if any) or the sample to verify the tool can be invoked.
+4. Commit the file and update the changelog.
 
 ---
 
 ## 6️⃣ Common maintenance tasks
-
-* **Dependency updates** – run `npm outdated` and upgrade cautiously.  Watch for breaking changes in `langchain` and `@openai/codex`.
-* **Native module rebuilds** – after changing Node versions, rebuild `deasync` with `npm rebuild deasync`.
-* **Documentation** – keep `docs/` in sync with code changes.  Add a brief description of new public APIs to `README.md`.
+- **Dependency updates** – `npm outdated` then upgrade cautiously; watch for breaking changes in `langchain` and `@openai/codex`.
+- **Native module rebuilds** – after a Node version change, run `npm rebuild deasync`.
+- **Documentation** – keep `docs/` in sync with code changes and add brief descriptions of new public APIs to `README.md`.
 
 ---
 
-You now have a concise roadmap for developing, extending, and releasing the AIAgent framework.
+You now have an up‑to‑date roadmap for developing, extending, and releasing the AIAgent framework.

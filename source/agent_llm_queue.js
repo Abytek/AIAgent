@@ -61,7 +61,7 @@ function createAgentLLMQueue(agent)
                     message
                 );
 
-            console.log(response);
+            console.log(`Agent:`, response);
         }
 
         agentLLMQueue.pendingMessages = [];

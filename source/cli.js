@@ -4,34 +4,11 @@ const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const { makeSync } = require("./sync");
-
-const userCwd = process.cwd();
-
+const { simpleRun } = require("./simple_run");
+const { spawnAgent } = require("./agent_spawn");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
-
-function run(bin, binArgs, extraEnv = {}) {
-    const child = spawn(
-        bin,
-        binArgs,
-        {
-            cwd: userCwd,
-            stdio: "inherit",
-            shell: process.platform === "win32",
-            env: {
-                ...process.env,
-                ...extraEnv
-            }
-        }
-    );
-
-    const sync = makeSync();
-    child.on("exit", code => {
-        sync.stop();
-    });
-    sync.wait();
-}
 
 function prepareCodex()
 {
@@ -74,39 +51,14 @@ switch (command) {
         break;
 
     case "agent":
-        run(
-            "npm",
-            [
-                "--prefix",
-                path.join(__dirname, ".."),
-                "exec",
-                "npm",
-                "install"
-            ],
-            {
-                NODE_PATH: path.join(__dirname, "../module_trick")
-            }
-        );
-        run(
-            "npm",
-            [
-                "--prefix",
-                path.join(__dirname, ".."),
-                "exec",
-                "npm",
-                "run",
-                "agent",
-                ...args
-            ],
-            {
-                NODE_PATH: path.join(__dirname, "../module_trick")
-            }
-        );
+        spawnAgent({
+            path: process.cwd()
+        });
         break;
 
     case "codex":
         prepareCodex();
-        run(
+        simpleRun(
             "npm",
             [
                 "exec",
@@ -124,7 +76,7 @@ switch (command) {
 
     case "9router":
         prepare9Router();
-        run(
+        simpleRun(
             "npm",
             [
                 "exec",

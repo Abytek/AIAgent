@@ -1,6 +1,6 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
-const { sendMessageToAnotherAgent } = require("../../source/agent_communication");
+const { sendMessageToAnotherAgent } = require("../../source/agent/communication");
 
 module.exports = agent => {
     agent.tool(

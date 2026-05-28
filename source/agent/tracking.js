@@ -1,6 +1,6 @@
 
 const { io } = require("socket.io-client");
-const { makeSync } = require("./sync");
+const { makeSync } = require("../utilities/sync");
 
 function createAgentTracking(agent)
 {

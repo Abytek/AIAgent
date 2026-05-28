@@ -3,9 +3,9 @@
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
-const { makeSync } = require("./sync");
-const { simpleRunSync } = require("./simple_run");
-const { spawnAgentSync } = require("./agent_spawn");
+const { makeSync } = require("./utilities/sync");
+const { simpleRunSync } = require("./utilities/simpleRun");
+const { spawnAgentSync } = require("./agent/spawn");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);

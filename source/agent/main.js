@@ -1,14 +1,14 @@
 const fs = require("fs");
 const path = require("path");
-const { doSync, runLoopOnce } = require("./sync");
+const { doSync, runLoopOnce } = require("../utilities/sync");
 const { importTools } = require("./tool");
-const { loadAgentConfig } = require("./agent_config");
-const { createAgentLLMQueue } = require("./agent_llm_queue");
-const { createAgentContext } = require("./agent_context");
-const { createAgentServer } = require("./agent_server");
-const { createAgentTracking } = require("./agent_tracking");
-const { addCoreSystemPrompt } = require("./agent_core_system_prompt");
-const { makeAgentMessageValidator } = require("./agent_message");
+const { loadAgentConfig } = require("./config");
+const { createAgentLLMQueue } = require("./llmQueue");
+const { createAgentContext } = require("./context");
+const { createAgentServer } = require("./server");
+const { createAgentTracking } = require("./tracking");
+const { addCoreSystemPrompt } = require("./coreSystemPrompt");
+const { makeAgentMessageValidator } = require("./message");
 
 // the main function for users to create agents
 function createAgent(Options) {

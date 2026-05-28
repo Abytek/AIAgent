@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const { simpleRun } = require("./simple_run");
-const { makeSync } = require("./sync");
+const { simpleRun } = require("../utilities/simpleRun");
+const { makeSync } = require("../utilities/sync");
 
 async function spawnAgent(options)
 {
@@ -25,14 +25,14 @@ async function spawnAgent(options)
     const agentInstallationExitCode = await simpleRun(
         "npm",
         [
-            "--prefix",
-            path.join(__dirname, ".."),
-            "exec",
-            "npm",
+            // "--prefix",
+            // path.join(__dirname, "../.."),
+            // "exec",
+            // "npm",
             "install"
         ],
         {
-            NODE_PATH: path.join(__dirname, "../module_trick")
+            NODE_PATH: path.join(__dirname, "../../module_trick")
         },
         agentPath
     );
@@ -44,16 +44,16 @@ async function spawnAgent(options)
     const agentExecutionExitCode = await simpleRun(
         "npm",
         [
-            "--prefix",
-            path.join(__dirname, ".."),
-            "exec",
-            "npm",
+            // "--prefix",
+            // path.join(__dirname, "../.."),
+            // "exec",
+            // "npm",
             "run",
             "agent",
             ...args
         ],
         {
-            NODE_PATH: path.join(__dirname, "../module_trick")
+            NODE_PATH: path.join(__dirname, "../../module_trick")
         },
         agentPath
     );

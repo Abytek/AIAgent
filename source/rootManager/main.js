@@ -2,11 +2,10 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const os = require("os");
-const { loopWhile } = require("./sync");
 const { Server } = require("socket.io");
-const { getFrontendPublicDirectory } = require("./frontend");
-
-const { renderView_rootManagerDashboard } = require("./frontend/views/rootManagerDashboard");
+const { loopWhile } = require("../utilities/sync");
+const { getFrontendPublicDirectory } = require("../frontend/helper");
+const { renderView_rootManagerDashboard } = require("../frontend/views/rootManagerDashboard");
 
 
 // only the framework can execute this function to create the manager server that manages agents.

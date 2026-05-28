@@ -4,9 +4,9 @@ const http = require("http");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
-const { makeSync } = require("./sync");
-const { makeAgentMessageValidator } = require("./agent_message");
-const { getFrontendPublicDirectory } = require("./frontend");
+const { makeSync } = require("../utilities/sync");
+const { makeAgentMessageValidator } = require("./message");
+const { getFrontendPublicDirectory } = require("../frontend/helper");
 
 function setupAgentServerStaticPaths(agentServer)
 {

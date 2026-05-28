@@ -138,6 +138,26 @@ function createRootManager(options)
                 return;
             }
 
+            if (!("path" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "path" in data` });
+                }
+                return;
+            }
+            const agentPath = data.path;
+
+            if (!("config" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "config" in data` });
+                }
+                return;
+            }
+            const agentConfig = data.config;
+
             if (!("url" in data))
             {
                 if (ack)
@@ -150,6 +170,8 @@ function createRootManager(options)
 
             const agent = {
                 id: agentId,
+                path: agentPath,
+                config: agentConfig,
                 url: agentURL
             };
             rootManager.agents.set(agentId, agent);

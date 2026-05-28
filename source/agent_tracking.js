@@ -33,6 +33,8 @@ function createAgentTracking(agent)
                 "register", 
                 { 
                     id: agent.id,
+                    path: agent.path,
+                    config: agent.config,
                     url: "dummy"
                 },
                 (res) => {

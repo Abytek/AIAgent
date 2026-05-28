@@ -33,6 +33,9 @@ Abytek.AIAgent Framework is placed at ${path.normalize(path.join(__dirname, ".."
 - Your agent process info:
     + PID: ${process.pid}
     + Platform: ${process.platform}
+# TOOL CALLING
+- When you cannot find the exact needed tool, you MUST think about how to re-use the provided by the system.
+- One of the most powerfull tool to use is terminal tools: system.powershell_sync,...
         `,
     });
 }

@@ -32,6 +32,7 @@ function runLoopOnce() {
 function loopWhile(predicate) {
     while (true)
     {
+        runLoopOnce();
         if (!predicate())
         {
             break;

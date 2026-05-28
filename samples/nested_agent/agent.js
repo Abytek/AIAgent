@@ -1,6 +1,6 @@
 
 const path = require("path");
-const { createAgent, spawnAgent } = require("abytek-aiagent");
+const { createAgent, spawnAgent, doSync } = require("abytek-aiagent");
 
 const agent = createAgent();
 agent.message({
@@ -8,10 +8,8 @@ agent.message({
     content: "Hello"
 });
 
-(async () => {
-    spawnAgent({
-        path: path.resolve(__dirname, "child")
-    })
-})();
+spawnAgent({
+    path: path.resolve(__dirname, "child")
+});
 
 agent.run();

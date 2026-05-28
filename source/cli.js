@@ -4,8 +4,8 @@ const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const { makeSync } = require("./sync");
-const { simpleRun } = require("./simple_run");
-const { spawnAgent } = require("./agent_spawn");
+const { simpleRunSync } = require("./simple_run");
+const { spawnAgentSync } = require("./agent_spawn");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -51,14 +51,14 @@ switch (command) {
         break;
 
     case "agent":
-        spawnAgent({
+        spawnAgentSync({
             path: process.cwd()
         });
         break;
 
     case "codex":
         prepareCodex();
-        simpleRun(
+        simpleRunSync(
             "npm",
             [
                 "exec",
@@ -76,7 +76,7 @@ switch (command) {
 
     case "9router":
         prepare9Router();
-        simpleRun(
+        simpleRunSync(
             "npm",
             [
                 "exec",

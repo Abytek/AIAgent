@@ -1,70 +1,78 @@
 const path = require("path");
 const fs = require("fs");
 const { simpleRun } = require("./simple_run");
+const { makeSync } = require("./sync");
 
-function spawnAgent(options)
+async function spawnAgent(options)
 {
-    return new Promise((resolve, reject) => {
-        if (!options)
-        {
-            throw new Error(`Requires options`);
-        }
+    if (!options)
+    {
+        throw new Error(`Requires options`);
+    }
 
-        if (!("path" in options))
-        {
-            throw new Error(`Requires "path" in options`);
-        }
-        const agentPath = options.path;
+    if (!("path" in options))
+    {
+        throw new Error(`Requires "path" in options`);
+    }
+    const agentPath = options.path;
 
-        let args = [];
-        if ("args" in options)
-        {
-            args = options.args;
-        }
+    let args = [];
+    if ("args" in options)
+    {
+        args = options.args;
+    }
 
-        const agentInstallationExitCode = simpleRun(
+    const agentInstallationExitCode = await simpleRun(
+        "npm",
+        [
+            "--prefix",
+            path.join(__dirname, ".."),
+            "exec",
             "npm",
-            [
-                "--prefix",
-                path.join(__dirname, ".."),
-                "exec",
-                "npm",
-                "install"
-            ],
-            {
-                NODE_PATH: path.join(__dirname, "../module_trick")
-            },
-            agentPath
-        );
-        if (agentInstallationExitCode != 0)
+            "install"
+        ],
         {
-            reject(new Error(`Cannot install agent, exit code: ` + agentInstallationExitCode));
-        }
-        
-        const agentExecutionExitCode = simpleRun(
+            NODE_PATH: path.join(__dirname, "../module_trick")
+        },
+        agentPath
+    );
+    if (agentInstallationExitCode != 0)
+    {
+        throw new Error(`Cannot install agent, exit code: ` + agentInstallationExitCode);
+    }
+    
+    const agentExecutionExitCode = await simpleRun(
+        "npm",
+        [
+            "--prefix",
+            path.join(__dirname, ".."),
+            "exec",
             "npm",
-            [
-                "--prefix",
-                path.join(__dirname, ".."),
-                "exec",
-                "npm",
-                "run",
-                "agent",
-                ...args
-            ],
-            {
-                NODE_PATH: path.join(__dirname, "../module_trick")
-            },
-            agentPath
-        );
-        if (agentExecutionExitCode != 0)
+            "run",
+            "agent",
+            ...args
+        ],
         {
-            reject(new Error(`Cannot execute agent, exit code: ` + agentExecutionExitCode));
-        }
-        resolve();
-    })
+            NODE_PATH: path.join(__dirname, "../module_trick")
+        },
+        agentPath
+    );
+    if (agentExecutionExitCode != 0)
+    {
+        throw new Error(`Cannot execute agent, exit code: ` + agentExecutionExitCode);
+    }
+}
+
+function spawnAgentSync(options)
+{
+    const sync = makeSync();
+    spawnAgent(options)
+        .then(() => sync.stop())
+        .catch(err => { throw err; });
+    sync.wait();
 }
 
 module.exports = {
-    spawnAgent
+    spawnAgent,
+    spawnAgentSync
 }

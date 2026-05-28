@@ -9,6 +9,10 @@
       "ollama": {
         "fallbackStrategy": "round-robin",
         "stickyRoundRobinLimit": 1
+      },
+      "openrouter": {
+        "fallbackStrategy": "round-robin",
+        "stickyRoundRobinLimit": 1
       }
     },
     "comboStrategies": {
@@ -68,18 +72,16 @@
   "providerConnections": [
     {
       "apiKey": "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",
-      "testStatus": "unavailable",
+      "testStatus": "active",
       "providerSpecificData": {
         "connectionProxyEnabled": false,
         "connectionProxyUrl": "",
         "connectionNoProxy": ""
       },
-      "lastUsedAt": "2026-05-26T20:32:30.344Z",
+      "lastUsedAt": "2026-05-28T17:12:52.561Z",
       "consecutiveUseCount": 1,
-      "modelLock_openai/gpt-oss-120b": "2026-05-26T20:33:00.553Z",
-      "lastError": "[400]: {\"error\":{\"message\":\"property 'client_metadata' is unsupported\",\"type\":\"invalid_request_error",
+      "modelLock_openai/gpt-oss-120b": null,
       "errorCode": 400,
-      "lastErrorAt": "2026-05-26T20:32:30.553Z",
       "backoffLevel": 0,
       "modelLock_meta-llama/llama-4-maverick-17b-128e-instruct": null,
       "modelLock_qwen/qwen3-32b": null,
@@ -92,22 +94,20 @@
       "priority": 3,
       "isActive": true,
       "createdAt": "2026-05-26T17:14:02.384Z",
-      "updatedAt": "2026-05-26T20:32:30.553Z"
+      "updatedAt": "2026-05-28T17:12:53.042Z"
     },
     {
       "apiKey": "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",
-      "testStatus": "unavailable",
+      "testStatus": "active",
       "providerSpecificData": {
         "connectionProxyEnabled": false,
         "connectionProxyUrl": "",
         "connectionNoProxy": ""
       },
-      "lastUsedAt": "2026-05-26T20:32:30.554Z",
+      "lastUsedAt": "2026-05-28T17:14:36.708Z",
       "consecutiveUseCount": 1,
-      "modelLock_openai/gpt-oss-120b": "2026-05-26T20:33:00.683Z",
-      "lastError": "[400]: {\"error\":{\"message\":\"property 'client_metadata' is unsupported\",\"type\":\"invalid_request_error",
+      "modelLock_openai/gpt-oss-120b": null,
       "errorCode": 400,
-      "lastErrorAt": "2026-05-26T20:32:30.683Z",
       "backoffLevel": 0,
       "modelLock_meta-llama/llama-4-maverick-17b-128e-instruct": null,
       "modelLock_qwen/qwen3-32b": null,
@@ -120,26 +120,24 @@
       "priority": 2,
       "isActive": true,
       "createdAt": "2026-05-26T17:14:12.511Z",
-      "updatedAt": "2026-05-26T20:32:30.683Z"
+      "updatedAt": "2026-05-28T17:14:37.100Z"
     },
     {
       "apiKey": "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",
-      "testStatus": "unavailable",
+      "testStatus": "active",
       "providerSpecificData": {
         "connectionProxyEnabled": false,
         "connectionProxyUrl": "",
         "connectionNoProxy": ""
       },
-      "lastUsedAt": "2026-05-26T20:32:30.142Z",
+      "lastUsedAt": "2026-05-28T17:15:09.724Z",
       "consecutiveUseCount": 1,
-      "modelLock_openai/gpt-oss-120b": "2026-05-26T20:33:00.343Z",
-      "errorCode": 400,
+      "modelLock_openai/gpt-oss-120b": null,
+      "errorCode": 413,
       "backoffLevel": 0,
       "modelLock_meta-llama/llama-4-maverick-17b-128e-instruct": null,
       "modelLock_qwen/qwen3-32b": null,
       "modelLock_llama-3.3-70b-versatile": null,
-      "lastError": "[400]: {\"error\":{\"message\":\"property 'client_metadata' is unsupported\",\"type\":\"invalid_request_error",
-      "lastErrorAt": "2026-05-26T20:32:30.343Z",
       "id": "56d23db5-848e-4d23-8631-189297fa2251",
       "provider": "groq",
       "authType": "apikey",
@@ -148,7 +146,7 @@
       "priority": 1,
       "isActive": true,
       "createdAt": "2026-05-26T17:14:21.298Z",
-      "updatedAt": "2026-05-26T20:32:30.343Z"
+      "updatedAt": "2026-05-28T17:15:11.042Z"
     },
     {
       "apiKey": "75fb6e4f67e44b32b027603acb4fc735.vB_rlJCzbljqOp_LaAZmSubf",
@@ -158,12 +156,10 @@
         "connectionProxyUrl": "",
         "connectionNoProxy": ""
       },
-      "lastUsedAt": "2026-05-26T20:34:17.475Z",
+      "lastUsedAt": "2026-05-28T17:14:31.227Z",
       "consecutiveUseCount": 1,
       "modelLock_glm-4.7-flash": null,
-      "lastError": null,
-      "errorCode": 403,
-      "lastErrorAt": null,
+      "errorCode": 404,
       "backoffLevel": 0,
       "modelLock_glm-5": null,
       "modelLock_deepseek-v4-flash": null,
@@ -171,6 +167,14 @@
       "modelLock_qwen3-vl:2b": null,
       "modelLock_kimi-k2.5": null,
       "modelLock_qwen3.5": null,
+      "modelLock_minimax-m2.7:cloud": null,
+      "modelLock_glm-5:cloud": null,
+      "modelLock_deepseek-v3.2": null,
+      "modelLock_kimi-k2.6": null,
+      "modelLock_kimi-k2-thinking": null,
+      "modelLock_deepseek-v3.1": null,
+      "modelLock_deepseek-v3.1:671b-cloud": null,
+      "modelLock_gemma4:31b-mlx": null,
       "id": "81b5929b-e7e9-4c7b-b42b-45bae4eeed8b",
       "provider": "ollama",
       "authType": "apikey",
@@ -179,29 +183,35 @@
       "priority": 2,
       "isActive": true,
       "createdAt": "2026-05-26T17:15:51.872Z",
-      "updatedAt": "2026-05-26T20:34:18.091Z"
+      "updatedAt": "2026-05-28T17:14:31.227Z"
     },
     {
       "apiKey": "26ad06511ef24ebbbc999181a5a24ecc.V5ojdcVkaYcg0kFtQrhmpWqL",
-      "testStatus": "unavailable",
+      "testStatus": "active",
       "providerSpecificData": {
         "connectionProxyEnabled": false,
         "connectionProxyUrl": "",
         "connectionNoProxy": ""
       },
-      "lastUsedAt": "2026-05-26T20:32:30.686Z",
+      "lastUsedAt": "2026-05-28T17:15:04.208Z",
       "consecutiveUseCount": 1,
-      "modelLock_glm-4.7-flash": "2026-05-26T20:34:12.229Z",
-      "lastError": "[403]: {\"error\":\"this model requires a subscription, upgrade for access: https://ollama.com/upgrade ",
-      "errorCode": 403,
-      "lastErrorAt": "2026-05-26T20:32:19.667Z",
+      "modelLock_glm-4.7-flash": null,
+      "errorCode": 404,
       "backoffLevel": 0,
-      "modelLock_glm-5": "2026-05-26T20:34:19.667Z",
-      "modelLock_deepseek-v4-flash": "2026-05-26T20:34:11.322Z",
+      "modelLock_glm-5": null,
+      "modelLock_deepseek-v4-flash": null,
       "modelLock_qwen3.5:cloud": null,
       "modelLock_qwen3-vl:2b": null,
-      "modelLock_kimi-k2.5": "2026-05-26T20:33:49.842Z",
-      "modelLock_qwen3.5": "2026-05-26T20:34:03.918Z",
+      "modelLock_kimi-k2.5": null,
+      "modelLock_qwen3.5": null,
+      "modelLock_minimax-m2.7:cloud": null,
+      "modelLock_glm-5:cloud": null,
+      "modelLock_deepseek-v3.2": null,
+      "modelLock_kimi-k2.6": null,
+      "modelLock_kimi-k2-thinking": null,
+      "modelLock_deepseek-v3.1": null,
+      "modelLock_deepseek-v3.1:671b-cloud": null,
+      "modelLock_gemma4:31b-mlx": null,
       "id": "5d193633-e081-4d67-bddc-06be16dc871a",
       "provider": "ollama",
       "authType": "apikey",
@@ -210,7 +220,32 @@
       "priority": 1,
       "isActive": true,
       "createdAt": "2026-05-26T17:16:35.190Z",
-      "updatedAt": "2026-05-26T20:32:31.417Z"
+      "updatedAt": "2026-05-28T17:15:04.208Z"
+    },
+    {
+      "apiKey": "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",
+      "testStatus": "unavailable",
+      "providerSpecificData": {
+        "connectionProxyEnabled": false,
+        "connectionProxyUrl": "",
+        "connectionNoProxy": ""
+      },
+      "lastError": "[429]: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"deepseek/deepseek",
+      "lastErrorAt": "2026-05-26T21:08:42.054Z",
+      "lastUsedAt": "2026-05-26T21:08:40.944Z",
+      "consecutiveUseCount": 1,
+      "modelLock_deepseek/deepseek-v4-flash:free": "2026-05-26T21:08:44.054Z",
+      "errorCode": 429,
+      "backoffLevel": 1,
+      "id": "2f323bff-d05b-4c50-b131-cd70c523f5ab",
+      "provider": "openrouter",
+      "authType": "apikey",
+      "name": "ncoderft3t@outlook.com",
+      "email": null,
+      "priority": 1,
+      "isActive": true,
+      "createdAt": "2026-05-26T21:08:18.178Z",
+      "updatedAt": "2026-05-26T21:08:42.054Z"
     }
   ],
   "providerNodes": [],
@@ -218,92 +253,29 @@
   "apiKeys": [],
   "combos": [
     {
-      "id": "24c6d342-139f-4675-b43d-17c0e52f64ef",
-      "name": "ollama-cloud-controller-strong",
-      "kind": null,
-      "models": [
-        "ollama/nemotron-3-super:cloud"
-      ],
-      "createdAt": "2026-05-26T19:08:40.477Z",
-      "updatedAt": "2026-05-26T19:18:25.823Z"
-    },
-    {
-      "id": "cd5eeb96-9903-4b79-9a04-23a8ac0ac0f2",
-      "name": "ollama-cloud-controller-medium",
-      "kind": null,
-      "models": [
-        "ollama/nemotron-3-nano:30b-cloud"
-      ],
-      "createdAt": "2026-05-26T19:09:15.571Z",
-      "updatedAt": "2026-05-26T19:18:31.617Z"
-    },
-    {
-      "id": "4181602d-8c54-4cd9-8ed2-6b3b839a0c6b",
-      "name": "ollama-cloud-vision-llm-medium",
-      "kind": null,
-      "models": [
-        "ollama/qwen3-vl:235b-cloud"
-      ],
-      "createdAt": "2026-05-26T19:18:18.975Z",
-      "updatedAt": "2026-05-26T19:18:18.975Z"
-    },
-    {
-      "id": "e5494872-4a09-4c1c-8b3b-c2729517a08a",
-      "name": "ollama-cloud-coding-small",
+      "id": "cd7a85d7-2c28-4a55-98ab-9be06fb89c05",
+      "name": "default",
       "kind": null,
       "models": [
         "ollama/gpt-oss:120b"
       ],
-      "createdAt": "2026-05-26T20:36:05.735Z",
-      "updatedAt": "2026-05-26T20:36:05.735Z"
-    },
-    {
-      "id": "bc435c3f-c5b8-464e-8bd3-cd4ef5879683",
-      "name": "groq-coding-small",
-      "kind": null,
-      "models": [
-        "groq/openai/gpt-oss-120b"
-      ],
-      "createdAt": "2026-05-26T20:36:44.409Z",
-      "updatedAt": "2026-05-26T20:36:44.409Z"
-    },
-    {
-      "id": "78c739e4-2ba8-40ab-9ef5-cb83a827f86e",
-      "name": "general-coding-small",
-      "kind": null,
-      "models": [
-        "groq-coding-small",
-        "ollama-cloud-coding-small"
-      ],
-      "createdAt": "2026-05-26T20:37:15.602Z",
-      "updatedAt": "2026-05-26T20:37:15.602Z"
-    },
-    {
-      "id": "4e605085-0f1f-4e61-9350-7f4f69dfa703",
-      "name": "ollama-cloud-coding-medium",
-      "kind": null,
-      "models": [
-        "ollama/minimax-m2.5"
-      ],
-      "createdAt": "2026-05-26T20:38:19.370Z",
-      "updatedAt": "2026-05-26T20:38:19.370Z"
-    },
-    {
-      "id": "1bd6d28b-8428-406b-a6c3-5b3d3fe77989",
-      "name": "general-coding-medium",
-      "kind": null,
-      "models": [
-        "ollama-cloud-coding-medium"
-      ],
-      "createdAt": "2026-05-26T20:38:38.313Z",
-      "updatedAt": "2026-05-26T20:38:38.313Z"
+      "createdAt": "2026-05-28T17:22:10.897Z",
+      "updatedAt": "2026-05-28T17:22:10.897Z"
     }
   ],
   "modelAliases": {
     "deepseek-v4-flash": "ollama/deepseek-v4-flash",
     "nemotron-3-nano:30b-cloud": "ollama/nemotron-3-nano:30b-cloud",
     "nemotron-3-super:cloud": "ollama/nemotron-3-super:cloud",
-    "qwen3-vl:235b-cloud": "ollama/qwen3-vl:235b-cloud"
+    "qwen3-vl:235b-cloud": "ollama/qwen3-vl:235b-cloud",
+    "glm-4.7:cloud": "ollama/glm-4.7:cloud",
+    "gemma4:31b-cloud": "ollama/gemma4:31b-cloud",
+    "devstral-2:123b-cloud": "ollama/devstral-2:123b-cloud",
+    "deepseek-v4-flash-free": "oc/deepseek-v4-flash-free",
+    "minimax-m2.5-free": "oc/minimax-m2.5-free",
+    "nemotron-3-super-free": "oc/nemotron-3-super-free",
+    "qwen3.6-plus-free": "oc/qwen3.6-plus-free",
+    "deepseek-v4-flash:free": "openrouter/deepseek/deepseek-v4-flash:free"
   },
   "customModels": [],
   "mitmAlias": {},

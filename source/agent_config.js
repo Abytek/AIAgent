@@ -56,7 +56,7 @@ const configSchema = {
 
     model: {
       type: "string",
-      default: "general-coding-small",
+      default: "default",
     },
 
     provider: {

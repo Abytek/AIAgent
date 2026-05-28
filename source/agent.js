@@ -5,6 +5,7 @@ const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./agent_config");
 const { createAgentLLMQueue } = require("./agent_llm_queue");
 const { createAgentContext } = require("./agent_context");
+const { createAgentServer } = require("./agent_server");
 const { createAgentTracking } = require("./agent_tracking");
 const { addCoreSystemPrompt } = require("./agent_core_system_prompt");
 
@@ -38,6 +39,7 @@ function createAgent(Options) {
         }
 
         agent.tracking.close();
+        agent.server.close();
     };
     agent.signalShutdown = function()
     {
@@ -63,6 +65,7 @@ function createAgent(Options) {
     }
 
     //
+    agent.server = createAgentServer(agent);
     agent.tracking = createAgentTracking(agent);
 
     // System prompts

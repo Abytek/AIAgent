@@ -27,7 +27,11 @@ function createAgent(Options) {
     agent.path = agentPath;
     console.log(`Agent info:`, { id: agent.id, path: agent.path });
 
+    agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
+    fs.mkdirSync(agent.tempDir, { recursive: true });
+
     agent.config = loadAgentConfig(agent.path);
+
     agent.tools = new Object();
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);

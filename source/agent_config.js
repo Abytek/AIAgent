@@ -54,6 +54,11 @@ const configSchema = {
       default: false,
     },
 
+    anonymous: {
+      type: "boolean",
+      default: false,
+    },
+
     model: {
       type: "string",
       default: "default",

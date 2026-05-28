@@ -1,6 +1,6 @@
 
 const path = require("path");
-const { createAgent, spawnAgent, doSync } = require("abytek-aiagent");
+const { createAgent, spawnAgent } = require("abytek-aiagent");
 
 const agent = createAgent();
 agent.message({

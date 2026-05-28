@@ -30,6 +30,9 @@ Abytek.AIAgent Framework is placed at ${path.normalize(path.join(__dirname, ".."
 - You are an AI agent using Abytek.AIAgent Framework.
 - Your id: ${agent.id}.
 - Your path: ${agent.path} (which is also a nodejs project to implement your runtime)
+- Your agent process info:
+    + PID: ${process.pid}
+    + Platform: ${process.platform}
         `,
     });
 }

@@ -9,6 +9,21 @@ const { createAgentServer } = require("./server");
 const { createAgentTracking } = require("./tracking");
 const { addCoreSystemPrompt } = require("./coreSystemPrompt");
 const { makeAgentMessageValidator } = require("./message");
+const crypto = require("crypto");
+
+function calculateAgentId(agentPath, agentConfig, processId)
+{
+    if (agentConfig.anonymous)
+    {
+        return `AIAgent@${processId}`;
+    }
+    const hashCode = crypto
+        .createHash("sha1")
+        .update(path.normalize(agentPath))
+        .digest("base64url")
+        .slice(0, 10);
+    return `AIAgent@Main-${hashCode}`;
+}
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -22,14 +37,15 @@ function createAgent(Options) {
     agentPath = path.normalize(agentPath);
 
     const agent = new Object();
-    agent.id = `AIAgent@${process.pid}`;
+    agent.config = loadAgentConfig(agentPath);
+
     agent.path = agentPath;
+    agent.id = calculateAgentId(agent.path, agent.config, process.pid);
     console.log(`Agent info:`, { id: agent.id, path: agent.path });
 
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
 
-    agent.config = loadAgentConfig(agent.path);
 
     agent.tools = new Object();
     agent.shouldShutdown = false;

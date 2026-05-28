@@ -52,7 +52,7 @@ async function runPowershell(agent, { script, cwd })
     });
 }
 
-const MAX_POWERSHELL_TOOL_OUTPUT = 1000;
+const MAX_POWERSHELL_TOOL_OUTPUT = 3000;
 
 module.exports = agent => {
     agent.tool(

@@ -74,19 +74,55 @@ module.exports = agent => {
                 }
             },
             {
-                name: "system.powershell_sync",
+                name: "run_powershell",
+
                 description:
-                    `Execute a synchornized PowerShell script and return stdout/stderr. Note that this would block the AI agent and return max of ${MAX_POWERSHELL_TOOL_OUTPUT} console output characters`,
+                    [
+                        "[SYSTEM EXECUTION]",
+                        "Execute a PowerShell script on the local machine and return stdout/stderr.",
+                        "",
+                        "Use this tool when:",
+                        "- file operations are required",
+                        "- shell commands are required",
+                        "- running scripts or programs",
+                        "- checking system state",
+                        "- interacting with the filesystem",
+                        "",
+                        "Do NOT use this tool:",
+                        "- for normal conversation",
+                        "- for reasoning without execution",
+                        "- when no system action is required",
+                        "",
+                        "The script should be concise and task-focused.",
+                        "Avoid unnecessary output.",
+                        `The maximum returned output is ${MAX_POWERSHELL_TOOL_OUTPUT} characters.`,
+                        "",
+                        "The cwd parameter should only be provided when a specific working directory is required."
+                    ].join("\n"),
 
                 schema: z.object({
                     script: z
                         .string()
-                        .describe("PowerShell script to execute"),
+                        .describe(
+                            [
+                                "PowerShell script to execute.",
+                                "Must contain valid PowerShell commands.",
+                                "Keep the script short and focused.",
+                                "Avoid interactive commands.",
+                                "Example: Get-ChildItem"
+                            ].join(" ")
+                        ),
 
                     cwd: z
                         .string()
                         .optional()
-                        .describe("Working directory"),
+                        .describe(
+                            [
+                                "Optional working directory path.",
+                                "Only provide this if a specific directory is required.",
+                                "Example: C:\\Projects\\MyApp"
+                            ].join(" ")
+                        ),
                 }),
             }
         )

@@ -86,7 +86,7 @@ function createAgent(Options) {
 
     // Load tools
     {
-        importTools(agent, path.join(__dirname, "../tools"));
+        importTools(agent, path.join(__dirname, "../../tools"));
         importTools(agent, path.join(agentPath, "tools"));
     }
 

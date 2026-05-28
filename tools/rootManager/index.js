@@ -46,8 +46,20 @@ module.exports = agent => {
                 }
             },
             {
-                name: "rootManager.agent_list",
-                description: "Query agent list",
+                name: "get_agent_list",
+                description:
+                    [
+                        "[AGENT MANAGEMENT]",
+                        "Returns a list of all currently connected AI agents.",
+                        "Use this tool when the user asks:",
+                        "- what agents are available",
+                        "- which agents exist",
+                        "- connected agents",
+                        "- active agents",
+                        "- available workers",
+                        "- list agents",
+                        "This tool does not require any arguments."
+                    ].join("\n"),
             }
         )
     );
@@ -76,15 +88,52 @@ module.exports = agent => {
             },
             {
                 name: "rootManager.agent_message",
-                description: "Send message to another agent",
+
+                description:
+                    [
+                        "[AGENT COMMUNICATION]",
+                        "Send a message to another AI agent.",
+                        "",
+                        "Use this tool when:",
+                        "- another agent is better suited for the task",
+                        "- you need information from another agent",
+                        "- you need another agent to perform a subtask",
+                        "- you need to coordinate with another agent",
+                        "",
+                        "Do NOT use this tool:",
+                        "- to respond directly to the user",
+                        "- for final answers",
+                        "- for general reasoning",
+                        "",
+                        "The targetId must be an existing connected agent ID.",
+                        "The messageContent should contain a clear task or request.",
+                        "",
+                        "Examples:",
+                        "- ask coding_agent to debug code",
+                        "- ask memory_agent to retrieve memory",
+                        "- ask planner_agent to create a plan"
+                    ].join("\n"),
+
                 schema: z.object({
                     targetId: z
                         .string()
-                        .describe("Target AI agent ID"),
+                        .describe(
+                            [
+                                "Existing target AI agent ID.",
+                                "Must be a valid connected agent.",
+                                "Example: coding_agent"
+                            ].join(" ")
+                        ),
 
                     messageContent: z
                         .string()
-                        .describe("Message content to send"),
+                        .describe(
+                            [
+                                "Task or message to send to the target agent.",
+                                "Be specific and concise.",
+                                "Describe exactly what the target agent should do."
+                            ].join(" ")
+                        ),
                 }),
             }
         )

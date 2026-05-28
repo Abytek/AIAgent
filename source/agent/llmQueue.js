@@ -5,6 +5,7 @@ function createAgentLLMQueue(agent)
 {
     const model = new ChatOpenAI({
         model: agent.config.model,
+        temperature: 0.2,
 
         apiKey: (agent.config.provider.apiKey == "") ? "dummy" : agent.config.provider.apiKey,
 

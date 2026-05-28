@@ -23,8 +23,12 @@ async function callTools(agent, toolCalls)
     {
         if (!(toolCall.name in agent.tools))
         {
-            console.log(`Invalid tool call:`, toolCall);
-            break;
+            console.log(`Not found tool with name: ${toolCall.name}`);
+            agent.message({
+                role: "user",
+                content: `Not found tool with name: ${toolCall.name}`
+            });
+            return;
         }
         const tool = agent.tools[toolCall.name];
         const toolResponse = await tool.invoke(toolCall);

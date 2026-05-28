@@ -1,4 +1,4 @@
-model = "general-coding"
+model = "default"
 model_provider = "9router"
 
 [model_providers.9router]

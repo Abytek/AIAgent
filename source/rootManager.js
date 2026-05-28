@@ -89,9 +89,16 @@ function createRootManager(options)
         }
         const messages = req.body.messages;
 
-        let messagesJoined = messages.join("\n");
-        messagesJoined = messagesJoined.substr(0, Math.min(200, messagesJoined.length));
-        console.log(`Forwarding messages to agent ${targetId}:`, messagesJoined);
+        let messagesJoined = "";
+        for (const message of messages)
+        {
+            messagesJoined += "\n";
+            messagesJoined += `[${message.role}]: ${message.content}`;
+        }
+        console.log(
+            `Forwarding messages to agent ${targetId}:`, 
+            messagesJoined.substr(0, Math.min(300, messagesJoined.length)).toString()
+        );
 
         const targetSocket = rootManager.agentIdToSocket.get(targetId);
         targetSocket.emit("agent_messages", 

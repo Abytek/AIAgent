@@ -10,7 +10,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
         },
         {
             role: "system",
-            content: `# FROM SYSTEM:\n-If you want to reply ${from}, please use rootManager.agent_message tool`,
+            content: `If you want to reply ${from}, you MUST use rootManager.agent_message tool`,
             force: true
         }
     ];

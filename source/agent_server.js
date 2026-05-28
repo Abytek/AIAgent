@@ -6,13 +6,12 @@ const fs = require("fs");
 const os = require("os");
 const { makeSync } = require("./sync");
 const { makeAgentMessageValidator } = require("./agent_message");
-
-const frontendPublicPath = path.resolve(__dirname, "../frontend/public");
+const { getFrontendPublicDirectory } = require("./frontend");
 
 function setupAgentServerStaticPaths(agentServer)
 {
     const agent = agentServer.agent;
-    agentServer.app.use(express.static(frontendPublicPath));
+    agentServer.app.use(express.static(getFrontendPublicDirectory()));
 }
 function setupAgentServerRoutes(agentServer)
 {
@@ -20,7 +19,7 @@ function setupAgentServerRoutes(agentServer)
 
     agentServer.app.get("/", (req, res) => {
         res.type("html").send(
-            fs.readFileSync(path.join(frontendPublicPath, "source/html/agent.html"))
+            fs.readFileSync(path.join(getFrontendPublicDirectory(), "source/html/agent.html"))
         );
     });
     agentServer.app.post("/messages", (req, res) => {

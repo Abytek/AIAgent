@@ -10,6 +10,8 @@ module.exports = {
     ...require("./agent_spawn"),
     ...require("./agent_message"),
     ...require("./tool"),
-    ...require("./rootManager"),
-    ...require("./sync")
+    ...require("./root_manager"),
+    ...require("./sync"),
+    ...require("./frontend"),
+    ...require("./frontend/views/rootManagerDashboard")
 }

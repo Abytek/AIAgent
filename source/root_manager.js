@@ -4,6 +4,9 @@ const path = require("path");
 const os = require("os");
 const { loopWhile } = require("./sync");
 const { Server } = require("socket.io");
+const { getFrontendPublicDirectory } = require("./frontend");
+
+const { renderView_rootManagerDashboard } = require("./frontend/views/rootManagerDashboard");
 
 
 // only the framework can execute this function to create the manager server that manages agents.
@@ -29,6 +32,12 @@ function createRootManager(options)
     rootManager.agents = new Map();
 
     rootManager.app.use(express.json());
+    rootManager.app.use(express.static(getFrontendPublicDirectory()));
+    rootManager.app.set("view engine", "ejs")
+    rootManager.app.set(
+        "views",
+        path.resolve(getFrontendPublicDirectory(), "source/views")
+    );
 
     rootManager.socketIO = new Server(rootManager.server, {
         cors: {
@@ -45,13 +54,7 @@ function createRootManager(options)
 
     rootManager.app.get("/", (req, res) =>
     {
-        res.json({
-            name: "RootManager",
-            status: "running",
-            agents: rootManager.agents.size,
-            hostname: os.hostname(),
-            uptime: process.uptime()
-        });
+        renderView_rootManagerDashboard(rootManager, res);
     });
     rootManager.app.post("/stop", (req, res) =>
     {

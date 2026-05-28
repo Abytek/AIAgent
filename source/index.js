@@ -14,5 +14,6 @@ module.exports = {
     ...require("./utilities/sync"),
     ...require("./utilities/simpleRun"),
     ...require("./frontend/helper"),
-    ...require("./frontend/views/rootManagerDashboard")
+    ...require("./frontend/views/agentMonitor"),
+    ...require("./frontend/views/rootManagerDashboard"),
 }

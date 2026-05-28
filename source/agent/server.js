@@ -6,21 +6,15 @@ const fs = require("fs");
 const os = require("os");
 const { makeSync } = require("../utilities/sync");
 const { makeAgentMessageValidator } = require("./message");
-const { getFrontendPublicDirectory } = require("../frontend/helper");
+const { setupFrontendForExpressApp } = require("../frontend/helper");
+const { renderView_agentMonitor } = require("../frontend/views/agentMonitor");
 
-function setupAgentServerStaticPaths(agentServer)
-{
-    const agent = agentServer.agent;
-    agentServer.app.use(express.static(getFrontendPublicDirectory()));
-}
 function setupAgentServerRoutes(agentServer)
 {
     const agent = agentServer.agent;
 
     agentServer.app.get("/", (req, res) => {
-        res.type("html").send(
-            fs.readFileSync(path.join(getFrontendPublicDirectory(), "source/html/agent.html"))
-        );
+        renderView_agentMonitor(agent, res);
     });
     agentServer.app.post("/messages", (req, res) => {
         if (!req.body)
@@ -62,7 +56,7 @@ function createAgentServer(agent)
         agentServer.server = http.createServer(agentServer.app);
         agentServer.app.use(express.json());
 
-        setupAgentServerStaticPaths(agentServer);
+        setupFrontendForExpressApp(agentServer.app);
         setupAgentServerRoutes(agentServer);
 
         let error = null;

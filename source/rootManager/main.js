@@ -4,7 +4,7 @@ const path = require("path");
 const os = require("os");
 const { Server } = require("socket.io");
 const { loopWhile } = require("../utilities/sync");
-const { getFrontendPublicDirectory } = require("../frontend/helper");
+const { setupFrontendForExpressApp } = require("../frontend/helper");
 const { renderView_rootManagerDashboard } = require("../frontend/views/rootManagerDashboard");
 
 
@@ -31,12 +31,7 @@ function createRootManager(options)
     rootManager.agents = new Map();
 
     rootManager.app.use(express.json());
-    rootManager.app.use(express.static(getFrontendPublicDirectory()));
-    rootManager.app.set("view engine", "ejs")
-    rootManager.app.set(
-        "views",
-        path.resolve(getFrontendPublicDirectory(), "source/views")
-    );
+    setupFrontendForExpressApp(rootManager.app);
 
     rootManager.socketIO = new Server(rootManager.server, {
         cors: {

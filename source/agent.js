@@ -22,7 +22,6 @@ function createAgent(Options) {
     agentPath = path.normalize(agentPath);
 
     const agent = new Object();
-    // agent.id = `${agentPath}[${process.pid}]`;
     agent.id = `AIAgent@${process.pid}`;
     agent.path = agentPath;
     console.log(`Agent info:`, { id: agent.id, path: agent.path });

@@ -66,25 +66,12 @@ function createRootManager(options)
         );
         res.status(200).json(agents);
     });
-    rootManager.app.post("/agent/message", (req, res) =>
+    rootManager.app.post("/agent/send_messages", (req, res) =>
     {
         if (!req.body)
         {
             return res.status(400).send(`Require request body`);
         }
-
-        let from_id;
-        if ("from_id" in req.body)
-        {
-            from_id = req.body.from_id;
-        }
-
-        if (!from_id)
-        {
-            return res.status(400).send(`Require "from" in request body`);
-        }
-
-        const from = `AIAgent@${from_id}`;
 
         if (!("target_id" in req.body))
         {
@@ -96,26 +83,19 @@ function createRootManager(options)
             return res.status(400).send(`Not found AI agent ${targetId}`);
         }
 
-        if (!("message_content" in req.body))
+        if (!("messages" in req.body))
         {
-            return res.status(400).send(`Require "message_content" in request body`);
+            return res.status(400).send(`Require "messages" in request body`);
         }
-        const messageContent = req.body.message_content;
+        const messages = req.body.messages;
 
-        console.log(`Forwarding message to agent ${targetId}:`, messageContent);
+        let messagesJoined = messages.join("\n");
+        messagesJoined = messagesJoined.substr(0, Math.min(200, messagesJoined.length));
+        console.log(`Forwarding messages to agent ${targetId}:`, messagesJoined);
 
         const targetSocket = rootManager.agentIdToSocket.get(targetId);
         targetSocket.emit("agent_messages", 
-            [
-                {
-                    role: "user",
-                    content: `# FROM ${from}:\n${messageContent}`
-                },
-                {
-                    role: "system",
-                    content: `# FROM SYSTEM:\n-If you want to reply ${from}, please use rootManager.agent_message tool`
-                }
-            ],
+            messages,
             targetRes => {
                 if (targetRes.status == 200)
                 {

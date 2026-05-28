@@ -1,7 +1,22 @@
 
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
+
+    const from = `AIAgent@${agent.id}`;
+
+    const parsedMessages = [
+        {
+            role: "user",
+            content: `# FROM ${from}:\n${messageContent}`
+        },
+        {
+            role: "system",
+            content: `# FROM SYSTEM:\n-If you want to reply ${from}, please use rootManager.agent_message tool`,
+            force: true
+        }
+    ];
+
     const response = await fetch(
-        `${agent.config.rootManager.url}/agent/message`,
+        `${agent.config.rootManager.url}/agent/send_messages`,
         {
             method: "POST",
             headers:
@@ -9,9 +24,8 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                from_id: agent.id,
                 target_id: targetId,
-                message_content: messageContent
+                messages: parsedMessages
             })
         }
     );

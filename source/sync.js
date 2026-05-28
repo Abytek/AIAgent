@@ -21,8 +21,8 @@ function makeSync() {
 function doSync(callback) {
     const sync = makeSync();
     (async () => {
-        callback();
-        sync.value = true;
+        await callback();
+        sync.stop();
     })();
     sync.wait();
 }

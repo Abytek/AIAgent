@@ -35,7 +35,7 @@ function createAgentLLMQueue(agent)
     {
         if (agent.config.debug)
         {
-            console.log(`Sending messages:`, messages);
+            console.log(`[${agent.id}] Sending messages:`, messages);
         }
 
         for (const message of messages)
@@ -47,7 +47,7 @@ function createAgentLLMQueue(agent)
         agent.context.messages.push(response);
         if (agent.config.debug)
         {
-            console.log(`LLM response:`, response);
+            console.log(`[${agent.id}] LLM response:`, response);
         }
 
         await callTools(agent, response.tool_calls);
@@ -59,7 +59,7 @@ function createAgentLLMQueue(agent)
     {
         if (agent.config.debug || (message.role != "system"))
         {
-            console.log(`Pending message:`, message);
+            console.log(`[${agent.id}] Pending message:`, message);
         }
         agentLLMQueue.pendingMessages.push(message);
     };
@@ -94,7 +94,7 @@ function createAgentLLMQueue(agent)
         const response = await agentLLMQueue.sendMessages(
             cachedMessages
         );
-        console.log(`Agent:`, response);
+        console.log(`[${agent.id}] Response:`, response);
     };
 
     return agentLLMQueue;

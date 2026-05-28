@@ -35,8 +35,19 @@ function createAgent(Options) {
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
+    agent.closed = false;
 
+    agent.close = function () {
+        if (agent.closed)
+        {
+            return;
+        }
+        agent.tracking.close();
+        agent.server.close();
+        agent.closed = true;
+    }
     agent.run = function () {
+        agent.started = true;
         while (!agent.shouldShutdown) {
             doSync(async () => {
                 await agent.llmQueue.flush();
@@ -44,9 +55,6 @@ function createAgent(Options) {
             });
             runLoopOnce();
         }
-
-        agent.tracking.close();
-        agent.server.close();
     };
     agent.signalShutdown = function()
     {

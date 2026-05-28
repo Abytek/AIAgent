@@ -13,3 +13,4 @@ spawnAgent({
 });
 
 agent.run();
+agent.close();

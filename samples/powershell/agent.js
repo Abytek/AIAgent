@@ -7,3 +7,4 @@ agent.message({
     content: "Hello, try use powershell to list files"
 });
 agent.run();
+agent.close();

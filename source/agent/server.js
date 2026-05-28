@@ -86,10 +86,6 @@ function createAgentServer(agent)
 
     agentServer.close = function()
     {
-        if (!agentServer.enabled)
-        {
-            return;
-        }
         const sync = makeSync();
         agentServer.server.close(
             () => {

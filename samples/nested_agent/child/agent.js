@@ -8,3 +8,4 @@ agent.message({
     content: `Your parent agent is located at "${path.resolve(__dirname, "..")}" and already connected to the root manager, you MUST say something to your parent`
 });
 agent.run();
+agent.close();

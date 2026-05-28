@@ -7,3 +7,4 @@ agent.message({
     content: "Hello my friend ^^"
 });
 agent.run();
+agent.close();

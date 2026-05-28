@@ -57,7 +57,7 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.push = function(message)
     {
-        // if (agent.config.debug || (message.role != "system"))
+        if (agent.config.debug || (message.role != "system"))
         {
             console.log(`Pending message:`, message);
         }

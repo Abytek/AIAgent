@@ -20,7 +20,7 @@ function createAgent(Options) {
     agentPath = path.normalize(agentPath);
 
     const agent = new Object();
-    agent.id = agentPath;
+    agent.id = `${agentPath}[${process.pid}]`;
     agent.path = agentPath;
     agent.config = loadAgentConfig(agent.path);
     agent.tools = new Object();

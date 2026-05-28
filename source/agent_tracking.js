@@ -1,6 +1,6 @@
 
 const { io } = require("socket.io-client");
-const deasync = require("deasync");
+const { makeSync } = require("./sync");
 
 function createAgentTracking(agent)
 {
@@ -10,10 +10,19 @@ function createAgentTracking(agent)
     agentTracking.enabled = false;
 
     {
-        let isDone = false;
+        let sync = makeSync();
         console.log(`Connecting to root manager at:`, agent.config.rootManager.url);
         agentTracking.socket = io(agent.config.rootManager.url, {
             reconnection: false
+        });
+
+        agentTracking.socket.on("agent_message", (message, ack) => {
+            agent.message(message);
+            if (ack)
+            {
+                ack({ status: 200, message: `Got the message` });
+                return;
+            }
         });
 
         agentTracking.socket.on("connect", () => {
@@ -28,12 +37,12 @@ function createAgentTracking(agent)
                     {
                         agentTracking.enabled = true;
                         console.log("Connected to root manager");
-                        isDone = true;
+                        sync.stop();
                     }
                     else
                     {
                         console.log("Connect to root manager failed:", res);
-                        isDone = true;
+                        sync.stop();
                     }
                 }
             );
@@ -41,23 +50,14 @@ function createAgentTracking(agent)
 
         agentTracking.socket.on("connect_error", (err) => {
             console.log("Connect to root manager failed");
-            isDone = true;
+            sync.stop();
         });
 
         agentTracking.socket.on("disconnect", (reason) => {
             console.log("Disconnected from root manager:", reason);
-            isDone = true;
+            sync.stop();
         });
-
-        agentTracking.socket.on("message", (message, ack) => {
-            agent.message(message);
-            if (ack)
-            {
-                ack({ status: 200, message: `Got the message` });
-                return;
-            }
-        });
-        deasync.loopWhile(() => !isDone);
+        sync.wait();
     }
 
     agentTracking.close = function()

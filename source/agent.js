@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const deasync = require("deasync");
+const { doSync, runLoopOnce } = require("./sync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./agent_config");
 const { createAgentLLMQueue } = require("./agent_llm_queue");
@@ -27,18 +27,14 @@ function createAgent(Options) {
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
-    agent.tracking = createAgentTracking(agent);
 
     agent.run = function () {
         while (!agent.shouldShutdown) {
-            let tickDone = false;
-
-            (async () => {
+            doSync(async () => {
                 await agent.llmQueue.flush();
                 tickDone = true;
-            })();
-
-            deasync.loopWhile(() => !tickDone);
+            });
+            runLoopOnce();
         }
 
         agent.tracking.close();
@@ -65,6 +61,9 @@ function createAgent(Options) {
     {
         agent.llmQueue.push(message);
     }
+
+    //
+    agent.tracking = createAgentTracking(agent);
 
     // System prompts
     {

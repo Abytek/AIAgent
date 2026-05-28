@@ -3,7 +3,7 @@
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
-const deasync = require("deasync");
+const { makeSync } = require("./sync");
 
 const userCwd = process.cwd();
 
@@ -26,15 +26,11 @@ function run(bin, binArgs, extraEnv = {}) {
         }
     );
 
-    let isDone = false;
+    const sync = makeSync();
     child.on("exit", code => {
-        isDone = true;
+        sync.stop();
     });
-
-    while (!isDone)
-    {
-        deasync.runLoopOnce();
-    }
+    sync.wait();
 }
 
 function prepareCodex()

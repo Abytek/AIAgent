@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const os = require("os");
-const deasync = require("deasync");
+const { loopWhile } = require("./sync");
 const { Server } = require("socket.io");
 
 
@@ -95,8 +95,10 @@ function createRootManager(options)
         }
         const messageContent = req.body.message_content;
 
+        console.log(`Forwarding message to agent ${targetId}:`, messageContent);
+
         const targetSocket = rootManager.agentIdToSocket.get(targetId);
-        targetSocket.emit("message", 
+        targetSocket.emit("agent_message", 
             {
                 role: "user",
                 content: `From ${from}: ${messageContent}`
@@ -297,7 +299,7 @@ function createRootManager(options)
         });
 
         // wait until server started
-        deasync.loopWhile(() => !started);
+        loopWhile(() => !started);
 
         if (error != null)
         {
@@ -306,7 +308,7 @@ function createRootManager(options)
 
         // BLOCK THREAD HERE
         // until server closes
-        deasync.loopWhile(() => rootManager.isRunning);
+        loopWhile(() => rootManager.isRunning);
     };
 
     return rootManager;

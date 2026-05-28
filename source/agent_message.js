@@ -73,16 +73,24 @@ const agentMessageSchema = {
     required: [
     ],
 
-    additionalProperties: false,
+    additionalProperties: true,
 };
 
 const makeAgentMessageValidator = () => {
     const result = ajv.compile(agentMessageSchema);
     result.toErrorsText = function()
     {
-        return ajv.errorsText(result.errors, {
-            separator: "\n",
+        return result.errors
+        .map(err =>
+        {
+            if (err.keyword === "additionalProperties")
+            {
+                return `${err.instancePath || "/"} has unknown property "${err.params.additionalProperty}"`;
+            }
+
+            return `${err.instancePath || "/"} ${err.message}`;
         })
+        .join("\n");
     }
     return result;
 }

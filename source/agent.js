@@ -8,6 +8,7 @@ const { createAgentContext } = require("./agent_context");
 const { createAgentServer } = require("./agent_server");
 const { createAgentTracking } = require("./agent_tracking");
 const { addCoreSystemPrompt } = require("./agent_core_system_prompt");
+const { makeAgentMessageValidator } = require("./agent_message");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -61,6 +62,10 @@ function createAgent(Options) {
     };
     agent.message = function(message)
     {
+        const agentMessageValidator = makeAgentMessageValidator();
+        if (!agentMessageValidator(message)) {
+            throw new Error(agentMessageValidator.toErrorsText());
+        }
         agent.llmQueue.push(message);
     }
 

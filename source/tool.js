@@ -30,7 +30,7 @@ async function callTools(agent, toolCalls)
         const toolResponse = await tool.invoke(toolCall);
         if (!agent.shouldShutdown)
         {
-            agent.llmQueue.push(toolResponse);
+            agent.message(toolResponse);
         }
     }
 }

@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const { makeSync } = require("./sync");
+const { makeAgentMessageValidator } = require("./agent_message");
 
 const frontendPublicPath = path.resolve(__dirname, "../frontend/public");
 
@@ -21,6 +22,31 @@ function setupAgentServerRoutes(agentServer)
         res.type("html").send(
             fs.readFileSync(path.join(frontendPublicPath, "source/html/agent.html"))
         );
+    });
+    agentServer.app.post("/messages", (req, res) => {
+        if (!req.body)
+        {
+            return res.status(400).send(`Require request body`);
+        }
+
+        if (!("messages" in req.body))
+        {
+            return res.status(400).send(`Require "messages" in  request body`);
+        }
+        const messages = req.body.messages;
+    
+        for (const message of messages)
+        {
+            try 
+            {
+                agent.message(message);
+            }
+            catch(err)
+            {
+                return res.status(400).send(err.message);
+            }
+        }
+        return res.status(200).send(`Successfully sent messages`);
     });
 }
 

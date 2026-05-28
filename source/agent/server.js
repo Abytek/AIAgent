@@ -62,7 +62,9 @@ function createAgentServer(agent)
         let error = null;
         agentServer.server.listen(agent.config.server.port, null, () =>
         {
-            console.log(`Agent server is running at:`, agentServer.server.address());
+            const address = agentServer.server.address();
+            agentServer.url = `http://127.0.0.1:${address.port}`;
+            console.log(`Agent server is running at:`, address);
             sync.stop();
         });
         agentServer.server.on("error", (err) =>

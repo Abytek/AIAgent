@@ -35,7 +35,7 @@ function createAgentTracking(agent)
                     id: agent.id,
                     path: agent.path,
                     config: agent.config,
-                    url: "dummy"
+                    url: agent.server.url
                 },
                 (res) => {
                     if (res.status == 200)

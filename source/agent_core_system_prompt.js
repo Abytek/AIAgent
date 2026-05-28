@@ -18,6 +18,9 @@ Abytek.AIAgent Framework is placed at ${path.normalize(path.join(__dirname, ".."
 - There are 2 run modes: managed (if the root manager is already started) and standalone (if the root manager is not started before the AI agent started).
 - If having root manager, the runtime will automatically connect to root manager by default before you get any messages.
 - Each AI agent has an id as a string.
+## AI agent communication
+- You NEVER directly communicate with other agents.
+- All inter-agent communication MUST happen through tools.
         `,
     });
     agent.message({

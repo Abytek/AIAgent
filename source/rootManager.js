@@ -73,11 +73,18 @@ function createRootManager(options)
             return res.status(400).send(`Require request body`);
         }
 
-        if (!("from" in req.body))
+        let from_id;
+        if ("from_id" in req.body)
+        {
+            from_id = req.body.from_id;
+        }
+
+        if (!from_id)
         {
             return res.status(400).send(`Require "from" in request body`);
         }
-        const from = req.body.from;
+
+        const from = `AIAgent@${from_id}`;
 
         if (!("target_id" in req.body))
         {
@@ -98,11 +105,17 @@ function createRootManager(options)
         console.log(`Forwarding message to agent ${targetId}:`, messageContent);
 
         const targetSocket = rootManager.agentIdToSocket.get(targetId);
-        targetSocket.emit("agent_message", 
-            {
-                role: "user",
-                content: `From ${from}: ${messageContent}`
-            },
+        targetSocket.emit("agent_messages", 
+            [
+                {
+                    role: "user",
+                    content: `# FROM ${from}:\n${messageContent}`
+                },
+                {
+                    role: "system",
+                    content: `# FROM SYSTEM:\n-If you want to reply ${from}, please use rootManager.agent_message tool`
+                }
+            ],
             targetRes => {
                 if (targetRes.status == 200)
                 {
@@ -193,62 +206,6 @@ function createRootManager(options)
             unregisterAgent(socket);
             console.log("Disconnected:", reason);
         });
-
-        // socket.on("forward_message", (data, ack) => {
-        //     if (!("target" in data))
-        //     {
-        //         if (ack)
-        //         {
-        //             ack({ status: 400, message: `Requires "target" in data` });
-        //             return;
-        //         }
-        //     }
-        //     const target = data.target;
-        //     if (!(rootManager.agents.has(target)))
-        //     {
-        //         ack({ status: 400, message: `Not found agent ${target}` });
-        //         return;
-        //     }
-            
-        //     if (!("messageContent" in data))
-        //     {
-        //         if (ack)
-        //         {
-        //             ack({ status: 400, message: `Requires "messageContent" in data` });
-        //             return;
-        //         }
-        //     }
-        //     const messageContent = data.messageContent;
-
-        //     const agentId = rootManager.socketToAgentId.get(socket);
-
-        //     const targetSocket = rootManager.agentIdToSocket.get(target);
-        //     targetSocket.emit("message", 
-        //         {
-        //             role: "user",
-        //             content: `AI agent ${agentId} said: ${messageContent}`
-        //         },
-        //         res => {
-        //             if (res.status == 200)
-        //             {
-        //                 if (ack)
-        //                 {
-        //                     ack({ status: 200, message: `Successfully forwarded message to agent ${target}` });
-        //                     return;
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 if (ack)
-        //                 {
-        //                     ack({ status: 400, message: `Failed to forward message to agent ${target}` });
-        //                     return;
-        //                 }
-        //             }
-        //         }
-        //     );
-
-        // });
     });
 
 

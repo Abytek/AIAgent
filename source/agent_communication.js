@@ -9,7 +9,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                from: `AIAgent@${agent.id}`,
+                from_id: agent.id,
                 target_id: targetId,
                 message_content: messageContent
             })

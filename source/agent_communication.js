@@ -10,7 +10,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
         },
         {
             role: "system",
-            content: `CRITICAL: MUST use rootManager.agent_message tool to reply`,
+            content: `CRITICAL: All communications with ${from} MUST use rootManager.agent_message tool to reply`,
             force: true
         },
     ];

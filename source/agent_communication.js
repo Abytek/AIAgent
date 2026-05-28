@@ -1,16 +1,14 @@
 
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
-    const from = `AIAgent@${agent.id}`;
-
     const parsedMessages = [
         {
             role: "user",
-            content: `# FROM ${from}:\n${messageContent}`,
+            content: `# FROM ${agent.id}:\n${messageContent}`,
         },
         {
             role: "system",
-            content: `CRITICAL: All communications with ${from} MUST use rootManager.agent_message tool to reply`,
+            content: `CRITICAL: All communications with ${agent.id} MUST use rootManager.agent_message tool to reply`,
             force: true
         },
     ];

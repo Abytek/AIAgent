@@ -6,13 +6,13 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
     const parsedMessages = [
         {
             role: "user",
-            content: `# FROM ${from}:\n${messageContent}`
+            content: `# FROM ${from}:\n${messageContent}\n# FROM SYSTEM, CRITICAL: All your communication with ${from} MUST use rootManager.agent_message tool`
         },
-        {
-            role: "system",
-            content: `If you want to reply ${from}, you MUST use rootManager.agent_message tool`,
-            force: true
-        }
+        // {
+        //     role: "system",
+        //     content: `CRITICAL: All your communication with ${from} MUST use rootManager.agent_message tool`,
+        //     force: true
+        // }
     ];
 
     const response = await fetch(

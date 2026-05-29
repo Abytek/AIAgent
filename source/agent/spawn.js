@@ -22,6 +22,12 @@ async function spawnAgent(options)
         args = options.args;
     }
 
+    let additionalExeEnv = {};
+    if ("directManagerId" in options)
+    {
+        additionalExeEnv.ABYTEK_AIAGENT_DIRECT_MANAGER_ID = options.directManagerId;
+    }
+
     const agentInstallationExitCode = await simpleRun(
         "npm",
         [
@@ -53,7 +59,8 @@ async function spawnAgent(options)
             ...args
         ],
         {
-            NODE_PATH: path.join(__dirname, "../../module_trick")
+            NODE_PATH: path.join(__dirname, "../../module_trick"),
+            ...additionalExeEnv,
         },
         agentPath
     );

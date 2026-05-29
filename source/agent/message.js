@@ -2,7 +2,8 @@
 const {
     AIMessage,
     HumanMessage,
-    SystemMessage
+    SystemMessage,
+    ToolMessage
 } = require("@langchain/core/messages");
 
 const Ajv = require("ajv");
@@ -147,10 +148,18 @@ function makeSystemMessage(content)
     }
     return result;
 }
+function getMessageRole(msg) {
+  if (msg instanceof SystemMessage) return "system";
+  if (msg instanceof HumanMessage) return "user";
+  if (msg instanceof AIMessage) return "assistant";
+  if (msg instanceof ToolMessage) return "tool";
+  return msg.role ?? "unknown";
+}
 
 module.exports = {
     makeAgentMessageValidator,
     makeAIMessage,
     makeHumanMessage,
-    makeSystemMessage
+    makeSystemMessage,
+    getMessageRole
 };

@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const { loopWhile } = require("../utilities/sync");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
 const { renderView_rootManagerDashboard } = require("../frontend/views/rootManagerDashboard");
+const { getMessageRole } = require("../agent/message");
 
 
 // only the framework can execute this function to create the manager server that manages agents.
@@ -90,7 +91,7 @@ function createRootManager(options)
         for (const message of messages)
         {
             messagesJoined += "\n";
-            messagesJoined += `[${message.role}]: ${message.content}`;
+            messagesJoined += `[${getMessageRole(message)}]: ${message.content}`;
         }
         console.log(
             `Forwarding messages to agent ${targetId}:`, 

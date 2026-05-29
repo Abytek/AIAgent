@@ -1,6 +1,6 @@
 const { ChatOpenAI } = require("@langchain/openai");
 const { callTools } = require("./tool");
-const { makeSystemMessage } = require("./message");
+const { makeSystemMessage, getMessageRole } = require("./message");
 
 function createAgentLLMQueue(agent)
 {
@@ -61,9 +61,13 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.push = function(message)
     {
-        if (agent.config.debug || (message.role != "system"))
+        const messageRole = getMessageRole(message);
+        if (agent.config.debug || (messageRole != "system"))
         {
-            console.log(`[${agent.id}] Pending message:`, message);
+            if (message.content.length > 0)
+            {
+                console.log(`[${agent.id}] Pending message:`, message.content);
+            }
         }
         agentLLMQueue.pendingMessages.push(message);
     };

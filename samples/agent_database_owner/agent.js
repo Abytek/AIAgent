@@ -1,11 +1,14 @@
 
 const path = require("path");
-const { createAgent } = require("abytek-aiagent");
+const { createAgent, makeSystemMessage, makeHumanMessage } = require("abytek-aiagent");
 
 const agent = createAgent();
-agent.message({
-    role: "user",
-    content: `You are an agent database owner, your main responsibilities is to manage AI agent sources at ${path.resolve(__dirname, "agents")}`
-});
+agent.message(
+    makeSystemMessage(`
+[IMPORTANT]
+- Your AI agent templates are placed at ${path.resolve(__dirname, "agents")}.
+- To spawn/run/execute an AI agent, you should use the command "abytek-aiagent-cli agent" at the agent template directory.
+    `)
+);
 agent.run();
 agent.close();

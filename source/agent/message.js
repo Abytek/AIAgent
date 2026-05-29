@@ -115,7 +115,7 @@ function makeAIMessage(content)
 }
 function makeHumanMessage(content)
 {
-    let result = new AIMessage({
+    let result = new HumanMessage({
         content: content || ""
     });
     result.setContent = function(value)

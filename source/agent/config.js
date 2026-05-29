@@ -56,7 +56,7 @@ const configSchema = {
 
     anonymous: {
       type: "boolean",
-      default: false,
+      default: true,
     },
 
     model: {

@@ -5,7 +5,10 @@ const { createAgent, spawnAgent } = require("abytek-aiagent");
 const agent = createAgent();
 agent.message({
     role: "user",
-    content: "Hello, wait for your managed agent message, then build a sort python program with him"
+    content: `Hello, here is your task:
+1. Wait for your managed agent message.
+2. Collab with him to build a sort python program.
+`
 });
 
 spawnAgent({

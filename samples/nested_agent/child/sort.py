@@ -1,1 +1,4 @@
-﻿import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    try:\n        nums = list(map(int, data))\n    except ValueError:\n        print('Invalid input')\n        return\n    nums.sort()\n    print(' '.join(map(str, nums)))\n\nif __name__ == '__main__':\n    main()
+import sys
+nums = list(map(int, sys.stdin.read().split()))
+nums.sort()
+print(' '.join(map(str, nums)))

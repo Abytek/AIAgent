@@ -66,7 +66,7 @@ const configSchema = {
 
     maxChatDurationInSeconds: {
       type: "number",
-      default: 30,
+      default: 20,
     },
 
     provider: {

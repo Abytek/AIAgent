@@ -9,8 +9,8 @@ module.exports = agent => {
                 return ``;
             },
             {
-                name: "self_agent.stop",
-                description: "Stop your agent lifecycle",
+                name: "shutdown_self_agent",
+                description: "Immediately terminate your own agent instance and stop all further processing, reasoning, message handling, and tool execution. Use this when your task is fully completed, you are no longer needed, or continuing execution would waste resources."
             }
         )
     );

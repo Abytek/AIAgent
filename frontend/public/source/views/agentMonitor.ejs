@@ -207,6 +207,56 @@
                         "
                     >
                         <p class="text-zinc-500 text-sm">
+                            Agent URL
+                        </p>
+
+                        <p
+                            class="
+                                mt-2
+                                text-lg
+                                font-medium
+                                break-all
+                            "
+                        >
+                            <%= agent.url %>
+                        </p>
+                    </div>
+
+                    <div
+                        class="
+                            bg-black/40
+                            border
+                            border-white/5
+                            rounded-2xl
+                            p-5
+                        "
+                    >
+                        <p class="text-zinc-500 text-sm">
+                            Agent Direct Manager Id
+                        </p>
+
+                        <p
+                            class="
+                                mt-2
+                                text-lg
+                                font-medium
+                                break-all
+                            "
+                        >
+                            <%= agent.directManagerId ? agent.directManagerId : "None" %>
+                        </p>
+                    </div>
+
+                    <div
+                        class="
+                            bg-black/40
+                            border
+                            border-white/5
+                            rounded-2xl
+                            p-5
+                        "
+                    >
+                        <p class="text-zinc-500 text-sm">
                             Process ID
                         </p>
 
@@ -247,102 +297,6 @@
                             <%= agent.path %>
                         </p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div
-                class="
-                    glass
-                    rounded-3xl
-                    p-6
-                    flex
-                    flex-col
-                    gap-5
-                "
-            >
-                <div
-                    class="
-                        bg-black/40
-                        border
-                        border-white/5
-                        rounded-2xl
-                        p-5
-                    "
-                >
-                    <p class="text-zinc-500 text-sm">
-                        Status
-                    </p>
-
-                    <div
-                        class="
-                            mt-3
-                            flex
-                            items-center
-                            gap-3
-                        "
-                    >
-                        <div
-                            class="
-                                w-3
-                                h-3
-                                rounded-full
-                                bg-emerald-400
-                            "
-                        ></div>
-
-                        <p class="text-xl font-semibold">
-                            Running
-                        </p>
-                    </div>
-                </div>
-
-                <div
-                    class="
-                        bg-black/40
-                        border
-                        border-white/5
-                        rounded-2xl
-                        p-5
-                    "
-                >
-                    <p class="text-zinc-500 text-sm">
-                        Runtime Type
-                    </p>
-
-                    <p
-                        class="
-                            mt-3
-                            text-xl
-                            font-semibold
-                        "
-                    >
-                        Node.js Agent
-                    </p>
-                </div>
-
-                <div
-                    class="
-                        bg-black/40
-                        border
-                        border-white/5
-                        rounded-2xl
-                        p-5
-                    "
-                >
-                    <p class="text-zinc-500 text-sm">
-                        Framework
-                    </p>
-
-                    <p
-                        class="
-                            mt-3
-                            text-xl
-                            font-semibold
-                        "
-                    >
-                        Abytek.AIAgent
-                    </p>
                 </div>
             </div>
         </div>

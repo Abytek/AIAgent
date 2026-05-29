@@ -165,10 +165,25 @@ function createRootManager(options)
             }
             const agentURL = data.url;
 
+            if (!("directManagerId" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "directManagerId" in data` });
+                }
+                return;
+            }
+            let agentDirectManagerId = data.directManagerId;
+            if (agentDirectManagerId.length == 0)
+            {
+                agentDirectManagerId = null;
+            }
+
             const agent = {
                 id: agentId,
                 path: agentPath,
                 config: agentConfig,
+                directManagerId: agentDirectManagerId,
                 url: agentURL
             };
             rootManager.agents.set(agentId, agent);

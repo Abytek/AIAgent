@@ -46,6 +46,7 @@ function createAgent(Options) {
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
 
+    agent.directManagerId = Options.directManagerId;
 
     agent.tools = new Object();
     agent.shouldShutdown = false;

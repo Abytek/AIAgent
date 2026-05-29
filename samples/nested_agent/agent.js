@@ -1,15 +1,14 @@
 
 const path = require("path");
-const { createAgent, spawnAgent } = require("abytek-aiagent");
+const { createAgent, spawnAgent, makeHumanMessage } = require("abytek-aiagent");
 
 const agent = createAgent();
-agent.message({
-    role: "user",
-    content: `Hello, here is your task:
+agent.message(
+    makeHumanMessage(`Hello, here is your task:
 1. Wait for your managed agent message.
 2. Collab with him to build a sort python program.
-`
-});
+    `)
+);
 
 spawnAgent({
     path: path.resolve(__dirname, "child"),

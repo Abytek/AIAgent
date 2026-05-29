@@ -47,7 +47,8 @@ function createAgentTracking(agent)
                     }
                     else
                     {
-                        console.log("Connect to root manager failed:", res);
+                        // console.log("Connect to root manager failed:", res);
+                        throw new Error(`Failed to connect to root manager: ${res.message}`);
                         sync.stop();
                     }
                 }

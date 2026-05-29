@@ -1,6 +1,6 @@
 const { ChatOpenAI } = require("@langchain/openai");
 const { callTools } = require("./tool");
-const { makeSystemMessage, getMessageRole } = require("./message");
+const { makeSystemMessage, logMessageOnAgent } = require("./message");
 
 function createAgentLLMQueue(agent)
 {
@@ -56,7 +56,7 @@ function createAgentLLMQueue(agent)
 
         await callTools(agent, response.tool_calls);
 
-        return response.content;
+        return response;
     };
 
     agentLLMQueue.push = function(message)
@@ -98,7 +98,7 @@ IMPORTANT:
         const response = await agentLLMQueue.sendMessages(
             cachedMessages
         );
-        agent.logger.log(`[Response]\n`, response);
+        logMessageOnAgent(agent, response);
     };
 
     return agentLLMQueue;

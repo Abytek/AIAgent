@@ -149,11 +149,82 @@ function makeSystemMessage(content)
     return result;
 }
 function getMessageRole(msg) {
-  if (msg instanceof SystemMessage) return "system";
-  if (msg instanceof HumanMessage) return "user";
-  if (msg instanceof AIMessage) return "assistant";
-  if (msg instanceof ToolMessage) return "tool";
-  return msg.role ?? "unknown";
+    if (msg instanceof SystemMessage) return "system";
+    if (msg instanceof HumanMessage) return "user";
+    if (msg instanceof AIMessage) return "assistant";
+    if (msg instanceof ToolMessage) return "tool";
+    
+    if ("id" in msg)
+    {
+        const id = msg.id;
+        if (Array.isArray(id))
+        {
+            if (id.includes("SystemMessage")) return "system";
+            if (id.includes("HumanMessage")) return "user";
+            if (id.includes("AIMessage")) return "assistant";
+            if (id.includes("ToolMessage")) return "tool";
+        }
+    }
+
+    return msg.role;
+}
+
+function getMessageContent(message)
+{
+    let messageContent = "";
+    if ("content" in message)
+    {
+        messageContent = message.content;
+    }
+    if ("kwargs" in message)
+    {
+        const kwargs = message.kwargs;
+        if ("content" in kwargs)
+        {
+            messageContent = kwargs.content;
+        }
+    }
+    return messageContent;
+}
+
+function logMessageOnAgent(agent, message)
+{
+    const messageRole = getMessageRole(message);
+    if (agent.config.debug || (messageRole != "system"))
+    {
+        const NamePart = (
+            message.name 
+            ? (
+                (message.name != agent.id)
+                ? ` [${message.name}]`
+                : ""
+            ) 
+            : ""
+        );
+
+        const messageContent = getMessageContent(message);
+
+        if (messageRole == "tool")
+        {
+            agent.logger.log(`[Tool]${NamePart}\n`, messageContent);
+        }
+        else if (messageRole == "user")
+        {
+            agent.logger.log(`[User]${NamePart}\n`, messageContent);
+        }
+        else if (messageRole == "system")
+        {
+            agent.logger.log(`[System]${NamePart}\n`, messageContent);
+        }
+        else if (messageRole == "assistant")
+        {
+            agent.logger.log(`[Assistant]${NamePart}\n`, messageContent);
+        }
+        else
+        {
+            throw new Error(`Unknown role: ${JSON.stringify(message, null, 4)}`);
+        }
+    }
 }
 
 module.exports = {
@@ -161,5 +232,6 @@ module.exports = {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage,
-    getMessageRole
+    getMessageRole,
+    logMessageOnAgent
 };

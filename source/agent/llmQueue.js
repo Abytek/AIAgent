@@ -64,7 +64,7 @@ function createAgentLLMQueue(agent)
         const messageRole = getMessageRole(message);
         if (agent.config.debug || (messageRole != "system"))
         {
-            if (message.content.length > 0)
+            if ("content" in message)
             {
                 console.log(`[${agent.id}] Pending message:`, message.content);
             }

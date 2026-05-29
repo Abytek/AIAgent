@@ -48,6 +48,12 @@ function createAgent(Options) {
 
     agent.directManagerId = Options.directManagerId || process.env.ABYTEK_AIAGENT_DIRECT_MANAGER_ID;
 
+    agent.initialDate = Date.now();
+    agent.currentDate = agent.initialDate;
+    agent.getSeconds = function() {
+        return (agent.currentDate - agent.initialDate) / 1000;
+    }
+
     agent.tools = new Object();
     agent.shouldShutdown = false;
     agent.llmQueue = createAgentLLMQueue(agent);
@@ -70,6 +76,7 @@ function createAgent(Options) {
                 await agent.llmQueue.flush();
                 tickDone = true;
             });
+            agent.currentDate = Date.now();
             runLoopOnce();
         }
     };

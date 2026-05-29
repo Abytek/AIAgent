@@ -1,4 +1,10 @@
 
+const {
+    AIMessage,
+    HumanMessage,
+    SystemMessage
+} = require("@langchain/core/messages");
+
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
@@ -90,6 +96,61 @@ const makeAgentMessageValidator = () => {
     return result;
 }
 
+function makeAIMessage(content)
+{
+    let result = new AIMessage({
+        content: content || ""
+    });
+    result.setContent = function(value)
+    {
+        result.content = value;
+        return result;
+    }
+    result.setName = function(value)
+    {
+        result.name = value;
+        return result;
+    }
+    return result;
+}
+function makeHumanMessage(content)
+{
+    let result = new AIMessage({
+        content: content || ""
+    });
+    result.setContent = function(value)
+    {
+        result.content = value;
+        return result;
+    }
+    result.setName = function(value)
+    {
+        result.name = value;
+        return result;
+    }
+    return result;
+}
+function makeSystemMessage(content)
+{
+    let result = new SystemMessage({
+        content: content || ""
+    });
+    result.setContent = function(value)
+    {
+        result.content = value;
+        return result;
+    }
+    result.setName = function(value)
+    {
+        result.name = value;
+        return result;
+    }
+    return result;
+}
+
 module.exports = {
-    makeAgentMessageValidator
+    makeAgentMessageValidator,
+    makeAIMessage,
+    makeHumanMessage,
+    makeSystemMessage
 };

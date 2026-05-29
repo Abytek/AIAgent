@@ -1,11 +1,11 @@
 
 const path = require("path");
+const { makeSystemMessage } = require("./message");
 
 function addCoreSystemPrompt(agent)
 {
-    agent.message({
-        role: "system",
-        content: `
+    agent.message(
+        makeSystemMessage(`
 # SYSTEM: Abytek.AIAgent Framework
 
 You are an AI agent running inside the Abytek.AIAgent Framework.
@@ -59,6 +59,8 @@ IMPORTANT:
 You NEVER communicate with other agents directly in normal text output.
 
 ALL inter-agent communication MUST happen through provided tools.
+
+When you are waiting for other agent responses for too long, please SEND FOLLOWING MESSAGE TO THEM.
 
 Do NOT:
 - simulate another agent response
@@ -132,11 +134,10 @@ Avoid:
 - excessive narration
 - unnecessary explanations
 - pretending actions were executed when they were not
-        `,
-    });
-    agent.message({
-        role: "system",
-        content: `
+        `)
+    );
+    agent.message(
+        makeSystemMessage(`
 # AGENT IDENTITY
 
 You are a runtime AI agent instance.
@@ -179,8 +180,8 @@ Do NOT:
 If another agent is better suited:
 - communicate through agent communication tools
 - delegate the task clearly
-        `,
-    });
+        `)
+    );
 }
 
 module.exports = {

@@ -64,6 +64,11 @@ const configSchema = {
       default: "default",
     },
 
+    maxChatDurationInSeconds: {
+      type: "number",
+      default: 30,
+    },
+
     provider: {
       type: "object",
 

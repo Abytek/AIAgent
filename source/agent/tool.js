@@ -1,6 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 
+const { 
+    makeAIMessage,
+    makeHumanMessage,
+    makeSystemMessage
+} = require("./message");
+
 function importTools(agent, toolsPath)
 {
     if (fs.existsSync(toolsPath)) {
@@ -24,10 +30,9 @@ async function callTools(agent, toolCalls)
         if (!(toolCall.name in agent.tools))
         {
             console.log(`Not found tool with name: ${toolCall.name}`);
-            agent.message({
-                role: "user",
-                content: `Not found tool with name: ${toolCall.name}`
-            });
+            agent.message(
+                makeSystemMessage(`Not found tool with name: ${toolCall.name}`)
+            );
             return;
         }
         const tool = agent.tools[toolCall.name];

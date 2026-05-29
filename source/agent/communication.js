@@ -1,15 +1,17 @@
 
+const { 
+    makeAIMessage,
+    makeHumanMessage,
+    makeSystemMessage
+} = require("./message");
+
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
     const parsedMessages = [
-        {
-            role: "user",
-            content: `# FROM ${agent.id}:\n${messageContent}`,
-        },
-        {
-            role: "system",
-            content: `CRITICAL: All communications with ${agent.id} MUST use tool to reply`
-        },
+        makeAIMessage(`[FROM ${agent.id}]\n${messageContent}`)
+            .setName(agent.id),
+        makeAIMessage(`[CRITICAL]\nAll communications with ${agent.id} MUST use tool to reply`)
+            .setName(agent.id),
     ];
 
     const response = await fetch(

@@ -1,5 +1,6 @@
 const { ChatOpenAI } = require("@langchain/openai");
 const { callTools } = require("./tool");
+const { makeSystemMessage } = require("./message");
 
 function createAgentLLMQueue(agent)
 {
@@ -18,6 +19,8 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.agent = agent;
     agentLLMQueue.model = model;
+
+    agentLLMQueue.lastFlushDate = Date.now();
 
     agentLLMQueue.setup = function()
     {
@@ -67,10 +70,29 @@ function createAgentLLMQueue(agent)
 
     agentLLMQueue.flush = async function()
     {
+        //
+        {
+            const newFlushDate = Date.now();
+            const secondsFromLastFlush = (newFlushDate - agentLLMQueue.lastFlushDate) / 1000;
+            if (secondsFromLastFlush > agent.config.maxChatDurationInSeconds)
+            {
+                agent.message(
+                    makeSystemMessage(`
+It's been ${agent.getSeconds()} seconds from the start.
+IMPORTANT:
+- Please check what you are waiting for by re-send messages or re-check last tool callings,...
+- If you are waiting responses from other agents, you should follow a message to them for check if they are being stucked,...
+`)
+                );
+            }
+        }
+
         if (agentLLMQueue.pendingMessages.length == 0)
         {
             return;
         }
+
+        agentLLMQueue.lastFlushDate = Date.now();
 
         const cachedMessages = [
             ...agentLLMQueue.pendingMessages

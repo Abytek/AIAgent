@@ -36,7 +36,7 @@ async function callTools(agent, toolCalls)
             return;
         }
 
-        console.log(`[${agent.id}] Calling tool: ${toolCall.name}`);
+        agent.logger.log(`[Calling tool] [${toolCall.name}]\n`, "...");
         const tool = agent.tools[toolCall.name];
         const toolResponse = await tool.invoke(toolCall);
         if (!agent.shouldShutdown)

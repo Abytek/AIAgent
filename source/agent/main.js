@@ -4,12 +4,13 @@ const { doSync, runLoopOnce } = require("../utilities/sync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./config");
 const { loadAgentBrief } = require("./brief");
+const { createAgentLogger } = require("./logger");
 const { createAgentLLMQueue } = require("./llmQueue");
 const { createAgentContext } = require("./context");
 const { createAgentServer } = require("./server");
 const { createAgentTracking } = require("./tracking");
 const { addCoreSystemPrompt } = require("./coreSystemPrompt");
-const { makeAgentMessageValidator } = require("./message");
+const { makeAgentMessageValidator, getMessageRole } = require("./message");
 const crypto = require("crypto");
 
 function calculateAgentId(agentPath, agentConfig, processId)
@@ -56,6 +57,8 @@ function createAgent(Options) {
     agent.getSeconds = function() {
         return (agent.currentDate - agent.initialDate) / 1000;
     }
+
+    agent.logger = createAgentLogger(agent);
 
     agent.tools = new Object();
     agent.shouldShutdown = false;
@@ -106,6 +109,19 @@ function createAgent(Options) {
         const agentMessageValidator = makeAgentMessageValidator();
         if (!agentMessageValidator(message)) {
             throw new Error(agentMessageValidator.toErrorsText());
+        }
+
+        const messageRole = getMessageRole(message);
+        if (agent.config.debug || (messageRole != "system"))
+        {
+            if (messageRole == "tool")
+            {
+                agent.logger.log(`[Tool message] [${message.name}]\n`, message.content);
+            }
+            else if ("content" in message)
+            {
+                agent.logger.log(`[Pending message]\n`, message.content);
+            }
         }
         agent.llmQueue.push(message);
     }

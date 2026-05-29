@@ -8,8 +8,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
         },
         {
             role: "system",
-            content: `CRITICAL: All communications with ${agent.id} MUST use tool to reply`,
-            force: true
+            content: `CRITICAL: All communications with ${agent.id} MUST use tool to reply`
         },
     ];
 

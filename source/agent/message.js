@@ -62,12 +62,7 @@ const agentMessageSchema = {
 
         tool_call_id: {
             type: "string",
-        },
-
-        force: {
-            type: "boolean",
-            default: false
-        },
+        }
     },
 
     required: [

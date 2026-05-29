@@ -71,21 +71,6 @@ function createAgentLLMQueue(agent)
         {
             return;
         }
-        {
-            let shouldFlush = false;
-            for (const message of agentLLMQueue.pendingMessages)
-            {
-                if ((message.role != "system") || message.force)
-                {
-                    shouldFlush = true;
-                    break;
-                }
-            }
-            if (!shouldFlush)
-            {
-                return;
-            }
-        }
 
         const cachedMessages = [
             ...agentLLMQueue.pendingMessages

@@ -3,6 +3,7 @@ const path = require("path");
 const { doSync, runLoopOnce } = require("../utilities/sync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./config");
+const { loadAgentBrief } = require("./brief");
 const { createAgentLLMQueue } = require("./llmQueue");
 const { createAgentContext } = require("./context");
 const { createAgentServer } = require("./server");
@@ -42,6 +43,8 @@ function createAgent(Options) {
     agent.path = agentPath;
     agent.id = calculateAgentId(agent.path, agent.config, process.pid);
     console.log(`Agent info:`, { id: agent.id, path: agent.path });
+
+    agent.brief = loadAgentBrief(agent);
 
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });

@@ -150,6 +150,9 @@ ${agent.id}
 Agent Project Path:
 ${agent.path}
 
+Agent Brief:
+${agent.brief}
+
 ## Runtime Environment
 
 Process ID:

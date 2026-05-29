@@ -155,6 +155,16 @@ function createRootManager(options)
             }
             const agentConfig = data.config;
 
+            if (!("brief" in data))
+            {
+                if (ack)
+                {
+                    ack({ status: 400, message: `Requires "brief" in data` });
+                }
+                return;
+            }
+            const agentBrief = data.brief;
+
             if (!("url" in data))
             {
                 if (ack)
@@ -183,6 +193,7 @@ function createRootManager(options)
                 id: agentId,
                 path: agentPath,
                 config: agentConfig,
+                brief: agentBrief,
                 directManagerId: agentDirectManagerId,
                 url: agentURL
             };

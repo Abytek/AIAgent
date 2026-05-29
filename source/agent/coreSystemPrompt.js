@@ -2,7 +2,7 @@
 const path = require("path");
 const { makeSystemMessage } = require("./message");
 
-function addCoreSystemPrompt(agent)
+function addFrameworkSystemPrompt(agent)
 {
     agent.message(
         makeSystemMessage(`
@@ -136,6 +136,10 @@ Avoid:
 - pretending actions were executed when they were not
         `)
     );
+}
+
+function addAgentSystemPrompt(agent)
+{
     agent.message(
         makeSystemMessage(`
 # AGENT IDENTITY
@@ -185,6 +189,12 @@ If another agent is better suited:
 - delegate the task clearly
         `)
     );
+}
+
+function addCoreSystemPrompt(agent)
+{
+    addFrameworkSystemPrompt(agent);
+    addAgentSystemPrompt(agent);
 }
 
 module.exports = {

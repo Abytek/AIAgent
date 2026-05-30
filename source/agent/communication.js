@@ -23,6 +23,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
+                from: agent.id,
                 target_id: targetId,
                 messages: parsedMessages
             })

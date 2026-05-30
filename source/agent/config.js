@@ -59,6 +59,11 @@ const configSchema = {
       default: true,
     },
 
+    closed_agent_connection_model: {
+      type: "boolean",
+      default: true,
+    },
+
     model: {
       type: "string",
       default: "default",

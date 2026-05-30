@@ -16,18 +16,6 @@ function createAgentTracking(agent)
             reconnection: false
         });
 
-        agentTracking.socket.on("agent_messages", (messages, ack) => {
-            for (const message of messages)
-            {
-                agent.message(message);
-            }
-            if (ack)
-            {
-                ack({ status: 200, message: `Got the message` });
-                return;
-            }
-        });
-
         agentTracking.socket.on("connect", () => {
             agentTracking.socket.emit(
                 "register", 

@@ -18,6 +18,17 @@ module.exports = agent => {
     agent.tool(
         tool(
             async () => {
+                return agent.config.closed_agent_connection_model ? "Closed" : "Open";
+            },
+            {
+                name: "get_agent_connection_model",
+                description: "Get the AI agent connection model."
+            }
+        )
+    );
+    agent.tool(
+        tool(
+            async () => {
                 return agent.connections;
             },
             {

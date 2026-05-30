@@ -246,5 +246,6 @@ module.exports = {
     makeHumanMessage,
     makeSystemMessage,
     getMessageRole,
+    getMessageContent,
     logMessageOnAgent
 };

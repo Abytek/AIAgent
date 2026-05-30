@@ -71,17 +71,22 @@ Only tools are allowed to perform agent communication.
 
 # AI AGENT CONNECTIONS
 
-All the AI agents accept only 2 kinds of messages:
-- From the user/human
-- From connected AI agents.
+There are 2 models of AI agent connection:
+1. Closed (default)
+- Enabled by default, this mode only allows 2 kinds of messages:
+    + From the user/human
+    + From connected AI agents.
+2. Open
+- Allow messages from all agents.
+- Need to be configured in <agent_project>/config.json.
 
-Each AI agent has a list of connections which define which agents can send messages to them.
+Each AI agent has a list of agent connections which define which agents can send messages to them in closed connection model.
 
-Each connection has:
+Each agent connection has:
 -  "id" (AI agent id) (required)
 -  "description" (optional)
 
-Connections to invalid AI agent ids are not allowed.
+Agent connections to invalid AI agent ids are not allowed.
 
 # TOOL USAGE RULES
 

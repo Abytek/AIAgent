@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 const { loopWhile } = require("../utilities/sync");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
 const { renderView_rootManagerDashboard } = require("../frontend/views/rootManagerDashboard");
-const { getMessageRole } = require("../agent/message");
+const { getMessageRole, getMessageContent } = require("../agent/message");
 
 
 // only the framework can execute this function to create the manager server that manages agents.
@@ -64,12 +64,18 @@ function createRootManager(options)
         );
         res.status(200).json(agents);
     });
-    rootManager.app.post("/agent/send_messages", (req, res) =>
+    rootManager.app.post("/agent/send_messages", async (req, res) =>
     {
         if (!req.body)
         {
             return res.status(400).send(`Require request body`);
         }
+
+        if (!("from" in req.body))
+        {
+            return res.status(400).send(`Require "from" in request body`);
+        }
+        const from = req.body.from;
 
         if (!("target_id" in req.body))
         {
@@ -80,6 +86,7 @@ function createRootManager(options)
         {
             return res.status(400).send(`Not found AI agent ${targetId}`);
         }
+        const target = rootManager.agents.get(targetId);
 
         if (!("messages" in req.body))
         {
@@ -91,27 +98,37 @@ function createRootManager(options)
         for (const message of messages)
         {
             messagesJoined += "\n";
-            messagesJoined += `[${getMessageRole(message)}]: ${message.content}`;
+            messagesJoined += `[${getMessageRole(message)}]: ${getMessageContent(message)}`;
         }
         console.log(
             `Forwarding messages to agent ${targetId}:`, 
             messagesJoined.substr(0, Math.min(300, messagesJoined.length)).toString()
         );
 
-        const targetSocket = rootManager.agentIdToSocket.get(targetId);
-        targetSocket.emit("agent_messages", 
-            messages,
-            targetRes => {
-                if (targetRes.status == 200)
-                {
-                    res.status(200).send(`Successfully sent message to AI agent ${targetId}`);
-                }
-                else
-                {
-                    res.status(400).send(targetRes.message || "");
-                }
+        try {
+            const targetRes = await fetch(`${target.url}/send_messages`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from: from,
+                    messages,
+                }),
+            });
+
+            const responseText = await targetRes.text();
+
+            if (targetRes.ok) {
+                res.status(200).send(
+                    `Successfully sent message from ${from} to ${targetId}`
+                );
+            } else {
+                res.status(400).send(responseText || "");
             }
-        );
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
     });
 
     rootManager.socketIO.on("connection", (socket) => {

@@ -3,7 +3,7 @@ const { createAgent, makeHumanMessage } = require("abytek-aiagent");
 
 const agent = createAgent();
 agent.message(
-    makeHumanMessage("Hello, tell me about yourself")
+    makeHumanMessage("Hello, list agent connections")
 );
 agent.run();
 agent.close();

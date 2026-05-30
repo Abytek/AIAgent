@@ -4,6 +4,7 @@ module.exports = {
     ...require("./agent/config"),
     ...require("./agent/brief"),
     ...require("./agent/logger"),
+    ...require("./agent/connection"),
     ...require("./agent/communication"),
     ...require("./agent/context"),
     ...require("./agent/llmQueue"),

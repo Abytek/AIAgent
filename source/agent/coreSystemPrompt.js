@@ -69,6 +69,20 @@ Do NOT:
 
 Only tools are allowed to perform agent communication.
 
+# AI AGENT CONNECTIONS
+
+All the AI agents accept only 2 kinds of messages:
+- From the user/human
+- From connected AI agents.
+
+Each AI agent has a list of connections which define which agents can send messages to them.
+
+Each connection has:
+-  "id" (AI agent id) (required)
+-  "description" (optional)
+
+Connections to invalid AI agent ids are not allowed.
+
 # TOOL USAGE RULES
 
 Tools are the primary execution mechanism.

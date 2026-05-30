@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const { doSync, runLoopOnce } = require("../utilities/sync");
 const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./config");
@@ -11,7 +12,7 @@ const { createAgentServer } = require("./server");
 const { createAgentTracking } = require("./tracking");
 const { addCoreSystemPrompt } = require("./coreSystemPrompt");
 const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
-const crypto = require("crypto");
+const { makeAgentConnectionFinalizer } = require("./connection");
 
 function calculateAgentId(agentPath, agentConfig, processId)
 {
@@ -94,6 +95,26 @@ function createAgent(Options) {
     agent.signalShutdown = function()
     {
         agent.shouldShutdown = true;
+    }
+
+    agent.addConnection = function(connection)
+    {
+        const cachedConnection = { ...connection };
+
+        const connectionFinalizer = makeAgentConnectionFinalizer();
+        if (!connectionFinalizer(cachedConnection)) {
+            throw new Error(connectionFinalizer.toErrorsText());
+        }
+
+        agent.connections[cachedConnection.id] = cachedConnection;
+    }
+    agent.removeConnection = function(id)
+    {
+        if (!(id in agent.connections))
+        {
+            throw new Error(`Not found connection with id ${id} in ${agent.id}`);
+        }
+        delete agent.connections[cachedConnection.id];
     }
     agent.tool = function(tool)
     {

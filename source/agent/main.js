@@ -45,7 +45,7 @@ function createAgent(Options) {
 
     agent.path = agentPath;
     agent.id = calculateAgentId(agent.path, agent.config, process.pid);
-    console.log(`Agent info:`, { id: agent.id, path: agent.path });
+    agent.logger = createAgentLogger(agent);
 
     agent.brief = loadAgentBrief(agent);
 
@@ -63,8 +63,6 @@ function createAgent(Options) {
     agent.getSeconds = function() {
         return (agent.currentDate - agent.initialDate) / 1000;
     }
-
-    agent.logger = createAgentLogger(agent);
 
     agent.tools = new Object();
     agent.shouldShutdown = false;
@@ -107,7 +105,7 @@ function createAgent(Options) {
         agent.tools[toolName] = tool;
         if (agent.config.debug)
         {
-            console.log(`Added tool "${toolName}" to agent "${agent.id}"`);
+            agent.logger.log([], `Added tool "${toolName}" to agent "${agent.id}"`);
         }
         return tool;
     };

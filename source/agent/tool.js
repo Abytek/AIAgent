@@ -30,7 +30,7 @@ async function callTools(agent, toolCalls)
     {
         if (!(toolCall.name in agent.tools))
         {
-            console.log(`Not found tool with name: ${toolCall.name}`);
+            agent.logger.log([], `Not found tool with name: ${toolCall.name}`);
             agent.message(
                 makeSystemMessage(`Not found tool with name: ${toolCall.name}`)
             );

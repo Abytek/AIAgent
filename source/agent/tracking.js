@@ -11,7 +11,7 @@ function createAgentTracking(agent)
 
     {
         let sync = makeSync();
-        console.log(`Connecting to root manager at:`, agent.config.rootManager.url);
+        agent.logger.log([], `Connecting to root manager at:`, agent.config.rootManager.url);
         agentTracking.socket = io(agent.config.rootManager.url, {
             reconnection: false
         });
@@ -42,12 +42,11 @@ function createAgentTracking(agent)
                     if (res.status == 200)
                     {
                         agentTracking.enabled = true;
-                        console.log("Connected to root manager");
+                        agent.logger.log([], "Connected to root manager");
                         sync.stop();
                     }
                     else
                     {
-                        // console.log("Connect to root manager failed:", res);
                         throw new Error(`Failed to connect to root manager: ${res.message}`);
                         sync.stop();
                     }
@@ -56,12 +55,12 @@ function createAgentTracking(agent)
         });
 
         agentTracking.socket.on("connect_error", (err) => {
-            console.log("Connect to root manager failed");
+            agent.logger.log([], "Connect to root manager failed");
             sync.stop();
         });
 
         agentTracking.socket.on("disconnect", (reason) => {
-            console.log("Disconnected from root manager:", reason);
+            agent.logger.log([], "Disconnected from root manager:", reason);
             sync.stop();
         });
         sync.wait();

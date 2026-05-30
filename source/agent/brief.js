@@ -7,7 +7,7 @@ function loadAgentBrief(agent) {
     if (fs.existsSync(briefPath)) {
         brief = fs.readFileSync(briefPath, "utf-8");
     }
-    console.log(`Loaded brief for ${agent.id}:\n${brief}`);
+    agent.logger.log([], brief);
     return brief;
 }
 

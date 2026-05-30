@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { doSync, runLoopOnce } = require("../utilities/sync");
-const { importTools } = require("./tool");
 const { loadAgentConfig } = require("./config");
 const { loadAgentBrief } = require("./brief");
 const { createAgentLogger } = require("./logger");
@@ -10,7 +9,7 @@ const { createAgentLLMQueue } = require("./llmQueue");
 const { createAgentContext } = require("./context");
 const { createAgentServer } = require("./server");
 const { createAgentTracking } = require("./tracking");
-const { addCoreSystemPrompt } = require("./coreSystemPrompt");
+const { coreSetup } = require("./coreSetup/main");
 const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
 const { makeAgentConnectionFinalizer } = require("./connection");
 
@@ -61,10 +60,6 @@ function createAgent(options) {
     agent.shouldShutdown = false;
     agent.closed = false;
 
-    agent.tools = new Object();
-    agent.llmQueue = createAgentLLMQueue(agent);
-    agent.context = createAgentContext(agent);
-
     agent.nextChildIndex = 0;
     agent.generateChildId = function()
     {
@@ -72,6 +67,13 @@ function createAgent(options) {
         agent.nextChildIndex++;
         return `${agent.id}.${childIndex}`;
     }
+
+    agent.tools = new Object();
+
+    agent.llmQueue = createAgentLLMQueue(agent);
+    agent.context = createAgentContext(agent);
+    agent.server = createAgentServer(agent);
+    agent.tracking = createAgentTracking(agent);
 
     agent.close = function () {
         if (agent.closed)
@@ -118,6 +120,7 @@ function createAgent(options) {
         }
         delete agent.connections[cachedConnection.id];
     }
+
     agent.tool = function(tool)
     {
         const toolName = tool.name;
@@ -145,20 +148,8 @@ function createAgent(options) {
         agent.llmQueue.push(cachedMessage);
     }
 
-    //
-    agent.server = createAgentServer(agent);
-    agent.tracking = createAgentTracking(agent);
-
-    // System prompts
-    {
-        addCoreSystemPrompt(agent);
-    }
-
-    // Load tools
-    {
-        importTools(agent, path.join(__dirname, "../../tools"));
-        importTools(agent, path.join(agent.path, "tools"));
-    }
+    // Setup
+    coreSetup(agent);
     return agent;
 }
 

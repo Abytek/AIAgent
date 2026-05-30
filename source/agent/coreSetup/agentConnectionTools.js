@@ -1,20 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-module.exports = agent => {
-    agent.tool(
-        tool(
-            async () => {
-                console.log(`Agent calls "self_agent.stop" tool, shutting down...`);
-                agent.signalShutdown();
-                return ``;
-            },
-            {
-                name: "shutdown_self_agent",
-                description: "Immediately terminate your own agent instance and stop all further processing, reasoning, message handling, and tool execution."
-            }
-        )
-    );
+function coreSetupAgentConnectionTools(agent) {
     agent.tool(
         tool(
             async () => {
@@ -104,3 +91,7 @@ module.exports = agent => {
         )
     );
 };
+
+module.exports = {
+    coreSetupAgentConnectionTools
+}

@@ -54,7 +54,7 @@ async function runPowershell(agent, { script, cwd })
 
 const MAX_POWERSHELL_TOOL_OUTPUT = 3000;
 
-module.exports = agent => {
+function coreSetupLegacyPowershellTools(agent) {
     agent.tool(
         tool(
             async (args) => {
@@ -128,3 +128,7 @@ module.exports = agent => {
         )
     );
 };
+
+module.exports = {
+    coreSetupLegacyPowershellTools
+}

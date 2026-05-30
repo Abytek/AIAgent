@@ -53,7 +53,7 @@ function createRootManager(options)
     });
     rootManager.app.post("/stop", (req, res) =>
     {
-        res.status(200);
+        res.status(200).send("Stop root manager...");
         rootManager.stop();
     });
     rootManager.app.get("/agent/list", (req, res) =>
@@ -204,7 +204,7 @@ function createRootManager(options)
             rootManager.socketToAgentId.set(socket, agentId);
             rootManager.agentIdToSocket.set(agentId, socket);
             
-            console.log(`Registered agent:`, agentId);
+            console.log(`Registered agent:\n- Id: ${agent.id}\n- Path: ${agent.path}\n- Brief: ${agent.brief}`);
 
             if (ack)
             {
@@ -228,11 +228,14 @@ function createRootManager(options)
                 }
                 return;
             }
+
+            const agent = rootManager.agents.get(agentId);
             
             rootManager.agents.delete(agentId);
             rootManager.socketToAgentId.delete(inSocket);
             rootManager.agentIdToSocket.delete(agentId);
-            console.log(`Unregistered agent:`, agentId);
+
+            console.log(`Unregistered agent:\n- Id: ${agent.id}\n- Path: ${agent.path}\n- Brief: ${agent.brief}`);
         }
         socket.on("deregister", (ack) => {
             unregisterAgent(socket, ack);
@@ -252,32 +255,27 @@ function createRootManager(options)
 
     rootManager.stop = function(callback)
     {
-        rootManager.server.close(() =>
-        {
-            rootManager.socketIO.close(() => {
+        rootManager.socketIO.close(() => {
+            rootManager.server.close(() =>
+            {
                 rootManager.isRunning = false;
-
                 console.log("[RootManager] server stopped.");
 
                 if (typeof callback === "function")
                 {
                     callback();
                 }
-            })
-        });
+            });
+        })
     };
 
 
     // BLOCKING RUN
     rootManager.run = function()
     {
-        let started = false;
-        let error = null;
-
         rootManager.server.listen(options.port, options.host, () =>
         {
             rootManager.isRunning = true;
-            started = true;
 
             console.log(
                 `[RootManager] running at http://${options.host}:${options.port}`
@@ -286,21 +284,8 @@ function createRootManager(options)
 
         rootManager.server.on("error", (err) =>
         {
-            error = err;
-            started = true;
+            throw err;
         });
-
-        // wait until server started
-        loopWhile(() => !started);
-
-        if (error != null)
-        {
-            throw error;
-        }
-
-        // BLOCK THREAD HERE
-        // until server closes
-        loopWhile(() => rootManager.isRunning);
     };
 
     return rootManager;

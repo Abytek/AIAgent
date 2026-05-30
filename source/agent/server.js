@@ -15,6 +15,9 @@ function setupAgentServerRoutes(agentServer)
     agentServer.app.get("/", (req, res) => {
         renderView_agentMonitor(agent, res);
     });
+    agentServer.app.get("/connections", (req, res) => {
+        res.status(200).json(agent.connections);
+    });
     agentServer.app.post("/send_messages", (req, res) => {
         if (!req.body)
         {

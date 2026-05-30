@@ -13,6 +13,7 @@ function createAgentLogger(agent)
 
         const parsedTags = [ 
             `${chalk.rgb(0, 200, 255)(agentIdParts[0])}${chalk.rgb(220, 220, 220)("@")}${chalk.rgb(0, 200, 150)(agentIdParts[1])}`, 
+            chalk.rgb(220, 0, 100)(agent.path), 
             ...tags 
         ];
         let header = ``;

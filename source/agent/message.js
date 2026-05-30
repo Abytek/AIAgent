@@ -222,7 +222,7 @@ function logMessageOnAgent(agent, message)
         {
             if (message.name != agent.id)
             {
-                tags.push(message.name);
+                tags.push(chalk.rgb(50, 150, 255)(message.name));
             }
         }
 

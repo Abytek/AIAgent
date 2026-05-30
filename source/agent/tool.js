@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const chalk = require("chalk");
 
 const { 
     makeAIMessage,
@@ -36,7 +37,7 @@ async function callTools(agent, toolCalls)
             return;
         }
 
-        agent.logger.log([ `Calling tool`, toolCall.name ], "...");
+        agent.logger.log([ chalk.rgb(150, 0, 255)(`Calling tool`), chalk.rgb(50, 150, 255)(toolCall.name) ], "...");
         const tool = agent.tools[toolCall.name];
         const toolResponse = await tool.invoke(toolCall);
         if (!agent.shouldShutdown)

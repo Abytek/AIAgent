@@ -77,6 +77,7 @@ function createAgent(Options) {
     }
     agent.run = function () {
         agent.started = true;
+        agent.llmQueue.setup();
         while (!agent.shouldShutdown) {
             doSync(async () => {
                 await agent.llmQueue.flush();
@@ -129,8 +130,6 @@ function createAgent(Options) {
         importTools(agent, path.join(__dirname, "../../tools"));
         importTools(agent, path.join(agentPath, "tools"));
     }
-
-    agent.llmQueue.setup();
     return agent;
 }
 

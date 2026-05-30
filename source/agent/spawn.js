@@ -9,21 +9,19 @@ async function spawnAgent(options)
     {
         throw new Error(`Requires options`);
     }
+    
+    let data = { ...options };
 
     if (!("path" in options))
     {
         throw new Error(`Requires "path" in options`);
     }
-    const agentPath = options.path;
 
     let args = [];
     if ("args" in options)
     {
         args = options.args;
     }
-    
-    let data = options.data || {};
-    data.path = agentPath;
 
     let additionalExeEnv = {
         ABYTEK_AIAGENT_DATA : JSON.stringify(data, null, 4)
@@ -37,7 +35,7 @@ async function spawnAgent(options)
         {
             NODE_PATH: path.join(__dirname, "../../module_trick")
         },
-        agentPath
+        data.path
     );
     if (agentInstallationExitCode != 0)
     {
@@ -55,7 +53,7 @@ async function spawnAgent(options)
             NODE_PATH: path.join(__dirname, "../../module_trick"),
             ...additionalExeEnv,
         },
-        agentPath
+        data.path
     );
     if (agentExecutionExitCode != 0)
     {

@@ -14,7 +14,7 @@ const { addCoreSystemPrompt } = require("./coreSystemPrompt");
 const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
 const { makeAgentConnectionFinalizer } = require("./connection");
 
-function calculateAgentId(agentPath, agentConfig, processId)
+function calculateDefaultAgentId(agentPath, agentConfig, processId)
 {
     if (agentConfig.anonymous)
     {
@@ -28,36 +28,29 @@ function calculateAgentId(agentPath, agentConfig, processId)
     return `AIAgent@Main-${hashCode}`;
 }
 
-const defaultAgentData = JSON.stringify(process.env.ABYTEK_AIAGENT_DATA || "{}");
+const defaultAgentData = JSON.parse(process.env.ABYTEK_AIAGENT_DATA || "{}");
 
 // the main function for users to create agents
-function createAgent(Options) {
-    if (Options == null) {
-        Options = {};
-    }
-    let agentPath = Options.path;
-    if (!agentPath) {
-        agentPath = defaultAgentData.path || process.cwd();
-    }
-    agentPath = path.normalize(agentPath);
+function createAgent(options) {
+    options = options || {};
 
-    const agent = new Object();
-    agent.config = loadAgentConfig(agentPath);
+    const agent = {};
 
-    agent.path = agentPath;
-    agent.id = calculateAgentId(agent.path, agent.config, process.pid);
+    agent.path = options.path || defaultAgentData.path || process.cwd();
+    agent.path = path.normalize(agent.path);
+
+    agent.config = loadAgentConfig(agent.path);
+
+    agent.id = options.id || defaultAgentData.id || calculateDefaultAgentId(agent.path, agent.config, process.pid);
+    
     agent.logger = createAgentLogger(agent);
 
     agent.brief = loadAgentBrief(agent);
 
+    agent.connections = options.connections || defaultAgentData.connections || {};
+
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
-
-    let agentConnections = {};
-    if ("connections" in Options) {
-        agentConnections = defaultAgentData.connections || {};
-    }
-    agent.connections = agentConnections;
 
     agent.initialDate = Date.now();
     agent.currentDate = agent.initialDate;
@@ -65,11 +58,20 @@ function createAgent(Options) {
         return (agent.currentDate - agent.initialDate) / 1000;
     }
 
-    agent.tools = new Object();
     agent.shouldShutdown = false;
+    agent.closed = false;
+
+    agent.tools = new Object();
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
-    agent.closed = false;
+
+    agent.nextChildIndex = 0;
+    agent.generateChildId = function()
+    {
+        const childIndex = agent.nextChildIndex;
+        agent.nextChildIndex++;
+        return `${agent.id}.${childIndex}`;
+    }
 
     agent.close = function () {
         if (agent.closed)
@@ -155,7 +157,7 @@ function createAgent(Options) {
     // Load tools
     {
         importTools(agent, path.join(__dirname, "../../tools"));
-        importTools(agent, path.join(agentPath, "tools"));
+        importTools(agent, path.join(agent.path, "tools"));
     }
     return agent;
 }

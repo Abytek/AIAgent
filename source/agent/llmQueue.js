@@ -6,7 +6,6 @@ function createAgentLLMQueue(agent)
 {
     const model = new ChatOpenAI({
         model: agent.config.model,
-        temperature: 0.2,
 
         apiKey: (agent.config.provider.apiKey == "") ? "dummy" : agent.config.provider.apiKey,
 
@@ -54,7 +53,10 @@ function createAgentLLMQueue(agent)
             agent.logger.log([ `LLM response` ], response);
         }
 
-        await callTools(agent, response.tool_calls);
+        if (response.tool_calls)
+        {
+            await callTools(agent, response.tool_calls);
+        }
 
         return response;
     };

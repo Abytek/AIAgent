@@ -6,6 +6,8 @@ const {
     ToolMessage
 } = require("@langchain/core/messages");
 
+const chalk = require("chalk");
+
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
@@ -192,38 +194,40 @@ function logMessageOnAgent(agent, message)
     const messageRole = getMessageRole(message);
     if (agent.config.debug || (messageRole != "system"))
     {
-        const NamePart = (
-            message.name 
-            ? (
-                (message.name != agent.id)
-                ? ` [${message.name}]`
-                : ""
-            ) 
-            : ""
-        );
+        const RoleTagColor = [ 150, 0, 255 ];
 
-        const messageContent = getMessageContent(message);
-
+        let tags = [];
         if (messageRole == "tool")
         {
-            agent.logger.log(`[Tool]${NamePart}\n`, messageContent);
+            tags.push(chalk.rgb(...RoleTagColor)("Tool"));
         }
         else if (messageRole == "user")
         {
-            agent.logger.log(`[User]${NamePart}\n`, messageContent);
+            tags.push(chalk.rgb(...RoleTagColor)("User"));
         }
         else if (messageRole == "system")
         {
-            agent.logger.log(`[System]${NamePart}\n`, messageContent);
+            tags.push(chalk.rgb(...RoleTagColor)("System"));
         }
         else if (messageRole == "assistant")
         {
-            agent.logger.log(`[Assistant]${NamePart}\n`, messageContent);
+            tags.push(chalk.rgb(...RoleTagColor)("Assistant"));
         }
         else
         {
             throw new Error(`Unknown role: ${JSON.stringify(message, null, 4)}`);
         }
+
+        if (message.name)
+        {
+            if (message.name != agent.id)
+            {
+                tags.push(message.name);
+            }
+        }
+
+        const messageContent = getMessageContent(message);
+        agent.logger.log(tags, messageContent);
     }
 }
 

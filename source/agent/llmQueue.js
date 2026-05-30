@@ -39,7 +39,7 @@ function createAgentLLMQueue(agent)
     {
         if (agent.config.debug)
         {
-            agent.logger.log(`[Sending messages]\n`, messages);
+            agent.logger.log([ `Sending messages` ], messages);
         }
 
         for (const message of messages)
@@ -51,7 +51,7 @@ function createAgentLLMQueue(agent)
         agent.context.messages.push(response);
         if (agent.config.debug)
         {
-            agent.logger.log(`[LLM response]\n`, response);
+            agent.logger.log([ `LLM response` ], response);
         }
 
         await callTools(agent, response.tool_calls);

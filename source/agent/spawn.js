@@ -23,18 +23,14 @@ async function spawnAgent(options)
     }
 
     let additionalExeEnv = {};
-    if ("directManagerId" in options)
+    if ("data" in options)
     {
-        additionalExeEnv.ABYTEK_AIAGENT_DIRECT_MANAGER_ID = options.directManagerId;
+        additionalExeEnv.ABYTEK_AIAGENT_DATA = options.data;
     }
 
     const agentInstallationExitCode = await simpleRun(
         "npm",
         [
-            // "--prefix",
-            // path.join(__dirname, "../.."),
-            // "exec",
-            // "npm",
             "install"
         ],
         {
@@ -50,10 +46,6 @@ async function spawnAgent(options)
     const agentExecutionExitCode = await simpleRun(
         "npm",
         [
-            // "--prefix",
-            // path.join(__dirname, "../.."),
-            // "exec",
-            // "npm",
             "run",
             "agent",
             ...args

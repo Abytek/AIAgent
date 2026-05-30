@@ -36,7 +36,6 @@ function createAgentTracking(agent)
                     path: agent.path,
                     config: agent.config,
                     brief: agent.brief,
-                    directManagerId: agent.directManagerId ? agent.directManagerId : "",
                     url: agent.server.url
                 },
                 (res) => {

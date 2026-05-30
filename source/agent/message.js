@@ -27,8 +27,8 @@ const agentMessageSchema = {
 
             enum: [
                 "system",
-                "user",
-                "assistant",
+                "human",
+                "ai",
                 "tool",
             ],
         },
@@ -80,7 +80,7 @@ const agentMessageSchema = {
     additionalProperties: true,
 };
 
-const makeAgentMessageValidator = () => {
+const makeAgentMessageFinalizer = () => {
     const result = ajv.compile(agentMessageSchema);
     result.toErrorsText = function()
     {
@@ -152,8 +152,8 @@ function makeSystemMessage(content)
 }
 function getMessageRole(msg) {
     if (msg instanceof SystemMessage) return "system";
-    if (msg instanceof HumanMessage) return "user";
-    if (msg instanceof AIMessage) return "assistant";
+    if (msg instanceof HumanMessage) return "human";
+    if (msg instanceof AIMessage) return "ai";
     if (msg instanceof ToolMessage) return "tool";
     
     if ("id" in msg)
@@ -162,10 +162,19 @@ function getMessageRole(msg) {
         if (Array.isArray(id))
         {
             if (id.includes("SystemMessage")) return "system";
-            if (id.includes("HumanMessage")) return "user";
-            if (id.includes("AIMessage")) return "assistant";
+            if (id.includes("HumanMessage")) return "human";
+            if (id.includes("AIMessage")) return "ai";
             if (id.includes("ToolMessage")) return "tool";
         }
+    }
+    
+    if ("type" in msg)
+    {
+        const type = msg.type;
+        if (type == "system") return "system";
+        if (type == "human") return "human";
+        if (type == "ai") return "ai";
+        if (type == "tool") return "tool";
     }
 
     return msg.role;
@@ -201,17 +210,17 @@ function logMessageOnAgent(agent, message)
         {
             tags.push(chalk.rgb(...RoleTagColor)("Tool"));
         }
-        else if (messageRole == "user")
+        else if (messageRole == "human")
         {
-            tags.push(chalk.rgb(...RoleTagColor)("User"));
+            tags.push(chalk.rgb(...RoleTagColor)("Human"));
         }
         else if (messageRole == "system")
         {
             tags.push(chalk.rgb(...RoleTagColor)("System"));
         }
-        else if (messageRole == "assistant")
+        else if (messageRole == "ai")
         {
-            tags.push(chalk.rgb(...RoleTagColor)("Assistant"));
+            tags.push(chalk.rgb(...RoleTagColor)("AI"));
         }
         else
         {
@@ -232,7 +241,7 @@ function logMessageOnAgent(agent, message)
 }
 
 module.exports = {
-    makeAgentMessageValidator,
+    makeAgentMessageFinalizer,
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage,

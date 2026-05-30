@@ -5,7 +5,6 @@ function renderView_agentMonitor(agent, res)
         agent: {
             id: agent.id,
             path: agent.path,
-            directManagerId: agent.directManagerId,
             url: agent.server.url,
             processId: process.pid,
             config: agent.config

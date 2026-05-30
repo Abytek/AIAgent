@@ -5,7 +5,6 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const { makeSync } = require("../utilities/sync");
-const { makeAgentMessageValidator } = require("./message");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
 const { renderView_agentMonitor } = require("../frontend/views/agentMonitor");
 

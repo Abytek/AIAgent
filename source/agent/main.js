@@ -10,7 +10,7 @@ const { createAgentContext } = require("./context");
 const { createAgentServer } = require("./server");
 const { createAgentTracking } = require("./tracking");
 const { addCoreSystemPrompt } = require("./coreSystemPrompt");
-const { makeAgentMessageValidator, logMessageOnAgent } = require("./message");
+const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
 const crypto = require("crypto");
 
 function calculateAgentId(agentPath, agentConfig, processId)
@@ -26,6 +26,8 @@ function calculateAgentId(agentPath, agentConfig, processId)
         .slice(0, 10);
     return `AIAgent@Main-${hashCode}`;
 }
+
+const defaultAgentData = JSON.stringify(process.env.ABYTEK_AIAGENT_DATA || "{}");
 
 // the main function for users to create agents
 function createAgent(Options) {
@@ -50,7 +52,11 @@ function createAgent(Options) {
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
 
-    agent.directManagerId = Options.directManagerId || process.env.ABYTEK_AIAGENT_DIRECT_MANAGER_ID;
+    let agentConnections = {};
+    if ("connections" in Options) {
+        agentConnections = defaultAgentData.connections || {};
+    }
+    agent.connections = agentConnections;
 
     agent.initialDate = Date.now();
     agent.currentDate = agent.initialDate;
@@ -107,13 +113,15 @@ function createAgent(Options) {
     };
     agent.message = function(message)
     {
-        const agentMessageValidator = makeAgentMessageValidator();
-        if (!agentMessageValidator(message)) {
-            throw new Error(agentMessageValidator.toErrorsText());
+        const cachedMessage = { ...message };
+
+        const agentMessageFinalizer = makeAgentMessageFinalizer();
+        if (!agentMessageFinalizer(cachedMessage)) {
+            throw new Error(agentMessageFinalizer.toErrorsText());
         }
 
-        logMessageOnAgent(agent, message);
-        agent.llmQueue.push(message);
+        logMessageOnAgent(agent, cachedMessage);
+        agent.llmQueue.push(cachedMessage);
     }
 
     //

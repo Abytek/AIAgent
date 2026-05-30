@@ -42,7 +42,10 @@ function setupAgentServerRoutes(agentServer)
                 )
             )
             {
-                return res.status(400).send(`${from} not added to ${agent.id}'s agent connections`);
+                return res.status(400).send(
+`${agent.id} uses closed agent connection model but ${from} was not added to ${agent.id}'s agent connections. 
+The only way for ${from} to correctly send messages to ${agent.id} is some how leveraging ${from}'s agent networks to tell ${agent.id} add connection to ${from}.`
+);
             }
         }
     

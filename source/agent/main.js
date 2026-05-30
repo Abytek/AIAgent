@@ -37,7 +37,7 @@ function createAgent(Options) {
     }
     let agentPath = Options.path;
     if (!agentPath) {
-        agentPath = process.cwd();
+        agentPath = defaultAgentData.path || process.cwd();
     }
     agentPath = path.normalize(agentPath);
 

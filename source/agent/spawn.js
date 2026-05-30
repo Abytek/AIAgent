@@ -21,12 +21,13 @@ async function spawnAgent(options)
     {
         args = options.args;
     }
+    
+    let data = options.data || {};
+    data.path = agentPath;
 
-    let additionalExeEnv = {};
-    if ("data" in options)
-    {
-        additionalExeEnv.ABYTEK_AIAGENT_DATA = options.data;
-    }
+    let additionalExeEnv = {
+        ABYTEK_AIAGENT_DATA : JSON.stringify(data, null, 4)
+    };
 
     const agentInstallationExitCode = await simpleRun(
         "npm",

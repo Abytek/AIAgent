@@ -53,8 +53,10 @@ function coreSetupTerminal(agent) {
                     terminals[terminal.id] = terminal;
 
                     const ptyInstance = pty.spawn(shell, [], {
+                        name: `${agent.id}.${terminal.id}`,
                         cwd,
                         env,
+                        useConpty: false
                     });
                     terminal.ptyInstance = ptyInstance;
 
@@ -204,8 +206,8 @@ Created ${terminal.id}:
                     {
                         return `${id} was already exited with code ${exitCode}, cannot add terminal input.`;
                     }
-                    terminal.ptyInstance.write(input);
-                    return `Added/sent input to${id}: ${input}`;
+                    terminal.ptyInstance.write(input + "\r");
+                    return `Added/sent input to ${id}: ${input}`;
                 }
                 else
                 {
@@ -246,21 +248,17 @@ Created ${terminal.id}:
                 if (id in terminals)
                 {
                     const terminal = terminals[id];
-                    if (output_chunk_size > MAX_CHUNK_CHARS)
-                    {
-                        return `Invalid output_chunk_size (${output_chunk_size}), must be smaller than ${MAX_CHUNK_CHARS}`;
-                    }
                     if (output_chunk_offset > terminal.output.length)
                     {
-                        return `output_chunk_offset (${output_chunk_offset}) out of bounds, current terminal output length: ${terminal.output.length}`;
+                        return `[${id}] output_chunk_offset (${output_chunk_offset}) out of bounds, current terminal output length: ${terminal.output.length}`;
                     }
-                    const end_output_chunk_offset = output_chunk_offset + output_chunk_size;
-                    if (end_output_chunk_offset > terminal.output.length)
-                    {
-                        return `output_chunk_offset + output_chunk_size (${output_chunk_offset} + ${output_chunk_size} = ${end_output_chunk_offset}) out of bounds, current terminal output length: ${terminal.output.length}`;
-                    }
-                    const outputChunk = terminal.output.slice(output_chunk_offset, output_chunk_size);
-                    return `[${id}] [Output chunk: offset=${output_chunk_offset}, size=${output_chunk_size}]\n${outputChunk}`;
+                    const end_output_chunk_offset = Math.min(
+                        output_chunk_offset + output_chunk_size,
+                        terminal.output.length
+                    );
+                    const real_output_chunk_size = end_output_chunk_offset - output_chunk_offset;
+                    const outputChunk = terminal.output.slice(output_chunk_offset, real_output_chunk_size);
+                    return `[${id}] [Output size: ${terminal.output.length}] [Output chunk: offset=${output_chunk_offset}, size=${real_output_chunk_size}]\n${outputChunk}`;
                 }
                 else
                 {

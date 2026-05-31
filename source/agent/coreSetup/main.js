@@ -3,7 +3,7 @@ const { coreSetupFramework } = require("./framework");
 const { coreSetupAgentIdentity } = require("./agentIdentity");
 
 const { coreSetupAgentConnectionTools } = require("./agentConnectionTools");
-const { coreSetupAgentLifecycleTools } = require("./agentLifecycleTools");
+const { coreSetupAgentRuntimeTools } = require("./agentRuntimeTools");
 const { coreSetupRootManagerTools } = require("./rootManagerTools");
 const { coreSetupAgentCommunicationTools } = require("./agentCommunicationTools");
 
@@ -16,7 +16,7 @@ function coreSetup(agent)
     coreSetupAgentIdentity(agent);
 
     coreSetupAgentConnectionTools(agent);
-    coreSetupAgentLifecycleTools(agent);
+    coreSetupAgentRuntimeTools(agent);
     coreSetupRootManagerTools(agent);
     coreSetupAgentCommunicationTools(agent);
     

@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function coreSetupAgentLifecycleTools(agent) {
+function coreSetupAgentRuntimeTools(agent) {
     agent.tool(
         tool(
             async () => {
@@ -14,8 +14,19 @@ function coreSetupAgentLifecycleTools(agent) {
             }
         )
     );
+    agent.tool(
+        tool(
+            async () => {
+                return `${agent.id}'s process env: ${JSON.stringify(process.env, null, 4)}`;
+            },
+            {
+                name: "self_agent_process_env",
+                description: "Get your own runtime process env."
+            }
+        )
+    );
 }
 
 module.exports = {
-    coreSetupAgentLifecycleTools
+    coreSetupAgentRuntimeTools
 }

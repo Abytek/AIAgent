@@ -5,7 +5,7 @@ const { createAgent, makeHumanMessage } = require("abytek-aiagent");
 const agent = createAgent();
 agent.message(
     makeHumanMessage({
-        content: `Hello, try run the agent at path ${path.resolve(__dirname, "../simple_agent")}, then send a hello message to them`
+        content: `Hello, I want to make a team of 4 child AI agents using the agent template ${path.resolve(__dirname, "../simple_agent")}. You are the leader, lead them to write a sort python program at ${path.resolve(__dirname, "../simple_agent")}/sort.py`
     })
 );
 agent.run();

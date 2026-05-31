@@ -201,6 +201,46 @@ Created ${terminal.id}:
     );
     agent.tool(
         tool(
+            async ({ id }) => {
+
+                if (id in terminals)
+                {
+                    const terminal = terminals[id];
+                    const exitCode = terminal.exitCode;
+                    if (exitCode != null)
+                    {
+                        return `${id} was already exited with code ${exitCode}`;
+                    }
+                    terminal.ptyInstance.kill();
+                    return `Killed terminal ${id}, it is going to send you the exit code`;
+                }
+                else
+                {
+                    return `Not found terminal with id: ${id}`;
+                }
+            },
+            {
+                name: "kill_terminal",
+
+                description:
+                    [
+                        "Kill/terminate a terminal by terminal id",
+                    ].join("\n"),
+
+                schema: z.object({
+                    id: z
+                        .string()
+                        .describe(
+                            [
+                                "The terminal id."
+                            ].join(" ")
+                        ),
+                }),
+            }
+        )
+    );
+    agent.tool(
+        tool(
             async ({ id, input }) => {
 
                 if (id in terminals)

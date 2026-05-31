@@ -115,6 +115,7 @@ Created ${terminal.id}:
                         "Create a terminal for shell tasks.",
                         "",
                         "Use this tool when:",
+                        "- You might already have some terminals but wanting to run more shell commands simultaneously",
                         "- file operations are required",
                         "- shell commands are required",
                         "- running scripts or programs",

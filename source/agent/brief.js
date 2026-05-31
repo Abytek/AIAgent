@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const chalk = require("chalk");
 
 function loadAgentBrief(agent) {
     const briefPath = path.join(agent.path, "brief.md");
@@ -7,7 +8,7 @@ function loadAgentBrief(agent) {
     if (fs.existsSync(briefPath)) {
         brief = fs.readFileSync(briefPath, "utf-8");
     }
-    agent.logger.log([], brief);
+    agent.logger.log([ chalk.rgb(60, 200, 30)("Brief") ], brief);
     return brief;
 }
 

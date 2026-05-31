@@ -64,6 +64,13 @@ function createRootManager(options)
         );
         res.status(200).json(agents);
     });
+    rootManager.nextAgentId = 0;
+    rootManager.app.get("/agent/generate_id", (req, res) =>
+    {
+        const agentId = rootManager.nextAgentId;
+        ++rootManager.nextAgentId;
+        res.status(200).send(agentId);
+    });
     rootManager.app.post("/agent/send_messages", async (req, res) =>
     {
         if (!req.body)

@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const chalk = require("chalk");
 const { doSync, runLoopOnce } = require("../utilities/sync");
 const { loadAgentConfig } = require("./config");
 const { loadAgentBrief } = require("./brief");
@@ -13,11 +14,28 @@ const { coreSetup } = require("./coreSetup/main");
 const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
 const { makeAgentConnectionFinalizer } = require("./connection");
 
-function calculateDefaultAgentId(agentPath, agentConfig, processId)
+function calculateDefaultAgentId(agentPath, agentConfig)
 {
     if (agentConfig.anonymous)
     {
-        return `AIAgent@${processId}`;
+        try
+        {
+            return doSync(async () => {
+                const response = await fetch(`${agentConfig.rootManager.url}/agent/generate_id`);
+                const responseText = await response.text();
+                if (!response.ok)
+                {
+                    throw new Error(responseText);
+                }
+                return `AIAgent@${responseText}`;
+            });
+        }
+        catch (error)
+        {
+            const result = `AIAgent@${process.pid}`;
+            console.log(`Cannot generate id from root manager, generate local-environment agent id using process id:`, result);
+            return result;
+        }
     }
     const hashCode = crypto
         .createHash("sha1")
@@ -40,7 +58,7 @@ function createAgent(options) {
 
     agent.config = loadAgentConfig(agent.path);
 
-    agent.id = options.id || defaultAgentData.id || calculateDefaultAgentId(agent.path, agent.config, process.pid);
+    agent.id = options.id || defaultAgentData.id || calculateDefaultAgentId(agent.path, agent.config);
     
     agent.logger = createAgentLogger(agent);
 
@@ -164,7 +182,7 @@ function createAgent(options) {
         agent.tools[toolName] = tool;
         if (agent.config.debug)
         {
-            agent.logger.log([], `Added tool "${toolName}" to agent "${agent.id}"`);
+            agent.logger.log([ chalk.rgb(60, 200, 30)("Tool Management") ], `Added tool "${toolName}" to agent "${agent.id}"`);
         }
         return tool;
     };

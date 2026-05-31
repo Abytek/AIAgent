@@ -1,6 +1,7 @@
 const { ChatOpenAI } = require("@langchain/openai");
 const { callTools } = require("./tool");
 const { makeSystemMessage, logMessageOnAgent } = require("./message");
+const chalk = require("chalk");
 
 function createAgentLLMQueue(agent)
 {
@@ -56,6 +57,13 @@ function createAgentLLMQueue(agent)
         if (response.tool_calls)
         {
             await callTools(agent, response.tool_calls);
+        }
+        if (response.invalid_tool_calls)
+        {
+            for (const toolCall of response.invalid_tool_calls)
+            {
+                agent.logger.log([ chalk.rgb(60, 200, 30)("Invalid Tool Calling") ], toolCall.name || "", toolCall.error || "");
+            }
         }
 
         return response;

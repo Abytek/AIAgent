@@ -4,6 +4,7 @@ const http = require("http");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+const chalk = require("chalk");
 const { makeSync } = require("../utilities/sync");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
 const { renderView_agentMonitor } = require("../frontend/views/agentMonitor");
@@ -88,7 +89,7 @@ function createAgentServer(agent)
         {
             const address = agentServer.server.address();
             agentServer.url = `http://127.0.0.1:${address.port}`;
-            agent.logger.log([], `Agent server is running at:`, address);
+            agent.logger.log([ chalk.rgb(60, 200, 30)("Server") ], `Agent server is running at:`, address);
             sync.stop();
         });
         agentServer.server.on("error", (err) =>
@@ -109,7 +110,7 @@ function createAgentServer(agent)
         const sync = makeSync();
         agentServer.server.close(
             () => {
-                agent.logger.log([], `Closed agent server.`);
+                agent.logger.log([ chalk.rgb(60, 200, 30)("Server") ], `Closed agent server.`);
                 sync.stop();
             }
         );

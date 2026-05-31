@@ -185,7 +185,9 @@ function logMessageOnAgent(agent, message)
     {
         const RoleTagColor = [ 150, 0, 255 ];
 
-        let tags = [];
+        let tags = [
+            chalk.rgb(60, 200, 30)("Message")
+        ];
         if (messageRole == "tool")
         {
             tags.push(chalk.rgb(...RoleTagColor)("Tool"));

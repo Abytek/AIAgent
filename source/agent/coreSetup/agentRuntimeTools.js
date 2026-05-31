@@ -17,6 +17,17 @@ function coreSetupAgentRuntimeTools(agent) {
     agent.tool(
         tool(
             async () => {
+                return agent.generateChildId();
+            },
+            {
+                name: "generate_child_agent_id",
+                description: "Generate child AI agent id. You MUST you this tool for assigning child AI agent id before spawning child AI agents"
+            }
+        )
+    );
+    agent.tool(
+        tool(
+            async () => {
                 return `${agent.id}'s process env: ${JSON.stringify(process.env, null, 4)}`;
             },
             {

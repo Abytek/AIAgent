@@ -46,7 +46,7 @@ function createAgent(options) {
 
     agent.brief = loadAgentBrief(agent);
 
-    agent.connections = options.connections || defaultAgentData.connections || {};
+    agent.connections = options.connections || defaultAgentData.connections || [];
 
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
@@ -70,18 +70,27 @@ function createAgent(options) {
 
     agent.tools = new Object();
 
+    agent.closeCommands = [];
+
+    agent.external = {};
+
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
     agent.server = createAgentServer(agent);
+    agent.closeCommands.push(() => agent.server.close());
     agent.tracking = createAgentTracking(agent);
+    agent.closeCommands.push(() => agent.tracking.close());
 
     agent.close = function () {
         if (agent.closed)
         {
             return;
         }
-        agent.tracking.close();
-        agent.server.close();
+        for (let idx = agent.closeCommands.length - 1; idx >= 0; --idx)
+        {
+            const closeCommand = agent.closeCommands[idx];
+            closeCommand();
+        }
         agent.closed = true;
     }
     agent.run = function () {
@@ -101,24 +110,48 @@ function createAgent(options) {
         agent.shouldShutdown = true;
     }
 
-    agent.addConnection = function(connection)
+    agent.getConnection = function(id)
     {
-        const cachedConnection = { ...connection };
+        for (const connection of agent.connections)
+        {
+            if (connection.id == id)
+            {
+                return connection;
+            }
+        }
+        return null;
+    }
+    agent.bindConnection = function(inConnection)
+    {
+        const cachedConnection = { ...inConnection };
 
         const connectionFinalizer = makeAgentConnectionFinalizer();
         if (!connectionFinalizer(cachedConnection)) {
             throw new Error(connectionFinalizer.toErrorsText());
         }
 
-        agent.connections[cachedConnection.id] = cachedConnection;
-    }
-    agent.removeConnection = function(id)
-    {
-        if (!(id in agent.connections))
+        for (let connection of agent.connections)
         {
-            throw new Error(`Not found connection with id ${id} in ${agent.id}`);
+            if (connection.id == id)
+            {
+                connection = cachedConnection;
+                return agent;
+            }
         }
-        delete agent.connections[cachedConnection.id];
+        agent.connections.push(cachedConnection);
+        return agent;
+    }
+    agent.unbindConnection = function(id)
+    {
+        for (let idx = 0; idx < agent.connections.length; ++idx)
+        {
+            const connection = agent.connections[idx];
+            if (agent.connections.splice(idx, 1))
+            {
+                return agent;
+            }
+        }
+        throw new Error(`Not found connection with id ${id} in ${agent.id}`);
     }
 
     agent.tool = function(tool)

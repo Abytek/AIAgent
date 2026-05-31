@@ -8,10 +8,14 @@ const {
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
     const parsedMessages = [
-        makeAIMessage(`[FROM ${agent.id}]\n${messageContent}`)
-            .setName(agent.id),
-        makeAIMessage(`[CRITICAL]\nAll communications with ${agent.id} MUST use tool to reply`)
-            .setName(agent.id),
+        makeAIMessage({ 
+            content: `[FROM ${agent.id}]\n${messageContent}`,
+            name: agent.id
+        }),
+        makeAIMessage({ 
+            content: `[CRITICAL]\nAll communications with ${agent.id} MUST use tool to reply`,
+            name: agent.id
+        }),
     ];
 
     const response = await fetch(

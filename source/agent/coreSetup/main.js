@@ -8,6 +8,7 @@ const { coreSetupRootManagerTools } = require("./rootManagerTools");
 const { coreSetupAgentCommunicationTools } = require("./agentCommunicationTools");
 
 const { coreSetupLegacyPowershellTools } = require("./legacyPowershellTools");
+const { coreSetupTerminal } = require("./terminal");
 
 function coreSetup(agent)
 {
@@ -19,7 +20,8 @@ function coreSetup(agent)
     coreSetupRootManagerTools(agent);
     coreSetupAgentCommunicationTools(agent);
     
-    coreSetupLegacyPowershellTools(agent);
+    // coreSetupLegacyPowershellTools(agent);
+    coreSetupTerminal(agent);
 }
 
 module.exports = {

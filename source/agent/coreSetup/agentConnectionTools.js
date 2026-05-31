@@ -29,8 +29,8 @@ function coreSetupAgentConnectionTools(agent) {
             async ({ id, description }) => {
                 try 
                 {
-                    agent.addConnection({ id, description });
-                    return `Added connection:\n- Id: ${id}\n- Description: ${description}`;
+                    agent.bindConnection({ id, description });
+                    return `Added/updated connection:\n- Id: ${id}\n- Description: ${description}`;
                 }
                 catch(err)
                 {
@@ -38,7 +38,7 @@ function coreSetupAgentConnectionTools(agent) {
                 }
             },
             {
-                name: "add_agent_connection",
+                name: "bind_agent_connection",
                 description: "Add/update an agent connection to be able to receive messages from them.",
                 
                 schema: z.object({
@@ -66,7 +66,7 @@ function coreSetupAgentConnectionTools(agent) {
             async ({ id }) => {
                 try 
                 {
-                    agent.removeConnection(id);
+                    agent.unbindConnection(id);
                     return `Removed connection: ${id}`;
                 }
                 catch(err)
@@ -75,7 +75,7 @@ function coreSetupAgentConnectionTools(agent) {
                 }
             },
             {
-                name: "remove_agent_connection",
+                name: "unbind_agent_connection",
                 description: "Remove an agent from the list of allowed connections for messages.",
                 
                 schema: z.object({

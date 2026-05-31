@@ -74,7 +74,7 @@ function coreSetupLegacyPowershellTools(agent) {
                 }
             },
             {
-                name: "run_powershell",
+                name: "run_powershell_legacy",
 
                 description:
                     [

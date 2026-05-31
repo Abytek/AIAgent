@@ -99,56 +99,17 @@ const makeAgentMessageFinalizer = () => {
     return result;
 }
 
-function makeAIMessage(content)
+function makeAIMessage(options)
 {
-    let result = new AIMessage({
-        content: content || ""
-    });
-    result.setContent = function(value)
-    {
-        result.content = value;
-        return result;
-    }
-    result.setName = function(value)
-    {
-        result.name = value;
-        return result;
-    }
-    return result;
+    return new AIMessage(options);
 }
-function makeHumanMessage(content)
+function makeHumanMessage(options)
 {
-    let result = new HumanMessage({
-        content: content || ""
-    });
-    result.setContent = function(value)
-    {
-        result.content = value;
-        return result;
-    }
-    result.setName = function(value)
-    {
-        result.name = value;
-        return result;
-    }
-    return result;
+    return new HumanMessage(options);
 }
-function makeSystemMessage(content)
+function makeSystemMessage(options)
 {
-    let result = new SystemMessage({
-        content: content || ""
-    });
-    result.setContent = function(value)
-    {
-        result.content = value;
-        return result;
-    }
-    result.setName = function(value)
-    {
-        result.name = value;
-        return result;
-    }
-    return result;
+    return new SystemMessage(options);
 }
 function getMessageRole(msg) {
     if (msg instanceof SystemMessage) return "system";
@@ -198,9 +159,28 @@ function getMessageContent(message)
     return messageContent;
 }
 
+function getMessageName(message)
+{
+    let messageName = null;
+    if ("name" in message)
+    {
+        messageName = message.name;
+    }
+    if ("kwargs" in message)
+    {
+        const kwargs = message.kwargs;
+        if ("name" in kwargs)
+        {
+            messageName = kwargs.name;
+        }
+    }
+    return messageName;
+}
+
 function logMessageOnAgent(agent, message)
 {
     const messageRole = getMessageRole(message);
+    const messageName = getMessageName(message);
     if (agent.config.debug || (messageRole != "system"))
     {
         const RoleTagColor = [ 150, 0, 255 ];
@@ -227,11 +207,11 @@ function logMessageOnAgent(agent, message)
             throw new Error(`Unknown role: ${JSON.stringify(message, null, 4)}`);
         }
 
-        if (message.name)
+        if (messageName)
         {
-            if (message.name != agent.id)
+            if (messageName != agent.id)
             {
-                tags.push(chalk.rgb(50, 150, 255)(message.name));
+                tags.push(chalk.rgb(50, 150, 255)(messageName));
             }
         }
 

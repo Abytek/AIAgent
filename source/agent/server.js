@@ -40,7 +40,7 @@ function setupAgentServerRoutes(agentServer)
         {
             if (
                 !(
-                    (from in agent.connections)
+                    (agent.getConnection(from))
                     || (from == "human")
                 )
             )

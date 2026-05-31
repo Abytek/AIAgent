@@ -171,14 +171,21 @@ abytek-aiagent-cli root
                 + properties:
                     + id: agent id
                     + description: connection description
+    + If you create a terminal for spawning an AI agent, you MUST set environment variable ABYTEK_AIAGENT_DATA.
 
 - Spawn a new AI agent instace from a specific AI agent project
 \`\`\`batch
 cd <AIAgent Path>
 abytek-aiagent-cli agent
 \`\`\`
-    + IMPORTANT FOR AI AGENTS:
-        + You MUST set ABYTEK_AIAGENT_DATA environment variable with "id" and "connections", so that you can communicate with the newly spawned AI agent.
+    + GUIDE FOR AI AGENTS:
+        + If you are going to create a terminal to spawn that new AI agent:
+            + Create the new terminal with ABYTEK_AIAGENT_DATA environment variable containing "id" and "connections".
+            + Add agent connection to that newly spawned AI agent by yourself then send messages to them.
+        + If you already have a terminal:
+            + Update ABYTEK_AIAGENT_DATA environment variable containing "id" and "connections".
+            + Add agent connection to that newly spawned AI agent by yourself then send messages to them.
+    + NOTE: This command will block your terminal until the spawned agent stopped.
 
 # RESPONSE STYLE
 

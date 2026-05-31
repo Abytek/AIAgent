@@ -51,7 +51,7 @@ function createAgentLLMQueue(agent)
         agent.context.messages.push(response);
         if (agent.config.debug)
         {
-            agent.logger.log([ `LLM response` ], response);
+            agent.logger.log([ `LLM response` ], JSON.stringify(response, null, 4));
         }
 
         if (response.tool_calls)

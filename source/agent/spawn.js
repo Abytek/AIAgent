@@ -27,18 +27,6 @@ async function spawnAgent(options)
         ABYTEK_AIAGENT_DATA : JSON.stringify(data, null, 4)
     };
 
-    if (process.env.ABYTEK_AIAGENT_SPAWN_OWNER_MODE == "AIAgent")
-    {
-        if (!("id" in options))
-        {
-            throw new Error(`Requires "id" in options => requires setting ABYTEK_AIAGENT_DATA environment variable. For example: ABYTEK_AIAGENT_DATA: "{ \\"id\\": \\"sampleId\\" }"`);
-        }
-        if (!("connections" in options))
-        {
-            throw new Error(`Requires "connections" in options => requires setting ABYTEK_AIAGENT_DATA environment variable. For example: ABYTEK_AIAGENT_DATA: "{ \\"connections\\": [ { \\"id\\": \\"<your id>\\", \\"description\\": \\"owner AI agent\\" ] }"`);
-        }
-    }
-
     const agentInstallationExitCode = await simpleRun(
         "npm",
         [

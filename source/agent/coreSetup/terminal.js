@@ -39,13 +39,13 @@ function coreSetupTerminal(agent) {
         tool(
             async ({ cwd, env }) => {
 
-                const dirtyEnv = env;
+                const dirtyEnv = env || {};
 
                 cwd = cwd || process.cwd();
                 env = { 
                     ...process.env, 
                     ...dirtyEnv,
-                    ABYTEK_AIAGENT_SPAWN_OWNER_MODE: "AIAgent"
+                    ABYTEK_AIAGENT_TERMINAL_MODE: 1
                 };
 
                 try {
@@ -148,15 +148,14 @@ Created ${terminal.id}:
                         .default(process.cwd()),
                     env: z
                         .object()
+                        .passthrough()
                         .optional()
                         .describe(
                             [
-                                "Optional environment variables.",
-                                "Only provide this if a specific environment variable is required to set.",
-                                `Example: { NODE_PATH: "C:/NodePath" }`
+                                "Environment variables for the terminal",
+                                `Example: { "NODE_PATH: "C:/NodePath" }`
                             ].join(" ")
-                        )
-                        .default({}),
+                        ),
                 }),
             }
         )

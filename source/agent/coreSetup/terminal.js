@@ -163,7 +163,7 @@ Created ${terminal.id}:
                 {
                     const terminal = terminals[id];
                     const exitCode = terminal.exitCode;
-                    if (!exitCode)
+                    if (exitCode == null)
                     {
                         return `${id} was not exited, exit code: none.`;
                     }
@@ -202,7 +202,7 @@ Created ${terminal.id}:
                 {
                     const terminal = terminals[id];
                     const exitCode = terminal.exitCode;
-                    if (exitCode)
+                    if (exitCode != null)
                     {
                         return `${id} was already exited with code ${exitCode}, cannot add terminal input.`;
                     }
@@ -257,7 +257,7 @@ Created ${terminal.id}:
                         terminal.output.length
                     );
                     const real_output_chunk_size = end_output_chunk_offset - output_chunk_offset;
-                    const outputChunk = terminal.output.slice(output_chunk_offset, real_output_chunk_size);
+                    const outputChunk = terminal.output.slice(output_chunk_offset, end_output_chunk_offset);
                     return `[${id}] [Output size: ${terminal.output.length}] [Output chunk: offset=${output_chunk_offset}, size=${real_output_chunk_size}]\n${outputChunk}`;
                 }
                 else

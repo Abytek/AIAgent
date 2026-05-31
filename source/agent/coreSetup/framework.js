@@ -158,13 +158,8 @@ abytek-aiagent-cli codex
 abytek-aiagent-cli root
 \`\`\`
 
-- Spawn a new AI agent instace from a specific AI agent project
-\`\`\`batch
-cd <AIAgent Path>
-abytek-aiagent-cli agent
-\`\`\`
-    + You can set ABYTEK_AIAGENT_DATA environment variable (JSON string) of the terminal executing the agent to configure that agent.
-    + ABYTEK_AIAGENT_DATA schema:
+- ABYTEK_AIAGENT_DATA environment variable (JSON string):
+    + ABYTEK_AIAGENT_DATA object schema:
         + id:
             + type: string
             + description: id of the new AI agent to spawn
@@ -176,8 +171,14 @@ abytek-aiagent-cli agent
                 + properties:
                     + id: agent id
                     + description: connection description
-    + IMPORTANT:
-        + You should set "id" and "connections" in ABYTEK_AIAGENT_DATA, so that you can communicate with the newly spawned AI agent.
+
+- Spawn a new AI agent instace from a specific AI agent project
+\`\`\`batch
+cd <AIAgent Path>
+abytek-aiagent-cli agent
+\`\`\`
+    + IMPORTANT FOR AI AGENTS:
+        + You MUST set ABYTEK_AIAGENT_DATA environment variable with "id" and "connections", so that you can communicate with the newly spawned AI agent.
 
 # RESPONSE STYLE
 

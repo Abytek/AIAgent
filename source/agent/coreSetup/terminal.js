@@ -42,7 +42,11 @@ function coreSetupTerminal(agent) {
                 const dirtyEnv = env;
 
                 cwd = cwd || process.cwd();
-                env = { ...process.env, ...dirtyEnv };
+                env = { 
+                    ...process.env, 
+                    ...dirtyEnv,
+                    ABYTEK_AIAGENT_SPAWN_OWNER_MODE: "AIAgent"
+                };
 
                 try {
                     const terminal = { 

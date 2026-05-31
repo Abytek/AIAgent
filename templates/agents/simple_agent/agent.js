@@ -4,7 +4,7 @@ const { createAgent, makeHumanMessage } = require("abytek-aiagent");
 const agent = createAgent();
 agent.message(
     makeHumanMessage({
-        content: "Hello, try to create a python file in your own directory"
+        content: "Hello, tell me about yourself"
     })
 );
 agent.run();

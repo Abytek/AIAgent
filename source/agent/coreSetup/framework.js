@@ -185,7 +185,7 @@ abytek-aiagent-cli agent
         + If you already have a terminal:
             + Update ABYTEK_AIAGENT_DATA environment variable containing "id" and "connections".
             + Add agent connection to that newly spawned AI agent by yourself then send messages to them.
-    + NOTE: This command will block your terminal until the spawned agent stopped.
+    + NOTE: This command will block your terminal until the spawned agent stopped, so you need to use multiple terminals for multiple spawned AI agents.
 
 # RESPONSE STYLE
 

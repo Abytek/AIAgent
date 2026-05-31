@@ -88,6 +88,7 @@ function coreSetupTerminal(agent) {
                     });
                     ptyInstance.onExit(({ exitCode }) => {
                         terminal.exitCode = exitCode;
+                        terminal.ptyInstance = null;
                         agent.logger.log([ chalk.rgb(60, 200, 30)(terminal.id) ], `Exited with code: ${exitCode}`);
                         agent.message(
                             makeSystemMessage({
@@ -290,9 +291,11 @@ Created ${terminal.id}:
                         ),
                     output_chunk_size: z
                         .number()
+                        .min(1)
+                        .max(MAX_CHUNK_CHARS)
                         .describe(
                             [
-                                `The output chunk size to read, must be smaller than or equal to ${MAX_CHUNK_CHARS}`
+                                `The output chunk size to read`
                             ].join(" ")
                         ),
                 }),

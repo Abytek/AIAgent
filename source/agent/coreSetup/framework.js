@@ -137,6 +137,33 @@ However:
 - avoid unnecessary long-running commands
 - avoid interactive terminal programs unless required
 
+# Abytek AIAgent CLI
+- Help command
+\`\`\`batch
+abytek-aiagent-cli
+\`\`\`
+
+- Run 9router (AI agents are not allowed to run this command)
+\`\`\`batch
+abytek-aiagent-cli 9router
+\`\`\`
+
+- Run codex (AI agents are not allowed to run this command)
+\`\`\`batch
+abytek-aiagent-cli codex
+\`\`\`
+
+- Run root manager (AI agents are not allowed to run this command)
+\`\`\`batch
+abytek-aiagent-cli root
+\`\`\`
+
+- Run a specific AI agent
+\`\`\`batch
+cd <AIAgent Path>
+abytek-aiagent-cli agent
+\`\`\`
+
 # RESPONSE STYLE
 
 Be:

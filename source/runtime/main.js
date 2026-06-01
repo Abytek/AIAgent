@@ -2,8 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const chalk = require("chalk");
-const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { doSync, runLoopOnce } = require("../utilities/sync");
+const { makeGameLoop } = require("../utilities/gameLoop");
 const { loadRuntimeConfig } = require("./config");
 const { createRuntimeLogger } = require("./logger");
 const { createRuntimeSubsystems } = require("./subsystems");
@@ -12,31 +11,13 @@ const { createRuntimeSubsystems } = require("./subsystems");
 function createRuntime(options) {
     options = options || {};
 
-    const runtime = makeEventEmitter();
+    const runtime = makeGameLoop();
 
     runtime.config = loadRuntimeConfig(runtime);
     runtime.logger = createRuntimeLogger(runtime);
 
-    runtime.shouldShutdown = false;
-    runtime.closed = false;
-    
     runtime.subsystems = {};
     createRuntimeSubsystems(runtime);
-    
-    runtime.run = function () {
-        runtime.emit("init");
-        while (!runtime.shouldShutdown) {
-            doSync(async () => {
-            });
-            runLoopOnce();
-        }
-        runtime.emitReversed("release");
-    };
-    runtime.signalShutdown = function()
-    {
-        runtime.shouldShutdown = true;
-    }
-
     return runtime;
 }
 

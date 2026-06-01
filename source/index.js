@@ -26,6 +26,7 @@ module.exports = {
     ...require("./utilities/sync"),
     ...require("./utilities/eventEmitter"),
     ...require("./utilities/simpleRun"),
+    ...require("./utilities/gameLoop"),
 
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),

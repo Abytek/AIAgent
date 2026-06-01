@@ -22,7 +22,7 @@ function createRuntimeServer(runtime)
         async () => {
             runtimeServer.app.get("/", (req, res) => {
             });
-            runtimeServer.app.get("/stop", (req, res) => {
+            runtimeServer.app.post("/stop", (req, res) => {
                 res.status(200).send("Stop runtime...");
                 runtime.signalShutdown();
             });

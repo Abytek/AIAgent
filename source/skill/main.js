@@ -82,9 +82,12 @@ function createSkill(options) {
             name: tagName,
             dependencies: []
         };
-        tag.use = function(dependency)
+        tag.use = function(...dependencies)
         {
-            tag.dependencies.push(dependency);
+            tag.dependencies = [
+                ...tag.dependencies,
+                ...dependencies,
+            ]
         }
         skill.tags.set(tagName, tag);
         return tag;

@@ -31,6 +31,23 @@ const configSchema = {
 
             default: {},
         },
+
+        rootManager: {
+            type: "object",
+
+            properties: {
+                url: {
+                    type: "string",
+                    default: "http://localhost:39999",
+                }
+            },
+
+            required: [],
+
+            additionalProperties: false,
+
+            default: {},
+        },
     },
 
     required: [],
@@ -41,36 +58,36 @@ const configSchema = {
 const validateConfig = ajv.compile(configSchema);
 
 function loadRuntimeConfig() {
-  const configPath = path.join(__dirname, "../../runtime.json");
+    const configPath = path.join(__dirname, "../../runtime.json");
 
-  let config = {};
+    let config = {};
 
-  if (fs.existsSync(configPath)) {
-    try {
-      config = JSON.parse(
-        fs.readFileSync(configPath, "utf-8")
-      );
-    } catch (err) {
-      throw new Error(
-        `Invalid JSON in config.json\n${err.message}`
-      );
+    if (fs.existsSync(configPath)) {
+        try {
+            config = JSON.parse(
+                fs.readFileSync(configPath, "utf-8")
+            );
+        } catch (err) {
+            throw new Error(
+                `Invalid JSON in config.json\n${err.message}`
+            );
+        }
     }
-  }
 
-  const valid = validateConfig(config);
+    const valid = validateConfig(config);
 
-  if (!valid) {
-    throw new Error(
-      ajv.errorsText(validateConfig.errors, {
-        separator: "\n",
-      })
-    );
-  }
+    if (!valid) {
+        throw new Error(
+            ajv.errorsText(validateConfig.errors, {
+                separator: "\n",
+            })
+        );
+    }
 
-  console.log(`Loaded runtime config:`, config);
-  return config;
+    console.log(`Loaded runtime config:`, config);
+    return config;
 }
 
 module.exports = {
-  loadRuntimeConfig,
+    loadRuntimeConfig,
 };

@@ -18,6 +18,7 @@ module.exports = {
     ...require("./runtime/config"),
     ...require("./runtime/logger"),
     ...require("./runtime/server"),
+    ...require("./runtime/tracking"),
     ...require("./runtime/skillManager"),
     ...require("./runtime/skill"),
 

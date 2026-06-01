@@ -9,8 +9,10 @@ function createRuntimeLogger(runtime)
 
     runtimeLogger.log = function(tags, ...args)
     {
+        const idParts = runtime.id.split("@");
+
         const parsedTags = [ 
-            chalk.rgb(0, 200, 255)("Runtime"), 
+            `${chalk.rgb(0, 200, 255)(idParts[0])}${chalk.rgb(220, 220, 220)("@")}${chalk.rgb(0, 200, 150)(idParts[1])}`,
             ...tags 
         ];
         let header = ``;

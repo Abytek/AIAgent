@@ -50,6 +50,12 @@ switch (command) {
         rootManager.run();
         break;
 
+    case "runtime":
+        const { createRuntime } = require("./index");
+        const runtime = createRuntime();
+        runtime.run();
+        break;
+
     case "agent":
         let data = {};
         if ("ABYTEK_AIAGENT_DATA" in process.env)

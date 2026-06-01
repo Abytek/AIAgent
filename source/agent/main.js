@@ -95,9 +95,7 @@ function createAgent(options) {
     agent.llmQueue = createAgentLLMQueue(agent);
     agent.context = createAgentContext(agent);
     agent.server = createAgentServer(agent);
-    agent.closeCommands.push(() => agent.server.close());
     agent.tracking = createAgentTracking(agent);
-    agent.closeCommands.push(() => agent.tracking.close());
 
     agent.close = function () {
         if (agent.closed)
@@ -117,7 +115,6 @@ function createAgent(options) {
         while (!agent.shouldShutdown) {
             doSync(async () => {
                 await agent.llmQueue.flush();
-                tickDone = true;
             });
             agent.currentDate = Date.now();
             runLoopOnce();

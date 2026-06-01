@@ -13,9 +13,20 @@ module.exports = {
     ...require("./agent/spawn"),
     ...require("./agent/message"),
     ...require("./agent/tool"),
+    
+    ...require("./runtime/main"),
+    ...require("./runtime/config"),
+    ...require("./runtime/logger"),
+    ...require("./runtime/server"),
+    ...require("./runtime/skillManager"),
+    ...require("./runtime/skill"),
+
     ...require("./rootManager/main"),
+
     ...require("./utilities/sync"),
+    ...require("./utilities/eventEmitter"),
     ...require("./utilities/simpleRun"),
+
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),
     ...require("./frontend/views/rootManagerDashboard"),

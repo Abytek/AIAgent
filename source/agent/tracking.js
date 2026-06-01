@@ -6,6 +6,7 @@ const chalk = require("chalk");
 function createAgentTracking(agent)
 {
     let agentTracking = {};
+    agent.closeCommands.push(() => agentTracking.close());
 
     agentTracking.agent = agent;
     agentTracking.enabled = false;

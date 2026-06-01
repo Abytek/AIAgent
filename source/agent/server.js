@@ -71,6 +71,7 @@ The only way for ${from} to correctly send messages to ${agent.id} is some how l
 function createAgentServer(agent)
 {
     let agentServer = {};
+    agent.closeCommands.push(() => agentServer.close());
 
     agentServer.agent = agent;
 

@@ -7,7 +7,7 @@ const { doSync, makeSync } = require("./utilities/sync");
 const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
 const { spawnAgentSync } = require("./agent/spawn");
 const { spawnSkillSync } = require("./skill/spawn");
-const { createRootManager, createRuntime } = require("./index");
+const { createRootManager, createRuntime, getDefaultRuntimeURL } = require("./index");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -57,6 +57,23 @@ switch (command) {
         {
             const runtime = createRuntime();
             runtime.run();
+        }
+        break;
+    case "runtime.generateSkillId":
+        {
+            console.log(
+                doSync(
+                    async () => {
+                        const response = await fetch(`${getDefaultRuntimeURL()}/generateSkillId`);
+                        const responseText = response.text();
+                        if (!response.ok)
+                        {
+                            throw new Error(responseText);
+                        }
+                        return responseText;
+                    }
+                )
+            );
         }
         break;
 

@@ -7,9 +7,22 @@ const { makeGameLoop } = require("../utilities/gameLoop");
 const { loadSkillConfig } = require("./config");
 const { createSkillLogger } = require("./logger");
 const { createSkillSubsystems } = require("./subsystems");
+const { doSync } = require("../utilities/sync");
 
 function createSkillId(config)
 {
+    return doSync(
+        async () => {
+            const response = await fetch(`${config.runtime.url}/generateSkillId`);
+            const responseText = response.text();
+            if (!response.ok)
+            {
+                throw new Error(responseText);
+            }
+            return responseText;
+        }
+    );
+
     const interfaces = os.networkInterfaces();
 
     const identities = [];
@@ -60,6 +73,8 @@ function createSkill(options) {
 
     skill.revision = options.revision || "";
 
+    skill.logger.log([], "Running...");
+    
     skill.tags = new Map();
     skill.tag = function(tagName)
     {

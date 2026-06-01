@@ -37,7 +37,7 @@ function createRuntimeTracking(runtime)
                     
                     runtimeTracking.io.on("connect", () => {
                         runtimeTracking.io.emit(
-                            "register", 
+                            "registerRuntime", 
                             { 
                                 id: runtime.id,
                                 url: runtimeServer.url

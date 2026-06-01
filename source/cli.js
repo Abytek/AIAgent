@@ -3,9 +3,10 @@
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
-const { makeSync } = require("./utilities/sync");
-const { simpleRunSync } = require("./utilities/simpleRun");
+const { doSync, makeSync } = require("./utilities/sync");
+const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
 const { spawnAgentSync } = require("./agent/spawn");
+const { createRootManager, createRuntime } = require("./index");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -45,61 +46,69 @@ function prepare9Router()
 
 switch (command) {
     case "root":
-        const { createRootManager } = require("./index");
-        const rootManager = createRootManager();
-        rootManager.run();
+        {
+            const rootManager = createRootManager();
+            rootManager.run();
+        }
         break;
 
     case "runtime":
-        const { createRuntime } = require("./index");
-        const runtime = createRuntime();
-        runtime.run();
+        {
+            const runtime = createRuntime();
+            runtime.run();
+        }
         break;
 
     case "agent":
-        let data = {};
-        if ("ABYTEK_AIAGENT_DATA" in process.env)
         {
-            data = { ...JSON.parse(process.env.ABYTEK_AIAGENT_DATA) };
+            let data = {};
+            if ("ABYTEK_AIAGENT_DATA" in process.env)
+            {
+                data = { ...JSON.parse(process.env.ABYTEK_AIAGENT_DATA) };
+            }
+            data.path = process.cwd();
+            spawnAgentSync(data);
         }
-        data.path = process.cwd();
-        spawnAgentSync(data);
         break;
 
     case "codex":
-        prepareCodex();
-        simpleRunSync(
-            "npm",
-            [
-                "exec",
-                "--prefix",
-                path.join(__dirname, ".."),
-                "--",
-                "codex",
-                ...args
-            ],
-            {
-                CODEX_HOME: path.join(__dirname, "../.codex")
-            }
-        );
+        {
+            prepareCodex();
+            simpleRunSync(
+                "npm",
+                [
+                    "exec",
+                    "--prefix",
+                    path.join(__dirname, ".."),
+                    "--",
+                    "codex",
+                    ...args
+                ],
+                {
+                    CODEX_HOME: path.join(__dirname, "../.codex")
+                }
+            );
+        }
         break;
 
     case "9router":
-        prepare9Router();
-        simpleRunSync(
-            "npm",
-            [
-                "exec",
-                "--prefix",
-                path.join(__dirname, ".."),
-                "--",
-                "9router",
-                ...args
-            ],
-            {
-                DATA_DIR: path.join(__dirname, "../.9router")
-            }
-        );
+        {
+            prepare9Router();
+            simpleRunSync(
+                "npm",
+                [
+                    "exec",
+                    "--prefix",
+                    path.join(__dirname, ".."),
+                    "--",
+                    "9router",
+                    ...args
+                ],
+                {
+                    DATA_DIR: path.join(__dirname, "../.9router")
+                }
+            );
+        }
         break;
 
     default:

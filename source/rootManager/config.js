@@ -21,24 +21,7 @@ const configSchema = {
             properties: {
                 port: {
                     type: "integer",
-                    default: 39999,
-                }
-            },
-
-            required: [],
-
-            additionalProperties: false,
-
-            default: {},
-        },
-
-        rootManager: {
-            type: "object",
-
-            properties: {
-                url: {
-                    type: "string",
-                    default: "http://localhost:33999",
+                    default: 33999,
                 }
             },
 
@@ -57,8 +40,8 @@ const configSchema = {
 
 const validateConfig = ajv.compile(configSchema);
 
-function loadRuntimeConfig() {
-    const configPath = path.join(__dirname, "../../runtime.json");
+function loadRootManagerConfig() {
+    const configPath = path.join(__dirname, "../../rootManager.json");
 
     let config = {};
 
@@ -84,10 +67,10 @@ function loadRuntimeConfig() {
         );
     }
 
-    console.log(`Loaded runtime config:`, config);
+    console.log(`Loaded rootManager config:`, config);
     return config;
 }
 
 module.exports = {
-    loadRuntimeConfig,
+    loadRootManagerConfig,
 };

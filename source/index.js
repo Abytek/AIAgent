@@ -21,8 +21,13 @@ module.exports = {
     ...require("./runtime/tracking"),
     ...require("./runtime/skillManager"),
     ...require("./runtime/skill"),
-
+    
     ...require("./rootManager/main"),
+    ...require("./rootManager/config"),
+    ...require("./rootManager/logger"),
+    ...require("./rootManager/server"),
+    ...require("./rootManager/runtimeManager"),
+    ...require("./rootManager/runtime"),
 
     ...require("./utilities/sync"),
     ...require("./utilities/eventEmitter"),

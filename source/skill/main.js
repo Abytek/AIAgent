@@ -82,7 +82,7 @@ function createSkill(options) {
             name: tagName,
             dependencies: []
         };
-        tag.use = function(...dependencies)
+        tag.depends = function(...dependencies)
         {
             for (const dependency of dependencies)
             {

@@ -34,7 +34,7 @@ function createRuntimeSkillManager(runtime)
     runtimeSkillManager.on(
         "registerSkill",
         async (socket, skillInfo) => {
-            runtime.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Registered skill:`, chalk.rgb(200, 70, 150)(skillInfo));
+            runtime.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Registered skill:`, skillInfo);
             runtimeSkillManager._skillinfos.set(
                 skillInfo.url, 
                 skillInfo
@@ -60,7 +60,21 @@ function createRuntimeSkillManager(runtime)
     }
 
     // runtime server events
-    runtime.subsystems.server.on(
+    runtimeServer.on(
+        "setupServerRoutes",
+        async () => {
+            runtimeServer.app.get("/skillInfos", (req, res) => {
+                let skillInfos = [];
+                runtimeSkillManager._skillinfos.forEach(
+                    value => {
+                        skillInfos.push(value);
+                    }
+                );
+                res.status(200).json(skillInfos);
+            });
+        }
+    );
+    runtimeServer.on(
         "socketClient_connected",
         async (socket) => {
             socket.on(
@@ -117,7 +131,7 @@ function createRuntimeSkillManager(runtime)
             );
         }
     );
-    runtime.subsystems.server.on(
+    runtimeServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
             if (!runtimeSkillManager._socketToSkillURL.has(socket))

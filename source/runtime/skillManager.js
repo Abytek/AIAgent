@@ -1,7 +1,7 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeRuntimeSkillInfo } = require("./skill");
+const { finalizeRuntimeSkillInfo, runtimeSpawnCoreSkills, runtimeWaitCoreSkills } = require("./skill");
 
 function createRuntimeSkillManager(runtime)
 {
@@ -9,25 +9,25 @@ function createRuntimeSkillManager(runtime)
 
     const runtimeSkillManager = makeEventEmitter({
         runtime,
-        _skillinfos: new Map(), // key: skill url, value: skill info
-        _socketToSkillURL: new Map(), // key: socket IO, value: skill url
+        skillinfos: new Map(), // key: skill url, value: skill info
+        socketToSkillURL: new Map(), // key: socket IO, value: skill url
     })
     runtimeSkillManager.hasSkillInfo = function(skillURL) {
-        return runtimeSkillManager._skillinfos.has(skillURL);
+        return runtimeSkillManager.skillinfos.has(skillURL);
     }
     runtimeSkillManager.findSkillInfo = function(skillURL) {
         if (!runtimeSkillManager.hasSkillInfo(skillURL))
         {
             return null;
         }
-        return runtimeSkillManager._skillinfos.get(skillURL);
+        return runtimeSkillManager.skillinfos.get(skillURL);
     }
     runtimeSkillManager.getSkillInfo = function(skillURL) {
         if (!runtimeSkillManager.hasSkillInfo(skillURL))
         {
             throw new Error(`Not found skill: ${skillURL}`);
         }
-        return runtimeSkillManager._skillinfos.get(skillURL);
+        return runtimeSkillManager.skillinfos.get(skillURL);
     }
 
     // runtime skill manager events
@@ -35,7 +35,7 @@ function createRuntimeSkillManager(runtime)
         "registerSkill",
         async (socket, skillInfo) => {
             runtime.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Registered skill:`, skillInfo);
-            runtimeSkillManager._skillinfos.set(
+            runtimeSkillManager.skillinfos.set(
                 skillInfo.url, 
                 skillInfo
             );
@@ -44,7 +44,7 @@ function createRuntimeSkillManager(runtime)
     runtimeSkillManager.on(
         "unregisterSkill",
         async (socket, skillInfo) => {
-            runtimeSkillManager._skillinfos.delete(skillInfo.url);
+            runtimeSkillManager.skillinfos.delete(skillInfo.url);
             runtime.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Unregistered skill:`, chalk.rgb(200, 70, 150)(skillInfo.url));
         }
     );
@@ -65,7 +65,7 @@ function createRuntimeSkillManager(runtime)
         async () => {
             runtimeServer.app.get("/skillInfos", (req, res) => {
                 let skillInfos = [];
-                runtimeSkillManager._skillinfos.forEach(
+                runtimeSkillManager.skillinfos.forEach(
                     value => {
                         skillInfos.push(value);
                     }
@@ -80,10 +80,9 @@ function createRuntimeSkillManager(runtime)
             socket.on(
                 "registerSkill",
                 async (skillInfo, ack) => {
-                    skillInfo = finalizeRuntimeSkillInfo(skillInfo);
-
                     try 
                     {
+                        skillInfo = finalizeRuntimeSkillInfo(skillInfo);
                         registerSkill(socket, skillInfo);
                     }
                     catch(err)
@@ -102,7 +101,7 @@ function createRuntimeSkillManager(runtime)
             socket.on(
                 "unregisterSkill",
                 async (skillURL, ack) => {
-                    if (!runtimeSkillManager._skillinfos.has(skillURL))
+                    if (!runtimeSkillManager.skillinfos.has(skillURL))
                     {
                         if (ack)
                         {
@@ -110,7 +109,7 @@ function createRuntimeSkillManager(runtime)
                         }
                     }
 
-                    const skillInfo = runtimeSkillManager._skillinfos.get(skillURL);
+                    const skillInfo = runtimeSkillManager.skillinfos.get(skillURL);
 
                     try 
                     {
@@ -134,13 +133,13 @@ function createRuntimeSkillManager(runtime)
     runtimeServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
-            if (!runtimeSkillManager._socketToSkillURL.has(socket))
+            if (!runtimeSkillManager.socketToSkillURL.has(socket))
             {
                 return;
             }
 
-            const skillURL = runtimeSkillManager._socketToSkillURL.get(socket);
-            const skillInfo = runtimeSkillManager._skillInfos.get(skillURL);
+            const skillURL = runtimeSkillManager.socketToSkillURL.get(socket);
+            const skillInfo = runtimeSkillManager.skillinfos.get(skillURL);
             unregisterSkill(socket, skillInfo);
         }
     );
@@ -149,11 +148,33 @@ function createRuntimeSkillManager(runtime)
     runtime.on(
         "init",
         async () => {
+            await runtimeSpawnCoreSkills(runtimeSkillManager);
         }
     );
     runtime.on(
         "release",
         async () => {
+            {
+                let skillUrls = [];
+                runtimeSkillManager.skillinfos.forEach(
+                    value => {
+                        skillUrls.push(value.url);
+                    }
+                )
+                for (const skillUrl of skillUrls)
+                {
+                    try
+                    {
+                        await fetch(`${skillUrl}/stop`, {
+                            method: "POST"
+                        });
+                    }
+                    catch(err)
+                    {
+                    }
+                }
+            }
+            await runtimeWaitCoreSkills(runtimeSkillManager);
         }
     );
     return runtimeSkillManager;

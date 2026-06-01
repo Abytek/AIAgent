@@ -4,6 +4,8 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
+const { getDefaultRootManagerPort } = require("../env/rootManager");
+
 const ajv = new Ajv({
     useDefaults: true,
     allErrors: true,
@@ -21,7 +23,7 @@ const configSchema = {
             properties: {
                 port: {
                     type: "integer",
-                    default: 33999,
+                    default: getDefaultRootManagerPort(),
                 }
             },
 
@@ -52,7 +54,7 @@ function loadRootManagerConfig() {
             );
         } catch (err) {
             throw new Error(
-                `Invalid JSON in config.json\n${err.message}`
+                `Invalid JSON in rootManager.json\n${err.message}`
             );
         }
     }

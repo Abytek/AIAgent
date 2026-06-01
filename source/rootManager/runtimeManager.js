@@ -9,25 +9,25 @@ function createRootRuntimeManager(rootManager)
 
     const rootRuntimeManager = makeEventEmitter({
         rootManager,
-        _runtimeinfos: new Map(), // key: runtime id, value: runtime info
-        _socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
+        runtimeinfos: new Map(), // key: runtime id, value: runtime info
+        socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
     })
     rootRuntimeManager.hasRuntimeInfo = function(runtimeId) {
-        return rootRuntimeManager._runtimeinfos.has(runtimeId);
+        return rootRuntimeManager.runtimeinfos.has(runtimeId);
     }
     rootRuntimeManager.findRuntimeInfo = function(runtimeId) {
         if (!rootRuntimeManager.hasRuntimeInfo(runtimeId))
         {
             return null;
         }
-        return rootRuntimeManager._runtimeinfos.get(runtimeId);
+        return rootRuntimeManager.runtimeinfos.get(runtimeId);
     }
     rootRuntimeManager.getRuntimeInfo = function(runtimeId) {
         if (!rootRuntimeManager.hasRuntimeInfo(runtimeId))
         {
             throw new Error(`Not found runtime: ${runtimeId}`);
         }
-        return rootRuntimeManager._runtimeinfos.get(runtimeId);
+        return rootRuntimeManager.runtimeinfos.get(runtimeId);
     }
 
     // rootManager runtime manager events
@@ -35,7 +35,7 @@ function createRootRuntimeManager(rootManager)
         "registerRuntime",
         async (socket, runtimeInfo) => {
             rootManager.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Registered runtime:`, runtimeInfo);
-            rootRuntimeManager._runtimeinfos.set(
+            rootRuntimeManager.runtimeinfos.set(
                 runtimeInfo.id, 
                 runtimeInfo
             );
@@ -44,7 +44,7 @@ function createRootRuntimeManager(rootManager)
     rootRuntimeManager.on(
         "unregisterRuntime",
         async (socket, runtimeInfo) => {
-            rootRuntimeManager._runtimeinfos.delete(runtimeInfo.id);
+            rootRuntimeManager.runtimeinfos.delete(runtimeInfo.id);
             rootManager.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Unregistered runtime:`, chalk.rgb(200, 70, 150)(runtimeInfo.id));
         }
     );
@@ -65,7 +65,7 @@ function createRootRuntimeManager(rootManager)
         async () => {
             rootServer.app.get("/runtimeInfos", (req, res) => {
                 let runtimeInfos = [];
-                rootRuntimeManager._runtimeinfos.forEach(
+                rootRuntimeManager.runtimeinfos.forEach(
                     value => {
                         runtimeInfos.push(value);
                     }
@@ -102,7 +102,7 @@ function createRootRuntimeManager(rootManager)
             socket.on(
                 "unregisterRuntime",
                 async (runtimeId, ack) => {
-                    if (!rootRuntimeManager._runtimeinfos.has(runtimeId))
+                    if (!rootRuntimeManager.runtimeinfos.has(runtimeId))
                     {
                         if (ack)
                         {
@@ -110,7 +110,7 @@ function createRootRuntimeManager(rootManager)
                         }
                     }
 
-                    const runtimeInfo = rootRuntimeManager._runtimeinfos.get(runtimeId);
+                    const runtimeInfo = rootRuntimeManager.runtimeinfos.get(runtimeId);
 
                     try 
                     {
@@ -134,13 +134,13 @@ function createRootRuntimeManager(rootManager)
     rootServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
-            if (!rootRuntimeManager._socketToRuntimeId.has(socket))
+            if (!rootRuntimeManager.socketToRuntimeId.has(socket))
             {
                 return;
             }
 
-            const runtimeId = rootRuntimeManager._socketToRuntimeId.get(socket);
-            const runtimeInfo = rootRuntimeManager._runtimeInfos.get(runtimeId);
+            const runtimeId = rootRuntimeManager.socketToRuntimeId.get(socket);
+            const runtimeInfo = rootRuntimeManager.runtimeinfos.get(runtimeId);
             unregisterRuntime(socket, runtimeInfo);
         }
     );

@@ -4,7 +4,7 @@ const { doSync } = require("../utilities/sync");
 
 function makeEventEmitter(options)
 {
-    const result = new EventEmitter();
+    let result = new EventEmitter();
     result.emitReversed = function(name, ...args)
     {
         doSync(

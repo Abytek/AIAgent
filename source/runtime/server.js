@@ -6,8 +6,8 @@ const fs = require("fs");
 const os = require("os");
 const { Server } = require("socket.io");
 const chalk = require("chalk");
-const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { makeSync } = require("../utilities/sync");
+const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
 
 function createRuntimeServer(runtime)
@@ -24,6 +24,7 @@ function createRuntimeServer(runtime)
             });
             runtimeServer.app.post("/stop", (req, res) => {
                 res.status(200).send("Stop runtime...");
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Server") ], "Stop runtime...");
                 runtime.signalShutdown();
             });
         }
@@ -72,6 +73,7 @@ function createRuntimeServer(runtime)
                 {
                     const address = runtimeServer.server.address();
                     runtimeServer.url = `http://127.0.0.1:${address.port}`;
+                    runtime.config.server.port = address.port;
                     runtime.logger.log([ chalk.rgb(60, 200, 30)("Server") ], `Runtime server is running at:`, address);
                     sync.stop();
                 });

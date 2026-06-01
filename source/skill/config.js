@@ -4,8 +4,8 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
-const { getDefaultRootManagerURL } = require("../env/rootManager");
-const { getDefaultRuntimePort } = require("../env/runtime");
+const { getDefaultRuntimeURL } = require("../env/runtime");
+const { } = require("../env/skill");
 
 const ajv = new Ajv({
     useDefaults: true,
@@ -24,7 +24,7 @@ const configSchema = {
             properties: {
                 port: {
                     type: "integer",
-                    default: getDefaultRuntimePort(),
+                    default: 0,
                 }
             },
 
@@ -35,13 +35,13 @@ const configSchema = {
             default: {},
         },
 
-        rootManager: {
+        runtime: {
             type: "object",
 
             properties: {
                 url: {
                     type: "string",
-                    default: getDefaultRootManagerURL(),
+                    default: getDefaultRuntimeURL(),
                 }
             },
 
@@ -60,8 +60,8 @@ const configSchema = {
 
 const validateConfig = ajv.compile(configSchema);
 
-function loadRuntimeConfig() {
-    const configPath = path.join(__dirname, "../../runtime.json");
+function loadSkillConfig(skill) {
+    const configPath = path.join(skill.path, "./config.json");
 
     let config = {};
 
@@ -72,7 +72,7 @@ function loadRuntimeConfig() {
             );
         } catch (err) {
             throw new Error(
-                `Invalid JSON in runtime.json\n${err.message}`
+                `Invalid JSON in config.json\n${err.message}`
             );
         }
     }
@@ -87,10 +87,10 @@ function loadRuntimeConfig() {
         );
     }
 
-    console.log(`Loaded runtime config:`, config);
+    console.log(`Loaded skill config:`, config);
     return config;
 }
 
 module.exports = {
-    loadRuntimeConfig,
+    loadSkillConfig,
 };

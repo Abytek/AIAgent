@@ -24,6 +24,7 @@ function createRootServer(rootManager)
             });
             rootServer.app.post("/stop", (req, res) => {
                 res.status(200).send("Stop rootManager...");
+                rootManager.logger.log([ chalk.rgb(60, 200, 30)("Server") ], "Stop root manager...");
                 rootManager.signalShutdown();
             });
         }
@@ -72,6 +73,7 @@ function createRootServer(rootManager)
                 {
                     const address = rootServer.server.address();
                     rootServer.url = `http://127.0.0.1:${address.port}`;
+                    rootManager.config.server.port = address.port;
                     rootManager.logger.log([ chalk.rgb(60, 200, 30)("Server") ], `RootManager server is running at:`, address);
                     sync.stop();
                 });

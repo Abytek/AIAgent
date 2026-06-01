@@ -1,5 +1,41 @@
 
 module.exports = {
+    ...require("./utilities/sync"),
+    ...require("./utilities/eventEmitter"),
+    ...require("./utilities/simpleRun"),
+    ...require("./utilities/gameLoop"),
+
+    ...require("./env/rootManager"),
+    ...require("./env/runtime"),
+    ...require("./env/skill"),
+    ...require("./env/agent"),
+
+    ...require("./frontend/helper"),
+    ...require("./frontend/views/agentMonitor"),
+    ...require("./frontend/views/rootManagerDashboard"),
+    
+    ...require("./rootManager/main"),
+    ...require("./rootManager/config"),
+    ...require("./rootManager/logger"),
+    ...require("./rootManager/server"),
+    ...require("./rootManager/runtimeManager"),
+    ...require("./rootManager/runtime"),
+    
+    ...require("./runtime/main"),
+    ...require("./runtime/config"),
+    ...require("./runtime/logger"),
+    ...require("./runtime/server"),
+    ...require("./runtime/tracking"),
+    ...require("./runtime/skillManager"),
+    ...require("./runtime/skill"),
+    
+    ...require("./skill/main"),
+    ...require("./skill/config"),
+    ...require("./skill/logger"),
+    ...require("./skill/server"),
+    ...require("./skill/tracking"),
+    ...require("./skill/spawn"),
+
     ...require("./agent/main"),
     ...require("./agent/config"),
     ...require("./agent/brief"),
@@ -13,28 +49,4 @@ module.exports = {
     ...require("./agent/spawn"),
     ...require("./agent/message"),
     ...require("./agent/tool"),
-    
-    ...require("./runtime/main"),
-    ...require("./runtime/config"),
-    ...require("./runtime/logger"),
-    ...require("./runtime/server"),
-    ...require("./runtime/tracking"),
-    ...require("./runtime/skillManager"),
-    ...require("./runtime/skill"),
-    
-    ...require("./rootManager/main"),
-    ...require("./rootManager/config"),
-    ...require("./rootManager/logger"),
-    ...require("./rootManager/server"),
-    ...require("./rootManager/runtimeManager"),
-    ...require("./rootManager/runtime"),
-
-    ...require("./utilities/sync"),
-    ...require("./utilities/eventEmitter"),
-    ...require("./utilities/simpleRun"),
-    ...require("./utilities/gameLoop"),
-
-    ...require("./frontend/helper"),
-    ...require("./frontend/views/agentMonitor"),
-    ...require("./frontend/views/rootManagerDashboard"),
 }

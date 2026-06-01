@@ -6,6 +6,7 @@ const { spawn } = require("child_process");
 const { doSync, makeSync } = require("./utilities/sync");
 const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
 const { spawnAgentSync } = require("./agent/spawn");
+const { spawnSkillSync } = require("./skill/spawn");
 const { createRootManager, createRuntime } = require("./index");
 
 const command = process.argv[2];
@@ -68,6 +69,14 @@ switch (command) {
             }
             data.path = process.cwd();
             spawnAgentSync(data);
+        }
+        break;
+
+    case "skill":
+        {
+            spawnSkillSync({
+                path: process.cwd(),
+            });
         }
         break;
 

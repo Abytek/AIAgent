@@ -18,7 +18,7 @@ function createSkillServer(skill)
 
     // skill server events
     skillServer.on(
-        "setupServerRoutes",
+        "setup",
         async () => {
             skillServer.app.get("/", (req, res) => {
             });
@@ -65,7 +65,7 @@ function createSkillServer(skill)
                 });
 
                 setupFrontendForExpressApp(skillServer.app);
-                skillServer.emit("setupServerRoutes");
+                skillServer.emit("setup");
                     
                 skillServer.io.on("connection", (socket) => {
                     skillServer.emit("socketClient_connected", socket);

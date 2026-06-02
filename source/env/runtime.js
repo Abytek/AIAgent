@@ -1,4 +1,9 @@
 
+function parseRuntimeURL(port)
+{
+    return `http://localhost:${port}`;
+}
+
 function getDefaultRuntimePort()
 {
     if ("ABYTEK_AIAGENT_RUNTIME_PORT" in process.env)
@@ -9,10 +14,11 @@ function getDefaultRuntimePort()
 }
 function getDefaultRuntimeURL()
 {
-    return `http://localhost:${getDefaultRuntimePort()}`;
+    return parseRuntimeURL(getDefaultRuntimePort());
 }
 
 module.exports = {
+    parseRuntimeURL,
     getDefaultRuntimePort,
-    getDefaultRuntimeURL
+    getDefaultRuntimeURL,
 }

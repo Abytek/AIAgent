@@ -61,7 +61,7 @@ function createRuntimeSkillManager(runtime)
 
     // runtime server events
     runtimeServer.on(
-        "setupServerRoutes",
+        "setup",
         async () => {
             runtimeServer.app.get("/skillInfos", (req, res) => {
                 let skillInfos = [];
@@ -162,17 +162,17 @@ function createRuntimeSkillManager(runtime)
         "release",
         async () => {
             {
-                let skillUrls = [];
+                let skillURLs = [];
                 runtimeSkillManager.skillinfos.forEach(
                     value => {
-                        skillUrls.push(value.url);
+                        skillURLs.push(value.url);
                     }
                 )
-                for (const skillUrl of skillUrls)
+                for (const skillURL of skillURLs)
                 {
                     try
                     {
-                        await fetch(`${skillUrl}/stop`, {
+                        await fetch(`${skillURL}/stop`, {
                             method: "POST"
                         });
                     }

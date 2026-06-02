@@ -1,4 +1,9 @@
 
+function parseRootManagerURL(port)
+{
+    return `http://localhost:${port}`;
+}
+
 function getDefaultRootManagerPort()
 {
     if ("ABYTEK_AIAGENT_ROOT_MANAGER_PORT" in process.env)
@@ -9,10 +14,11 @@ function getDefaultRootManagerPort()
 }
 function getDefaultRootManagerURL()
 {
-    return `http://localhost:${getDefaultRootManagerPort()}`;
+    return parseRootManagerURL(getDefaultRootManagerPort());
 }
 
 module.exports = {
+    parseRootManagerURL,
     getDefaultRootManagerPort,
-    getDefaultRootManagerURL
+    getDefaultRootManagerURL,
 }

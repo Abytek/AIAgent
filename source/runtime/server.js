@@ -18,7 +18,7 @@ function createRuntimeServer(runtime)
 
     // runtime server events
     runtimeServer.on(
-        "setupServerRoutes",
+        "setup",
         async () => {
             runtimeServer.app.get("/", (req, res) => {
             });
@@ -58,7 +58,7 @@ function createRuntimeServer(runtime)
                 });
 
                 setupFrontendForExpressApp(runtimeServer.app);
-                runtimeServer.emit("setupServerRoutes");
+                runtimeServer.emit("setup");
                     
                 runtimeServer.io.on("connection", (socket) => {
                     runtimeServer.emit("socketClient_connected", socket);

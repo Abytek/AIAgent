@@ -18,7 +18,7 @@ function createRootServer(rootManager)
 
     // rootManager server events
     rootServer.on(
-        "setupServerRoutes",
+        "setup",
         async () => {
             rootServer.app.get("/", (req, res) => {
             });
@@ -58,7 +58,7 @@ function createRootServer(rootManager)
                 });
 
                 setupFrontendForExpressApp(rootServer.app);
-                rootServer.emit("setupServerRoutes");
+                rootServer.emit("setup");
                     
                 rootServer.io.on("connection", (socket) => {
                     rootServer.emit("socketClient_connected", socket);

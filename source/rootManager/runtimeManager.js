@@ -61,7 +61,7 @@ function createRootRuntimeManager(rootManager)
 
     // rootManager server events
     rootServer.on(
-        "setupServerRoutes",
+        "setup",
         async () => {
             rootServer.app.get("/runtimeInfos", (req, res) => {
                 let runtimeInfos = [];

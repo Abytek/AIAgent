@@ -34,17 +34,17 @@ async function runtimeSpawnCoreSkills(runtimeSkillManager)
 {
     const runtime = runtimeSkillManager.runtime;
 
-    runtimeSkillManager.coreSkillPromises = [];
-    runtimeSkillManager.coreSkillPromises.push(
-        spawnSkill({
-            path: path.resolve(__dirname, "../../skills/framework")
-        })
-    );
-    runtimeSkillManager.coreSkillPromises.push(
-        spawnSkill({
-            path: path.resolve(__dirname, "../../skills/agent")
-        })
-    );
+    // runtimeSkillManager.coreSkillPromises = [];
+    // runtimeSkillManager.coreSkillPromises.push(
+    //     spawnSkill({
+    //         path: path.resolve(__dirname, "../../skills/framework")
+    //     })
+    // );
+    // runtimeSkillManager.coreSkillPromises.push(
+    //     spawnSkill({
+    //         path: path.resolve(__dirname, "../../skills/agent")
+    //     })
+    // );
 }
 async function runtimeWaitCoreSkills(runtimeSkillManager)
 {

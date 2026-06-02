@@ -12,6 +12,7 @@ function makeGameLoop(options) {
 
     result.run = function () {
         result.emit("init");
+        result.emit("ready");
         while (!result.shouldShutdown) {
             result.emit("tick");
             runLoopOnce();

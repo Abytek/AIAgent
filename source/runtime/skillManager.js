@@ -1,7 +1,7 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeRuntimeSkillInfo, runtimeSpawnCoreSkills, runtimeWaitCoreSkills } = require("./skill");
+const { finalizeRuntimeSkillInfo } = require("./skill");
 
 function createRuntimeSkillManager(runtime)
 {
@@ -155,7 +155,6 @@ function createRuntimeSkillManager(runtime)
     runtime.on(
         "init",
         async () => {
-            await runtimeSpawnCoreSkills(runtimeSkillManager);
         }
     );
     runtime.on(
@@ -181,7 +180,6 @@ function createRuntimeSkillManager(runtime)
                     }
                 }
             }
-            await runtimeWaitCoreSkills(runtimeSkillManager);
         }
     );
     return runtimeSkillManager;

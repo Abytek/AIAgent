@@ -4,6 +4,7 @@ module.exports = {
     ...require("./utilities/eventEmitter"),
     ...require("./utilities/simpleRun"),
     ...require("./utilities/gameLoop"),
+    ...require("./utilities/gameLoopServer"),
 
     ...require("./env/rootManager"),
     ...require("./env/runtime"),

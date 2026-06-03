@@ -1,78 +1,78 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeRuntimeAgentInfo } = require("./agent");
+const { finalizeRootAgentInfo } = require("./agent");
 
-function createRuntimeAgentManager(runtime)
+function createRootAgentManager(root)
 {
-    const runtimeServer = runtime.subsystems.server;
+    const rootServer = root.subsystems.server;
 
-    const runtimeAgentManager = makeEventEmitter({
-        runtime,
+    const rootAgentManager = makeEventEmitter({
+        root,
         agentInfos: new Map(), // key: agent id, value: agent info
         socketToAgentId: new Map(), // key: socket IO, value: agent id
     })
-    runtimeAgentManager.hasAgentInfo = function(agentId) {
-        return runtimeAgentManager.agentInfos.has(agentId);
+    rootAgentManager.hasAgentInfo = function(agentId) {
+        return rootAgentManager.agentInfos.has(agentId);
     }
-    runtimeAgentManager.findAgentInfo = function(agentId) {
-        if (!runtimeAgentManager.hasAgentInfo(agentId))
+    rootAgentManager.findAgentInfo = function(agentId) {
+        if (!rootAgentManager.hasAgentInfo(agentId))
         {
             return null;
         }
-        return runtimeAgentManager.agentInfos.get(agentId);
+        return rootAgentManager.agentInfos.get(agentId);
     }
-    runtimeAgentManager.getAgentInfo = function(agentId) {
-        if (!runtimeAgentManager.hasAgentInfo(agentId))
+    rootAgentManager.getAgentInfo = function(agentId) {
+        if (!rootAgentManager.hasAgentInfo(agentId))
         {
             throw new Error(`Not found agent: ${agentId}`);
         }
-        return runtimeAgentManager.agentInfos.get(agentId);
+        return rootAgentManager.agentInfos.get(agentId);
     }
     let nextAgentIndex = 0;
-    runtimeAgentManager.generateAgentId = function()
+    rootAgentManager.generateAgentId = function()
     {
         let agentIndex = nextAgentIndex;
         ++nextAgentIndex;
-        return `${runtime.id.replaceAll("Runtime", "Agent")}.${agentIndex}`;
+        return `${root.id.replaceAll("Root", "Agent")}.${agentIndex}`;
     }
 
-    // runtime agent manager events
-    runtimeAgentManager.on(
+    // root agent manager events
+    rootAgentManager.on(
         "registerAgent",
         async (socket, agentInfo) => {
-            runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Registered agent:`, agentInfo);
-            runtimeAgentManager.agentInfos.set(
+            root.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Registered agent:`, agentInfo);
+            rootAgentManager.agentInfos.set(
                 agentInfo.id, 
                 agentInfo
             );
         }
     );
-    runtimeAgentManager.on(
+    rootAgentManager.on(
         "unregisterAgent",
         async (socket, agentInfo) => {
-            runtimeAgentManager.agentInfos.delete(agentInfo.id);
-            runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Unregistered agent:`, chalk.rgb(200, 70, 150)(agentInfo.id));
+            rootAgentManager.agentInfos.delete(agentInfo.id);
+            root.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Unregistered agent:`, chalk.rgb(200, 70, 150)(agentInfo.id));
         }
     );
 
     // 
     async function registerAgent(socket, agentInfo)
     {
-        await runtimeAgentManager.emit("registerAgent", socket, agentInfo);
+        await rootAgentManager.emit("registerAgent", socket, agentInfo);
     }
     async function unregisterAgent(socket, agentInfo)
     {
-        await runtimeAgentManager.emitReversed("unregisterAgent", socket, agentInfo);
+        await rootAgentManager.emitReversed("unregisterAgent", socket, agentInfo);
     }
 
-    // runtime server events
-    runtimeServer.on(
+    // root server events
+    rootServer.on(
         "setup",
         async () => {
-            runtimeServer.app.get("/agentInfos", (req, res) => {
+            rootServer.app.get("/agentInfos", (req, res) => {
                 let agentInfos = [];
-                runtimeAgentManager.agentInfos.forEach(
+                rootAgentManager.agentInfos.forEach(
                     value => {
                         agentInfos.push(value);
                     }
@@ -81,12 +81,12 @@ function createRuntimeAgentManager(runtime)
             });
 
             let nextAgentIndex = 0;
-            runtimeServer.app.get("/generateAgentId", (req, res) => {
-                res.status(200).send(runtimeAgentManager.generateAgentId());
+            rootServer.app.get("/generateAgentId", (req, res) => {
+                res.status(200).send(rootAgentManager.generateAgentId());
             });
         }
     );
-    runtimeServer.on(
+    rootServer.on(
         "socketClient_connected",
         async (socket) => {
             socket.on(
@@ -94,7 +94,7 @@ function createRuntimeAgentManager(runtime)
                 async (agentInfo, ack) => {
                     try 
                     {
-                        agentInfo = finalizeRuntimeAgentInfo(agentInfo);
+                        agentInfo = finalizeRootAgentInfo(agentInfo);
                         await registerAgent(socket, agentInfo);
                     }
                     catch(err)
@@ -113,7 +113,7 @@ function createRuntimeAgentManager(runtime)
             socket.on(
                 "unregisterAgent",
                 async (agentId, ack) => {
-                    if (!runtimeAgentManager.agentInfos.has(agentId))
+                    if (!rootAgentManager.agentInfos.has(agentId))
                     {
                         if (ack)
                         {
@@ -121,7 +121,7 @@ function createRuntimeAgentManager(runtime)
                         }
                     }
 
-                    const agentInfo = runtimeAgentManager.agentInfos.get(agentId);
+                    const agentInfo = rootAgentManager.agentInfos.get(agentId);
 
                     try 
                     {
@@ -142,32 +142,32 @@ function createRuntimeAgentManager(runtime)
             );
         }
     );
-    runtimeServer.on(
+    rootServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
-            if (!runtimeAgentManager.socketToAgentId.has(socket))
+            if (!rootAgentManager.socketToAgentId.has(socket))
             {
                 return;
             }
 
-            const agentId = runtimeAgentManager.socketToAgentId.get(socket);
-            const agentInfo = runtimeAgentManager.agentInfos.get(agentId);
+            const agentId = rootAgentManager.socketToAgentId.get(socket);
+            const agentInfo = rootAgentManager.agentInfos.get(agentId);
             await unregisterAgent(socket, agentInfo);
         }
     );
 
-    // runtime events
-    runtime.on(
+    // root events
+    root.on(
         "init",
         async () => {
         }
     );
-    runtime.on(
+    root.on(
         "release",
         async () => {
             {
                 let agentURLs = [];
-                runtimeAgentManager.agentInfos.forEach(
+                rootAgentManager.agentInfos.forEach(
                     value => {
                         agentURLs.push(value.url);
                     }
@@ -187,9 +187,9 @@ function createRuntimeAgentManager(runtime)
             }
         }
     );
-    return runtimeAgentManager;
+    return rootAgentManager;
 }
 
 module.exports = {
-    createRuntimeAgentManager
+    createRootAgentManager
 }

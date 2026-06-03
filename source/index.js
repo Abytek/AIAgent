@@ -21,6 +21,8 @@ module.exports = {
     ...require("./root/server"),
     ...require("./root/runtimeManager"),
     ...require("./root/runtime"),
+    ...require("./root/agentManager"),
+    ...require("./root/agent"),
     
     ...require("./runtime/main"),
     ...require("./runtime/config"),

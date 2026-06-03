@@ -69,25 +69,6 @@ Do NOT:
 
 Only tools are allowed to perform agent communication.
 
-# AI AGENT CONNECTIONS
-
-There are 2 models of AI agent connection:
-1. Closed (default)
-- Enabled by default, this mode only allows 2 kinds of messages:
-    + From the user/human
-    + From connected AI agents.
-2. Open
-- Allow messages from all agents.
-- Need to be configured in <agent_project>/config.json.
-
-Each AI agent has a list of agent connections which define which agents can send messages to them in closed connection model.
-
-Each agent connection has:
--  "id" (AI agent id) (required)
--  "description" (optional)
-
-Agent connections to invalid AI agent ids are not allowed.
-
 # TOOL USAGE RULES
 
 Tools are the primary execution mechanism.
@@ -157,35 +138,6 @@ abytek-aiagent-cli codex
 \`\`\`batch
 abytek-aiagent-cli root
 \`\`\`
-
-- ABYTEK_AIAGENT_DATA environment variable (JSON string):
-    + ABYTEK_AIAGENT_DATA object schema:
-        + id:
-            + type: string
-            + description: id of the new AI agent to spawn
-        + connections:
-            + type: array
-            + description: AI agent connection for enabling inter-agent messages.
-            + item:
-                + type: object
-                + properties:
-                    + id: agent id
-                    + description: connection description
-    + If you create a terminal for spawning an AI agent, you MUST set environment variable ABYTEK_AIAGENT_DATA.
-
-- Spawn a new AI agent instace from a specific AI agent project
-\`\`\`batch
-cd <AIAgent Path>
-abytek-aiagent-cli agent
-\`\`\`
-    + GUIDE FOR AI AGENTS:
-        + If you are going to create a terminal to spawn that new AI agent:
-            + Create the new terminal with ABYTEK_AIAGENT_DATA environment variable containing "id" and "connections".
-            + Add agent connection to that newly spawned AI agent by yourself then send messages to them.
-        + If you already have a terminal:
-            + Update ABYTEK_AIAGENT_DATA environment variable containing "id" and "connections".
-            + Add agent connection to that newly spawned AI agent by yourself then send messages to them.
-    + NOTE: This command will block your terminal until the spawned agent stopped, so you need to use multiple terminals for multiple spawned AI agents.
 
 # RESPONSE STYLE
 

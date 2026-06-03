@@ -81,7 +81,7 @@ function createRuntimeAgentSpawner(runtime)
                 }
                 else
                 {
-                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn`);
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn:`, err.message);
                     return sync.reject(err);
                 }
             }
@@ -96,6 +96,7 @@ function createRuntimeAgentSpawner(runtime)
                             async () => {
                                 await spawnAgent({
                                     path: path.resolve(__dirname, "../../templates/agents/default"),
+                                    serviceInstanceInfo: serviceInstance.getInfo()
                                 });
                             }
                         );

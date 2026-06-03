@@ -5,9 +5,21 @@ const { makeSync } = require("../utilities/sync");
 async function spawnAgent(options)
 {
     options = options || {};
+
+    if (!("serviceInstanceInfo" in options))
+    {
+        throw new Error(`Requires "serviceInstanceInfo" in options`);
+    }
+    const serviceInstanceInfo = options.serviceInstanceInfo;
+
     return await spawnNodeJSProcess({
         ...options,
         script: "agent",
+        args: [ 
+            Buffer.from(
+                JSON.stringify(serviceInstanceInfo, null, 4)
+            ).toString("base64"),
+        ]
     });
 }
 

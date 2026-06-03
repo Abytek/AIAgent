@@ -18,11 +18,16 @@ const { makeAgentConnectionFinalizer } = require("./connection");
 function createAgent(options) {
     options = options || {};
 
+    const spawnServiceInstanceInfo = JSON.parse(
+        Buffer.from(process.argv[2], "base64").toString()
+    );
+    const agentDesc = spawnServiceInstanceInfo.args[0];
+
     const agent = {};
 
     agent.path = path.normalize(process.cwd());
-    agent.id = process.argv[2];
-    return console.log(process.argv);
+    agent.id = agentDesc.id;
+    agent.tags = agentDesc.tags;
 
     agent.config = loadAgentConfig(agent.path);
 

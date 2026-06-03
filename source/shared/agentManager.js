@@ -19,6 +19,8 @@ function createAgentManager(options)
     }
     const gameLoopServer = options.gameLoopServer;
 
+    const parentId = options.parentId;
+
     const agentManager = makeEventEmitter({
         gameLoop,
         agentInfos: new Map(), // key: agent id, value: agent info
@@ -41,12 +43,17 @@ function createAgentManager(options)
         }
         return agentManager.agentInfos.get(agentId);
     }
-    let nextAgentIndex = 0;
-    agentManager.generateAgentId = function()
+
+    if (parentId)
     {
-        let agentIndex = nextAgentIndex;
-        ++nextAgentIndex;
-        return `${gameLoop.id.replaceAll("Root", "Agent")}.${agentIndex}`;
+        let nextAgentIndex = 0;
+        agentManager.generateAgentId = function()
+        {
+            let agentIndex = nextAgentIndex;
+            ++nextAgentIndex;
+            const right = parentId.slice(parentId.lastIndexOf("@") + 1);
+            return `AIAgent@${right}.${agentIndex}`;
+        }
     }
 
     // root agent manager events
@@ -92,10 +99,12 @@ function createAgentManager(options)
                 res.status(200).json(agentInfos);
             });
 
-            let nextAgentIndex = 0;
-            gameLoopServer.app.get("/generateAgentId", (req, res) => {
-                res.status(200).send(agentManager.generateAgentId());
-            });
+            if (parentId)
+            {
+                gameLoopServer.app.get("/generateAgentId", (req, res) => {
+                    res.status(200).send(agentManager.generateAgentId());
+                });
+            }
         }
     );
     gameLoopServer.on(

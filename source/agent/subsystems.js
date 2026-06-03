@@ -8,7 +8,16 @@ function createAgentSubsystems(agent)
     agent.subsystems = {};
     agent.subsystems.server = createAgentServer(agent);
     agent.subsystems.serviceRegistry = createAgentServiceRegistry(agent);
-    agent.subsystems.tracking = createAgentTracking(agent);
+    agent.subsystems.runtimeTracking = createAgentTracking(
+        agent,
+        "runtime",
+        agent.config.runtime.url
+    );
+    agent.subsystems.rootTracking = createAgentTracking(
+        agent,
+        "root",
+        agent.config.root.url
+    );
 }
 
 module.exports = {

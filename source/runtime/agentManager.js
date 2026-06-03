@@ -7,6 +7,7 @@ function createRuntimeAgentManager(runtime)
     const runtimeAgentManager = createAgentManager({
         gameLoop: runtime,
         gameLoopServer: runtime.subsystems.server,
+        parentId: runtime.id,
     })
     return runtimeAgentManager;
 }

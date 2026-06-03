@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const { io } = require("socket.io-client");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
-function createAgentTracking(agent)
+function createAgentTracking(agent, ownerName, url)
 {
     const agentServer = agent.subsystems.server;
 
@@ -18,7 +18,7 @@ function createAgentTracking(agent)
         async () => {
             await new Promise(
                 (resolve) => {
-                    agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to root at:`, agent.config.root.url);
+                    agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to ${ownerName} at:`, url);
 
                     let synchronized = false;
                     function sync()
@@ -31,7 +31,7 @@ function createAgentTracking(agent)
                         resolve();
                     }
 
-                    agentTracking.io = io(agent.config.root.url, {
+                    agentTracking.io = io(url, {
                         reconnection: false
                     });
                     
@@ -48,12 +48,12 @@ function createAgentTracking(agent)
                                 if (res.status == 200)
                                 {
                                     agentTracking.enabled = true;
-                                    agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connected to root");
+                                    agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connected to ${ownerName}`);
                                     sync();
                                 }
                                 else
                                 {
-                                    throw new Error(`Failed to connect to root: ${res.message}`);
+                                    throw new Error(`Failed to connect to ${ownerName}${ownerName}: ${res.message}`);
                                     sync();
                                 }
                             }
@@ -61,12 +61,12 @@ function createAgentTracking(agent)
                     });
             
                     agentTracking.io.on("connect_error", (err) => {
-                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root failed");
+                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connect to ${ownerName} failed`);
                         sync();
                     });
             
                     agentTracking.io.on("disconnect", (reason) => {
-                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root:", reason);
+                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Disconnected from ${ownerName}:`, reason);
                         sync();
                     });
                 }

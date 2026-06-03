@@ -75,20 +75,35 @@ function createRuntimeAgentSpawner(runtime)
             "error",
             async (err) => {
                 runtimeAgentSpawner.numAgents -= 1;
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn`);
-                return sync.reject(err);
+                if (sync.ready)
+                {
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} crashed:`, err.message);
+                }
+                else
+                {
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn`);
+                    return sync.reject(err);
+                }
             }
         )
 
         runtimeAgentSpawner.queues.push(
             async () => {
-                serviceInstance.passive(
-                    async () => {
-                        await spawnAgent({
-                            path: path.resolve(__dirname, "../../templates/agents/default"),
-                        });
+                (async () => {
+                    try
+                    {
+                        await serviceInstance.passive(
+                            async () => {
+                                await spawnAgent({
+                                    path: path.resolve(__dirname, "../../templates/agents/default"),
+                                });
+                            }
+                        );
                     }
-                );
+                    catch(err)
+                    {
+                    }
+                })();
             }
         );
 
@@ -143,16 +158,15 @@ function createRuntimeAgentSpawner(runtime)
 
                 try
                 {
-                    await runtimeAgentSpawner.spawn({
+                    const id = await runtimeAgentSpawner.spawn({
                         ...req.body,
                     });
+                    return res.status(200).send(id);
                 }
                 catch(err)
                 {
-                    res.status(400).send(err.message);
+                    return res.status(400).send(err.message);
                 }
-
-                res.status(200).send(id);
             });
         }
     );

@@ -46,7 +46,7 @@ function coreSetupAgentConnectionTools(agent) {
                         .string()
                         .describe(
                             [
-`Required, the agent id for the connection to add. This field need to be a valid agent Id that connected to the root manager`,
+`Required, the agent id for the connection to add. This field need to be a valid agent Id that connected to the root`,
                             ].join(" ")
                         ),
 

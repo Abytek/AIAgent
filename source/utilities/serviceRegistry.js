@@ -91,13 +91,21 @@ function createServiceRegistry(options)
 
         await context.emit("open");
         const value = await service.callback(context, ...serviceInstanceInfo.args);
-        await context.emit("close", value);
+        await context.emitReversed("close", value);
     }
     serviceRegistry.service = function(route, callback)
     {
         if (serviceRegistry.services.has(route))
         {
             throw new Error(`Already registered service with route: ${route}`);
+        }
+        if (route.length == 0)
+        {
+            throw new Error(`Route need to be started by /`);
+        }
+        if (route[0] != '/')
+        {
+            throw new Error(`Route need to be started by /`);
         }
         const service = makeEventEmitter({
             route,
@@ -107,7 +115,7 @@ function createServiceRegistry(options)
         gameLoopServer.on(
             "setup",
             async () => {
-                gameLoopServer.app.post(route, async (req, res) => {
+                gameLoopServer.app.post(`/serviceRegistry/fetch${route}`, async (req, res) => {
                     if (req.body == null)
                     {
                         return res.status(400).send(`Requires request body`);
@@ -177,7 +185,7 @@ function createServiceRegistry(options)
             serviceInstance.value = value;
             serviceInstance.closed = true;
         });
-        serviceInstance.on("error", async (context, error) => {
+        serviceInstance.on("error", async (error) => {
             if (serviceInstance.error != null)
             {
                 throw new Error(`Cannot re-emit error on a service instance`);
@@ -196,7 +204,7 @@ function createServiceRegistry(options)
             }, timeout);
 
             const response = await fetch(
-                `${originURL}${route}`,
+                `${originURL}/serviceRegistry/fetch${route}`,
                 {
                     method: "POST",
                     headers: {
@@ -211,7 +219,9 @@ function createServiceRegistry(options)
             );
             if (!response.ok)
             {
-                throw new Error(`Failed to fetch service instance: ${await response.text()}`);
+                const err = new Error(`Failed to fetch service instance: ${await response.text()}`);
+                await serviceInstance.emitReversed("error", err);
+                throw err;
             }
             return serviceInstance.value;
         }

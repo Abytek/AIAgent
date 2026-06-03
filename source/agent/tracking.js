@@ -13,8 +13,8 @@ function createAgentTracking(agent)
 
     {
         let sync = makeSync();
-        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to root manager at:`, agent.config.rootManager.url);
-        agentTracking.socket = io(agent.config.rootManager.url, {
+        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to root at:`, agent.config.root.url);
+        agentTracking.socket = io(agent.config.root.url, {
             reconnection: false
         });
 
@@ -32,12 +32,12 @@ function createAgentTracking(agent)
                     if (res.status == 200)
                     {
                         agentTracking.enabled = true;
-                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connected to root manager");
+                        agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connected to root");
                         sync.stop();
                     }
                     else
                     {
-                        throw new Error(`Failed to connect to root manager: ${res.message}`);
+                        throw new Error(`Failed to connect to root: ${res.message}`);
                         sync.stop();
                     }
                 }
@@ -45,12 +45,12 @@ function createAgentTracking(agent)
         });
 
         agentTracking.socket.on("connect_error", (err) => {
-            agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root manager failed");
+            agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root failed");
             sync.stop();
         });
 
         agentTracking.socket.on("disconnect", (reason) => {
-            agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root manager:", reason);
+            agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root:", reason);
             sync.stop();
         });
         sync.wait();

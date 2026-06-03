@@ -4,7 +4,7 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
-const { getDefaultRootManagerURL } = require("../env/rootManager");
+const { getDefaultRootURL } = require("../env/root");
 const { getDefaultRuntimePort } = require("../env/runtime");
 
 const ajv = new Ajv({
@@ -35,13 +35,13 @@ const configSchema = {
             default: {},
         },
 
-        rootManager: {
+        root: {
             type: "object",
 
             properties: {
                 url: {
                     type: "string",
-                    default: getDefaultRootManagerURL(),
+                    default: getDefaultRootURL(),
                 }
             },
 

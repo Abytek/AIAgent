@@ -4,7 +4,7 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
-const { getDefaultRootManagerPort } = require("../env/rootManager");
+const { getDefaultRootPort } = require("../env/root");
 
 const ajv = new Ajv({
     useDefaults: true,
@@ -23,7 +23,7 @@ const configSchema = {
             properties: {
                 port: {
                     type: "integer",
-                    default: getDefaultRootManagerPort(),
+                    default: getDefaultRootPort(),
                 }
             },
 
@@ -42,8 +42,8 @@ const configSchema = {
 
 const validateConfig = ajv.compile(configSchema);
 
-function loadRootManagerConfig() {
-    const configPath = path.join(__dirname, "../../rootManager.json");
+function loadRootConfig() {
+    const configPath = path.join(__dirname, "../../root.json");
 
     let config = {};
 
@@ -54,7 +54,7 @@ function loadRootManagerConfig() {
             );
         } catch (err) {
             throw new Error(
-                `Invalid JSON in rootManager.json\n${err.message}`
+                `Invalid JSON in root.json\n${err.message}`
             );
         }
     }
@@ -69,10 +69,10 @@ function loadRootManagerConfig() {
         );
     }
 
-    console.log(`Loaded rootManager config:`, config);
+    console.log(`Loaded root config:`, config);
     return config;
 }
 
 module.exports = {
-    loadRootManagerConfig,
+    loadRootConfig,
 };

@@ -21,7 +21,7 @@ function calculateDefaultAgentId(agentPath, agentConfig)
         try
         {
             return doSync(async () => {
-                const response = await fetch(`${agentConfig.rootManager.url}/agent/generate_id`);
+                const response = await fetch(`${agentConfig.root.url}/agent/generate_id`);
                 const responseText = await response.text();
                 if (!response.ok)
                 {
@@ -33,7 +33,7 @@ function calculateDefaultAgentId(agentPath, agentConfig)
         catch (error)
         {
             const result = `AIAgent@${process.pid}`;
-            console.log(`Cannot generate id from root manager, generate local-environment agent id using process id:`, result);
+            console.log(`Cannot generate id from root, generate local-environment agent id using process id:`, result);
             return result;
         }
     }

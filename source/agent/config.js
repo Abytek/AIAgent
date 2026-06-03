@@ -32,7 +32,7 @@ const configSchema = {
       default: {},
     },
 
-    rootManager: {
+    root: {
       type: "object",
 
       properties: {

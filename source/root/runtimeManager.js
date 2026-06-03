@@ -3,12 +3,12 @@ const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { finalizeRootRuntimeInfo } = require("./runtime");
 
-function createRootRuntimeManager(rootManager)
+function createRootRuntimeManager(root)
 {
-    const rootServer = rootManager.subsystems.server;
+    const rootServer = root.subsystems.server;
 
     const rootRuntimeManager = makeEventEmitter({
-        rootManager,
+        root,
         runtimeinfos: new Map(), // key: runtime id, value: runtime info
         socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
     })
@@ -30,11 +30,11 @@ function createRootRuntimeManager(rootManager)
         return rootRuntimeManager.runtimeinfos.get(runtimeId);
     }
 
-    // rootManager runtime manager events
+    // root runtime manager events
     rootRuntimeManager.on(
         "registerRuntime",
         async (socket, runtimeInfo) => {
-            rootManager.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Registered runtime:`, runtimeInfo);
+            root.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Registered runtime:`, runtimeInfo);
             rootRuntimeManager.runtimeinfos.set(
                 runtimeInfo.id, 
                 runtimeInfo
@@ -45,7 +45,7 @@ function createRootRuntimeManager(rootManager)
         "unregisterRuntime",
         async (socket, runtimeInfo) => {
             rootRuntimeManager.runtimeinfos.delete(runtimeInfo.id);
-            rootManager.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Unregistered runtime:`, chalk.rgb(200, 70, 150)(runtimeInfo.id));
+            root.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Unregistered runtime:`, chalk.rgb(200, 70, 150)(runtimeInfo.id));
         }
     );
 
@@ -59,7 +59,7 @@ function createRootRuntimeManager(rootManager)
         await rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo.id);
     }
 
-    // rootManager server events
+    // root server events
     rootServer.on(
         "setup",
         async () => {
@@ -145,13 +145,13 @@ function createRootRuntimeManager(rootManager)
         }
     );
 
-    // rootManager events
-    rootManager.on(
+    // root events
+    root.on(
         "init",
         async () => {
         }
     );
-    rootManager.on(
+    root.on(
         "release",
         async () => {
         }

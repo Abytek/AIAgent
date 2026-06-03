@@ -4,11 +4,11 @@ const crypto = require("crypto");
 const os = require("os");
 const chalk = require("chalk");
 const { makeGameLoop } = require("../utilities/gameLoop");
-const { loadRootManagerConfig } = require("./config");
+const { loadRootConfig } = require("./config");
 const { createRootLogger } = require("./logger");
-const { createRootManagerSubsystems } = require("./subsystems");
+const { createRootSubsystems } = require("./subsystems");
 
-function createRootManagerId(config)
+function createRootId(config)
 {
     const interfaces = os.networkInterfaces();
 
@@ -37,22 +37,22 @@ function createRootManagerId(config)
         )
         .digest("base64url")
         .slice(0, 12);
-    return `RootManager@${idHash}`;
+    return `Root@${idHash}`;
 }
 
-// the main function for users to create rootManagers
-function createRootManager(options) {
+// the main function for users to create roots
+function createRoot(options) {
     options = options || {};
 
-    const rootManager = makeGameLoop();
+    const root = makeGameLoop();
 
-    rootManager.config = loadRootManagerConfig(rootManager);
-    rootManager.id = createRootManagerId(rootManager.config);
-    rootManager.logger = createRootLogger(rootManager);
+    root.config = loadRootConfig(root);
+    root.id = createRootId(root.config);
+    root.logger = createRootLogger(root);
 
-    rootManager.subsystems = {};
-    createRootManagerSubsystems(rootManager);
-    return rootManager;
+    root.subsystems = {};
+    createRootSubsystems(root);
+    return root;
 }
 
-module.exports = { createRootManager };
+module.exports = { createRoot };

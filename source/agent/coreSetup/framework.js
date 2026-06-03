@@ -17,8 +17,8 @@ ${path.normalize(path.join(__dirname, ".."))}
 
 # CORE CONCEPTS
 
-## Root Manager
-The root manager is the central runtime that manages AI agents.
+## Root
+The root is the central runtime that manages AI agents.
 
 Responsibilities:
 - managing connected agents
@@ -45,11 +45,11 @@ Each AI agent:
 There are 2 runtime modes:
 
 1. Managed Mode
-- the root manager already exists
-- the agent automatically connects to the root manager
+- the root already exists
+- the agent automatically connects to the root
 
 2. Standalone Mode
-- the root manager does not exist
+- the root does not exist
 - the agent runs independently
 
 # INTER-AGENT COMMUNICATION RULES
@@ -153,7 +153,7 @@ abytek-aiagent-cli 9router
 abytek-aiagent-cli codex
 \`\`\`
 
-- Run root manager (AI agents are not allowed to run this command)
+- Run root (AI agents are not allowed to run this command)
 \`\`\`batch
 abytek-aiagent-cli root
 \`\`\`

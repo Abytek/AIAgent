@@ -7,7 +7,7 @@ const { doSync, makeSync } = require("./utilities/sync");
 const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
 const { spawnAgentSync } = require("./agent/spawn");
 const { spawnSkillSync } = require("./skill/spawn");
-const { createRootManager, createRuntime, getDefaultRuntimeURL } = require("./index");
+const { createRoot, createRuntime, getDefaultRuntimeURL } = require("./index");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -48,8 +48,8 @@ function prepare9Router()
 switch (command) {
     case "root":
         {
-            const rootManager = createRootManager();
-            rootManager.run();
+            const root = createRoot();
+            root.run();
         }
         break;
 

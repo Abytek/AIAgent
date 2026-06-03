@@ -1,15 +1,15 @@
 
 const chalk = require("chalk");
 
-function createRootLogger(rootManager)
+function createRootLogger(root)
 {
     let rootLogger = {};
 
-    rootLogger.rootManager = rootManager;
+    rootLogger.root = root;
 
     rootLogger.log = function(tags, ...args)
     {
-        const idParts = rootManager.id.split("@");
+        const idParts = root.id.split("@");
 
         const parsedTags = [ 
             `${chalk.rgb(0, 200, 255)(idParts[0])}${chalk.rgb(220, 220, 220)("@")}${chalk.rgb(0, 200, 150)(idParts[1])}`,

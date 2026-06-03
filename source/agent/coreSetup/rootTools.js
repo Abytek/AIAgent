@@ -1,14 +1,14 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function coreSetupRootManagerTools(agent) {
+function coreSetupRootTools(agent) {
     agent.tool(
         tool(
             async () => {
                 return `${agent.tracking.enabled.toString()}`;
             },
             {
-                name: "rootManager.enabled",
+                name: "root.enabled",
                 description: "Check if you are running in managed mode",
             }
         )
@@ -24,7 +24,7 @@ function coreSetupRootManagerTools(agent) {
                 try
                 {
                     const response = await fetch(
-                        `${agent.config.rootManager.url}/agent/list`
+                        `${agent.config.root.url}/agent/list`
                     );
 
                     if (!response.ok)
@@ -65,5 +65,5 @@ function coreSetupRootManagerTools(agent) {
 };
 
 module.exports = {
-    coreSetupRootManagerTools
+    coreSetupRootTools
 }

@@ -18,7 +18,7 @@ function createRuntimeTracking(runtime)
         async () => {
             await new Promise(
                 (resolve) => {
-                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to root manager at:`, runtime.config.rootManager.url);
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connecting to root at:`, runtime.config.root.url);
 
                     let synchronized = false;
                     function sync()
@@ -31,7 +31,7 @@ function createRuntimeTracking(runtime)
                         resolve();
                     }
 
-                    runtimeTracking.io = io(runtime.config.rootManager.url, {
+                    runtimeTracking.io = io(runtime.config.root.url, {
                         reconnection: false
                     });
                     
@@ -46,12 +46,12 @@ function createRuntimeTracking(runtime)
                                 if (res.status == 200)
                                 {
                                     runtimeTracking.enabled = true;
-                                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connected to root manager");
+                                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connected to root");
                                     sync();
                                 }
                                 else
                                 {
-                                    throw new Error(`Failed to connect to root manager: ${res.message}`);
+                                    throw new Error(`Failed to connect to root: ${res.message}`);
                                     sync();
                                 }
                             }
@@ -59,12 +59,12 @@ function createRuntimeTracking(runtime)
                     });
             
                     runtimeTracking.io.on("connect_error", (err) => {
-                        runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root manager failed");
+                        runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root failed");
                         sync();
                     });
             
                     runtimeTracking.io.on("disconnect", (reason) => {
-                        runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root manager:", reason);
+                        runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root:", reason);
                         sync();
                     });
                 }

@@ -35,8 +35,8 @@ function createRuntimeTracking(runtime)
                         reconnection: false
                     });
                     
-                    runtimeTracking.io.on("connect", () => {
-                        runtimeTracking.io.emit(
+                    runtimeTracking.io.on("connect", async () => {
+                        await runtimeTracking.io.emit(
                             "registerRuntime", 
                             { 
                                 id: runtime.id,

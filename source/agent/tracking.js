@@ -18,8 +18,8 @@ function createAgentTracking(agent)
             reconnection: false
         });
 
-        agentTracking.socket.on("connect", () => {
-            agentTracking.socket.emit(
+        agentTracking.socket.on("connect", async () => {
+            await agentTracking.socket.emit(
                 "register", 
                 { 
                     id: agent.id,

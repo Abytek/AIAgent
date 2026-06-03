@@ -23,15 +23,213 @@ function createServiceRegistry(options)
 
     //
     let isReady = false;
-    let nextServiceIndex = 0;
+    let nextIdIndex = 0;
+    serviceRegistry.services = new Map();
+    serviceRegistry.serviceInstances = new Map();
 
     //
-    serviceRegistry.generateServiceid = function(prefix = "")
+    serviceRegistry.generateId = function(prefix = "")
     {
-        const serviceIndex = nextServiceIndex;
-        nextServiceIndex++;
-        return `${prefix}${serviceIndex}`;
+        const idIndex = nextIdIndex;
+        nextIdIndex++;
+        return `${prefix}${idIndex}`;
     }
+    serviceRegistry.process = async function(serviceInstanceInfo)
+    {
+        if (!serviceRegistry.services.has(serviceInstanceInfo.route))
+        {
+            throw new Error(`Not registered service with route: ${route}`);
+        }
+        const service = serviceRegistry.services.get(serviceInstanceInfo.route);
+        const context = {};
+        context.emit = async function(event, ...args)
+        {
+            const response = await fetch(
+                `${serviceInstanceInfo.url}/serviceRegistry/callback`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: serviceInstanceInfo.id,
+                        event: event,
+                        eventEmitMode: "emit",
+                        args: args,
+                    })
+                }
+            );
+            if (!response.ok)
+            {
+                throw new Error(await response.text());
+            }
+            return await response.json();
+        }
+        context.emitReversed = async function(event, ...args)
+        {
+            const response = await fetch(
+                `${serviceInstanceInfo.url}/serviceRegistry/callback`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: serviceInstanceInfo.id,
+                        event: event,
+                        eventEmitMode: "emitReversed",
+                        args: args,
+                    })
+                }
+            );
+            if (!response.ok)
+            {
+                throw new Error(await response.text());
+            }
+            return await response.json();
+        }
+
+        await context.emit("open");
+        const value = await service.callback(context, ...serviceInstanceInfo.args);
+        await context.emit("close", value);
+    }
+    serviceRegistry.service = function(route, callback)
+    {
+        if (serviceRegistry.services.has(route))
+        {
+            throw new Error(`Already registered service with route: ${route}`);
+        }
+        const service = makeEventEmitter({
+            route,
+            callback,
+        });
+        serviceRegistry.services.set(route, service);
+        gameLoopServer.on(
+            "setup",
+            async () => {
+                gameLoopServer.app.post(route, async (req, res) => {
+                    if (req.body == null)
+                    {
+                        return res.status(400).send(`Requires request body`);
+                    }
+                    if (typeof req.body !== "object")
+                    {
+                        return res.status(400).send(`Requires object request body`);
+                    }
+
+                    if (!("info" in req.body))
+                    {
+                        return res.status(400).send(`Requires "info" in request body`);
+                    }
+                    const info = req.body.info;
+
+                    if (info.route != route)
+                    {
+                        return res.status(400).send(`Routes mismatch: ${route} vs ${info.route}`);
+                    }
+
+                    try
+                    {
+                        await serviceRegistry.process(info);
+                        return res.status(200).send("ok");
+                    }
+                    catch(err)
+                    {
+                        return res.status(400).send(err.context);
+                    }
+                });
+            }
+        );
+        return service;
+    }
+    serviceRegistry.serviceInstance = function(route, ...args)
+    {
+        const id = serviceRegistry.generateId();
+        const info = {
+            id,
+            url: gameLoopServer.url,
+            route,
+            args,
+        };
+        const serviceInstance = makeEventEmitter({
+            ...info,
+            opened: false,
+            closed: false,
+            value: null,
+        });
+        serviceInstance.getInfo = function()
+        {
+            return info;
+        }
+        serviceInstance.on("open", async (context) => {
+            if (serviceInstance.opened)
+            {
+                throw new Error(`Cannot re-open a service instance`);
+            }
+            serviceInstance.opened = true;
+        });
+        serviceInstance.on("close", async (context, value) => {
+            if (serviceInstance.closed)
+            {
+                throw new Error(`Cannot re-close a service instance`);
+            }
+            serviceInstance.value = value;
+            serviceInstance.closed = true;
+        });
+        
+        serviceInstance.fetch = async function(originURL, options)
+        {
+            options = options || {};
+
+            const response = await fetch(
+                `${originURL}${route}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        info,
+                    }),
+                    ...options,
+                }
+            );
+            if (!response.ok)
+            {
+                throw new Error(`Failed to fetch service instance: ${await response.text()}`);
+            }
+            return serviceInstance.value;
+        }
+
+        serviceRegistry.serviceInstances.set(id, serviceInstance);
+        return serviceInstance;
+    }
+
+    // test
+    serviceRegistry.service(
+        "/test", 
+        async (context, content) => {
+            console.log("service 1:", content);
+            console.log("service 2:", await context.emit("test", content));
+        }
+    );
+    gameLoop.on(
+        "ready",
+        async () => {
+            const serviceInstance = serviceRegistry.serviceInstance(
+                "/test", 
+                "hello world"
+            );
+            serviceInstance.on(
+                "test",
+                async (context, content) => {
+                    console.log("service instance 1:", content);
+                    context.json("hello my friend");
+                }
+            );
+            await serviceInstance.fetch(gameLoopServer.url);
+        }
+    );
 
     // gameLoop server events
     gameLoopServer.on(
@@ -40,9 +238,93 @@ function createServiceRegistry(options)
             gameLoopServer.app.get("/serviceRegistry/ready", (req, res) => {
                 res.status(200).json(isReady);
             });
-            gameLoopServer.app.get("/serviceRegistry/generateServiceId/:prefix", (req, res) => {
-                const { prefix } = req.params;
-                res.status(200).send(serviceRegistry.generateServiceid(prefix));
+            gameLoopServer.app.get("/serviceRegistry/generateId/:prefix", (req, res) => {
+                const { prefix } = req.args;
+                res.status(200).send(serviceRegistry.generateId(prefix));
+            });
+            gameLoopServer.app.post("/serviceRegistry/callback", async (req, res) => {
+                if (req.body == null)
+                {
+                    return res.status(400).send(`Requires request body`);
+                }
+                if (typeof req.body !== "object")
+                {
+                    return res.status(400).send(`Requires object request body`);
+                }
+
+                if (!("id" in req.body))
+                {
+                    return res.status(400).send(`Requires "id" in request body`);
+                }
+                const id = req.body.id;
+                if (!(typeof id === "string"))
+                {
+                    return res.status(400).send(`"id" has to be string`);
+                }
+
+                if (!("event" in req.body))
+                {
+                    return res.status(400).send(`Requires "event" in request body`);
+                }
+                const event = req.body.event;
+                if (!(typeof event === "string"))
+                {
+                    return res.status(400).send(`"event" has to be string`);
+                }
+
+                if (!("eventEmitMode" in req.body))
+                {
+                    return res.status(400).send(`Requires "eventEmitMode" in request body`);
+                }
+                const eventEmitMode = req.body.eventEmitMode;
+                if (!(typeof eventEmitMode === "string"))
+                {
+                    return res.status(400).send(`"eventEmitMode" has to be string`);
+                }
+
+                if (!("args" in req.body))
+                {
+                    return res.status(400).send(`Requires "args" in request body`);
+                }
+                const args = req.body.args;
+                if (!(Array.isArray(args)))
+                {
+                    return res.status(400).send(`"args" has to be array`);
+                }
+
+                if (!serviceRegistry.serviceInstances.has(id))
+                {
+                    return res.status(400).send(`Not found service instance with id: ${id}`);
+                }
+                const serviceInstance = serviceRegistry.serviceInstances.get(id);
+                const context = { 
+                    result: {}, 
+                };
+                try
+                {
+                    context.json = function(value) 
+                    {
+                        context.result = value;
+                    }
+                    if (eventEmitMode == "emit")
+                    {
+                        await serviceInstance.emit(event, context, ...args);
+                    }
+                    else if (eventEmitMode == "emitReversed")
+                    {
+                        await serviceInstance.emitReversed(event, context, ...args);
+                    }
+                    else
+                    {
+                        return res.status(400).send(`Invalid "eventEmitMode"`);
+                    }
+                }
+                catch(err)
+                {
+                    return res.status(400).send(err.context);
+                }
+
+                return res.status(200).json(context.result || {});
             });
         }
     );

@@ -35,8 +35,8 @@ function createSkillTracking(skill)
                         reconnection: false
                     });
                     
-                    skillTracking.io.on("connect", () => {
-                        skillTracking.io.emit(
+                    skillTracking.io.on("connect", async () => {
+                        await skillTracking.io.emit(
                             "registerSkill", 
                             { 
                                 id: skill.id,

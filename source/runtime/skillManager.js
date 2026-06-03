@@ -50,13 +50,13 @@ function createRuntimeSkillManager(runtime)
     );
 
     // 
-    function registerSkill(socket, skillInfo)
+    async function registerSkill(socket, skillInfo)
     {
-        runtimeSkillManager.emit("registerSkill", socket, skillInfo);
+        await runtimeSkillManager.emit("registerSkill", socket, skillInfo);
     }
-    function unregisterSkill(socket, skillInfo)
+    async function unregisterSkill(socket, skillInfo)
     {
-        runtimeSkillManager.emitReversed("unregisterSkill", socket, skillInfo);
+        await runtimeSkillManager.emitReversed("unregisterSkill", socket, skillInfo);
     }
 
     // runtime server events
@@ -90,7 +90,7 @@ function createRuntimeSkillManager(runtime)
                     try 
                     {
                         skillInfo = finalizeRuntimeSkillInfo(skillInfo);
-                        registerSkill(socket, skillInfo);
+                        await registerSkill(socket, skillInfo);
                     }
                     catch(err)
                     {
@@ -120,7 +120,7 @@ function createRuntimeSkillManager(runtime)
 
                     try 
                     {
-                        unregisterSkill(socket, skillInfo);
+                        await unregisterSkill(socket, skillInfo);
                     }
                     catch(err)
                     {
@@ -147,7 +147,7 @@ function createRuntimeSkillManager(runtime)
 
             const skillId = runtimeSkillManager.socketToSkillId.get(socket);
             const skillInfo = runtimeSkillManager.skillinfos.get(skillId);
-            unregisterSkill(socket, skillInfo);
+            await unregisterSkill(socket, skillInfo);
         }
     );
 

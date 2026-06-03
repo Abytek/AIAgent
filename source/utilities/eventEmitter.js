@@ -1,26 +1,33 @@
 
 const EventEmitter = require("events");
-const { doSync } = require("../utilities/sync");
 
-function makeEventEmitter(options)
+function makeEventEmitter(options = {})
 {
-    let result = new EventEmitter();
-    result.emitReversed = function(name, ...args)
-    {
-        doSync(
-            async () => {
-                const listeners = result.rawListeners(name);
+    const result = new EventEmitter();
 
-                for (const listener of listeners.reverse()) {
-                    await listener(...args);
-                }
-            }
-        )
-    }
-    for (const key in options)
+    result.emit = async function(name, ...args)
     {
-        result[key] = options[key];
-    }
+        const listeners = result.rawListeners(name);
+
+        for (const listener of listeners)
+        {
+            await listener(...args);
+        }
+    };
+
+    result.emitReversed = async function(name, ...args)
+    {
+        const listeners =
+            result.rawListeners(name).slice().reverse();
+
+        for (const listener of listeners)
+        {
+            await listener(...args);
+        }
+    };
+
+    Object.assign(result, options);
+
     return result;
 }
 

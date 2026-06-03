@@ -65,13 +65,13 @@ function createSkillServer(skill)
                 });
 
                 setupFrontendForExpressApp(skillServer.app);
-                skillServer.emit("setup");
+                await skillServer.emit("setup");
                     
-                skillServer.io.on("connection", (socket) => {
-                    skillServer.emit("socketClient_connected", socket);
+                skillServer.io.on("connection", async (socket) => {
+                    await skillServer.emit("socketClient_connected", socket);
 
-                    socket.on("disconnect", (reason) => {
-                        skillServer.emitReversed("socketClient_disconnected", socket, reason);
+                    socket.on("disconnect", async (reason) => {
+                        await skillServer.emitReversed("socketClient_disconnected", socket, reason);
                     });
                 });
 

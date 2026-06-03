@@ -50,13 +50,13 @@ function createRootRuntimeManager(rootManager)
     );
 
     // 
-    function registerRuntime(socket, runtimeInfo)
+    async function registerRuntime(socket, runtimeInfo)
     {
-        rootRuntimeManager.emit("registerRuntime", socket, runtimeInfo);
+        await rootRuntimeManager.emit("registerRuntime", socket, runtimeInfo);
     }
-    function unregisterRuntime(socket, runtimeInfo)
+    async function unregisterRuntime(socket, runtimeInfo)
     {
-        rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo.id);
+        await rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo.id);
     }
 
     // rootManager server events
@@ -84,7 +84,7 @@ function createRootRuntimeManager(rootManager)
 
                     try 
                     {
-                        registerRuntime(socket, runtimeInfo);
+                        await registerRuntime(socket, runtimeInfo);
                     }
                     catch(err)
                     {
@@ -114,7 +114,7 @@ function createRootRuntimeManager(rootManager)
 
                     try 
                     {
-                        unregisterRuntime(socket, runtimeInfo);
+                        await unregisterRuntime(socket, runtimeInfo);
                     }
                     catch(err)
                     {
@@ -141,7 +141,7 @@ function createRootRuntimeManager(rootManager)
 
             const runtimeId = rootRuntimeManager.socketToRuntimeId.get(socket);
             const runtimeInfo = rootRuntimeManager.runtimeinfos.get(runtimeId);
-            unregisterRuntime(socket, runtimeInfo);
+            await unregisterRuntime(socket, runtimeInfo);
         }
     );
 

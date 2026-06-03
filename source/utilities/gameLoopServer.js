@@ -56,35 +56,33 @@ function createGameLoopServer(options)
     gameLoop.on(
         "init",
         async () => {
-            await new Promise(
-                (resolve, reject) => {
-                    gameLoopServer.app = express();
-                    {
-                        let sync = makeSync();
-                        gameLoopServer.server = http.createServer(gameLoopServer.app);
-                        gameLoopServer.app.use(express.json());
-                        gameLoopServer.io = new Server(gameLoopServer.server, {
-                            cors: {
-                                origin: "*"
-                            }
-                        });
+            gameLoopServer.app = express();
+            {
+                gameLoopServer.server = http.createServer(gameLoopServer.app);
+                gameLoopServer.app.use(express.json());
+                gameLoopServer.io = new Server(gameLoopServer.server, {
+                    cors: {
+                        origin: "*"
+                    }
+                });
 
-                        gameLoopServer.emit("setup");
-                            
-                        gameLoopServer.io.on("connection", (socket) => {
-                            gameLoopServer.emit("socketClient_connected", socket);
+                await gameLoopServer.emit("setup");
+                    
+                gameLoopServer.io.on("connection", async (socket) => {
+                    await gameLoopServer.emit("socketClient_connected", socket);
 
-                            socket.on("disconnect", (reason) => {
-                                gameLoopServer.emitReversed("socketClient_disconnected", socket, reason);
-                            });
-                        });
+                    socket.on("disconnect", async (reason) => {
+                        await gameLoopServer.emitReversed("socketClient_disconnected", socket, reason);
+                    });
+                });
 
-                        let error = null;
-                        gameLoopServer.server.listen(gameLoop.config.server.port, null, () =>
+                await new Promise(
+                    (resolve, reject) => {
+                        gameLoopServer.server.listen(gameLoop.config.server.port, null, async () =>
                         {
                             const address = gameLoopServer.server.address();
                             gameLoopServer.url = `http://127.0.0.1:${address.port}`;
-                            gameLoopServer.emit("open");
+                            await gameLoopServer.emit("open");
                             resolve();
                         });
                         gameLoopServer.server.on("error", (err) =>
@@ -92,21 +90,29 @@ function createGameLoopServer(options)
                             reject(err);
                         });
                     }
-                }
-            );
+                );
+            }
         }
     )
     gameLoop.on(
         "release",
         async () => {
             await new Promise(
-                (resolve) => {
-                    gameLoopServer.server.close(
-                        () => {
-                            gameLoopServer.emitReversed("close");
-                            resolve();
-                        }
-                    );
+                (resolve, reject) => {
+                    try
+                    {
+                        gameLoopServer.server.close(
+                            () => {
+                                gameLoopServer.emitReversed("close")
+                                    .then(() => resolve())
+                                    .catch(err => reject(err));
+                            }
+                        );
+                    }
+                    catch(err)
+                    {
+                        reject(err)
+                    }
                 }
             )
         }  

@@ -1,6 +1,6 @@
 
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { runLoopOnce } = require("../utilities/sync");
+const { runLoopOnce, doSync } = require("../utilities/sync");
 
 function makeGameLoop(options) {
     options = options || {};
@@ -11,13 +11,17 @@ function makeGameLoop(options) {
     });
 
     result.run = function () {
-        result.emit("init");
-        result.emit("ready");
-        while (!result.shouldShutdown) {
-            result.emit("tick");
-            runLoopOnce();
-        }
-        result.emitReversed("release");
+        doSync(
+            async () => {
+                await result.emit("init");
+                await result.emit("ready");
+                while (!result.shouldShutdown) {
+                    await result.emit("tick");
+                    runLoopOnce();
+                }
+                await result.emitReversed("release");
+            }
+        );
     };
     result.signalShutdown = function()
     {

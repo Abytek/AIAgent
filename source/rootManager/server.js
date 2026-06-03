@@ -58,13 +58,13 @@ function createRootServer(rootManager)
                 });
 
                 setupFrontendForExpressApp(rootServer.app);
-                rootServer.emit("setup");
+                await rootServer.emit("setup");
                     
-                rootServer.io.on("connection", (socket) => {
-                    rootServer.emit("socketClient_connected", socket);
+                rootServer.io.on("connection", async (socket) => {
+                    await rootServer.emit("socketClient_connected", socket);
 
-                    socket.on("disconnect", (reason) => {
-                        rootServer.emitReversed("socketClient_disconnected", socket, reason);
+                    socket.on("disconnect", async (reason) => {
+                        await rootServer.emitReversed("socketClient_disconnected", socket, reason);
                     });
                 });
 

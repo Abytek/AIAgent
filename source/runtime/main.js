@@ -44,9 +44,11 @@ function createRuntimeId(config)
 function createRuntime(options) {
     options = options || {};
 
-    const runtime = makeGameLoop();
+    const runtime = makeGameLoop({
+        path: options.path || process.cwd(),
+    });
 
-    runtime.config = loadRuntimeConfig(runtime);
+    runtime.config = loadRuntimeConfig(runtime.path);
     runtime.id = createRuntimeId(runtime.config);
     runtime.logger = createRuntimeLogger(runtime);
 

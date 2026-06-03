@@ -8,6 +8,7 @@ function makeGameLoop(options) {
     const result = makeEventEmitter({
         shouldShutdown: false,
         closed: false,
+        ...options,
     });
 
     result.run = function () {

@@ -162,10 +162,7 @@ function createRuntimeAgentSpawner(runtime)
     runtime.on(
         "ready",
         async () => {
-            const spawnPromise = runtimeAgentSpawner.spawn({
-            });
             await runtimeAgentSpawner.flush();
-            await spawnPromise;
         }
     );
     runtime.on(

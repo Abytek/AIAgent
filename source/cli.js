@@ -5,6 +5,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const { doSync, makeSync } = require("./utilities/sync");
 const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
+const { spawnRuntimeSync } = require("./runtime/spawn");
 const { spawnAgentSync } = require("./agent/spawn");
 const { spawnSkillSync } = require("./skill/spawn");
 const { createRoot, createRuntime, getDefaultRuntimeURL } = require("./index");
@@ -55,25 +56,16 @@ switch (command) {
 
     case "runtime":
         {
-            const runtime = createRuntime();
-            runtime.run();
+            spawnRuntimeSync({
+                path: process.cwd()
+            });
         }
         break;
-    case "runtime.generateSkillId":
+    case "runtime.default":
         {
-            console.log(
-                doSync(
-                    async () => {
-                        const response = await fetch(`${getDefaultRuntimeURL()}/generateSkillId`);
-                        const responseText = response.text();
-                        if (!response.ok)
-                        {
-                            throw new Error(responseText);
-                        }
-                        return responseText;
-                    }
-                )
-            );
+            spawnRuntimeSync({
+                path: path.resolve(__dirname, "../templates/runtimes/default"),
+            });
         }
         break;
 

@@ -25,6 +25,7 @@ module.exports = {
     ...require("./runtime/main"),
     ...require("./runtime/config"),
     ...require("./runtime/logger"),
+    ...require("./runtime/spawn"),
     ...require("./runtime/server"),
     ...require("./runtime/tracking"),
     ...require("./runtime/agentManager"),

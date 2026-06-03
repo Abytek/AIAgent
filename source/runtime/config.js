@@ -60,8 +60,8 @@ const configSchema = {
 
 const validateConfig = ajv.compile(configSchema);
 
-function loadRuntimeConfig() {
-    const configPath = path.join(__dirname, "../../runtime.json");
+function loadRuntimeConfig(runtimePath) {
+    const configPath = path.join(runtimePath, "./config.json");
 
     let config = {};
 
@@ -72,7 +72,7 @@ function loadRuntimeConfig() {
             );
         } catch (err) {
             throw new Error(
-                `Invalid JSON in runtime.json\n${err.message}`
+                `Invalid JSON in ${configPath}: ${err.message}`
             );
         }
     }
@@ -87,7 +87,7 @@ function loadRuntimeConfig() {
         );
     }
 
-    console.log(`Loaded runtime config:`, config);
+    console.log(`Loaded runtime config at ${configPath}:\n`, config);
     return config;
 }
 

@@ -13,6 +13,7 @@ function createRuntimeLogger(runtime)
 
         const parsedTags = [ 
             `${chalk.rgb(0, 200, 255)(idParts[0])}${chalk.rgb(220, 220, 220)("@")}${chalk.rgb(0, 200, 150)(idParts[1])}`,
+            chalk.rgb(220, 0, 100)(runtime.path), 
             ...tags 
         ];
         let header = ``;

@@ -4,6 +4,10 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
+const { getDefaultRootURL } = require("../env/root");
+const { getDefaultRuntimeURL } = require("../env/runtime");
+const { } = require("../env/agent");
+
 const ajv = new Ajv({
   useDefaults: true,
   allErrors: true,
@@ -12,125 +16,132 @@ const ajv = new Ajv({
 addFormats(ajv);
 
 const configSchema = {
-  type: "object",
+    type: "object",
 
-  properties: {
-    server: {
-      type: "object",
+    properties: {
+        server: {
+                type: "object",
 
-      properties: {
-        port: {
-          type: "integer",
-          default: 0,
-        }
-      },
+                properties: {
+                    port: {
+                        type: "integer",
+                        default: 0,
+                    }
+                },
 
-      required: [],
+            required: [],
 
-      additionalProperties: false,
+            additionalProperties: false,
 
-      default: {},
-    },
-
-    root: {
-      type: "object",
-
-      properties: {
-        url: {
-          type: "string",
-          default: "http://localhost:39999",
-        }
-      },
-
-      required: [],
-
-      additionalProperties: false,
-
-      default: {},
-    },
-
-    debug: {
-      type: "boolean",
-      default: false,
-    },
-
-    anonymous: {
-      type: "boolean",
-      default: true,
-    },
-
-    closed_agent_connection_model: {
-      type: "boolean",
-      default: true,
-    },
-
-    model: {
-      type: "string",
-      default: "default",
-    },
-
-    maxChatDurationInSeconds: {
-      type: "number",
-      default: 20,
-    },
-
-    provider: {
-      type: "object",
-
-      properties: {
-        apiKey: {
-          type: "string",
-          default: "",
+            default: {},
         },
 
-        baseURL: {
-          type: "string",
-          default: "http://localhost:20128/v1",
+        root: {
+            type: "object",
+
+            properties: {
+                url: {
+                    type: "string",
+                    default: "http://localhost:33999",
+                }
+            },
+
+            required: [],
+
+            additionalProperties: false,
+
+            default: {},
         },
-      },
 
-      required: [],
+        runtime: {
+            type: "object",
 
-      additionalProperties: false,
+            properties: {
+                url: {
+                    type: "string",
+                    default: "http://localhost:39999",
+                }
+            },
 
-      default: {},
+            required: [],
+
+            additionalProperties: false,
+
+            default: {},
+        },
+
+        debug: {
+            type: "boolean",
+            default: false,
+        },
+
+        model: {
+            type: "string",
+            default: "default",
+        },
+
+        maxChatDurationInSeconds: {
+            type: "number",
+            default: 20,
+        },
+
+        provider: {
+            type: "object",
+
+            properties: {
+                apiKey: {
+                    type: "string",
+                    default: "",
+                },
+
+                baseURL: {
+                    type: "string",
+                    default: "http://localhost:20128/v1",
+                },
+            },
+
+            required: [],
+
+            additionalProperties: false,
+
+            default: {},
+        },
     },
-  },
 
-  additionalProperties: false,
+    additionalProperties: false,
 };
 
 const validateConfig = ajv.compile(configSchema);
 
 function loadAgentConfig(agentPath) {
-  const configPath = path.join(agentPath, "config.json");
+    const configPath = path.join(agentPath, "config.json");
 
-  let config = {};
+    let config = {};
 
-  if (fs.existsSync(configPath)) {
-    try {
-      config = JSON.parse(
-        fs.readFileSync(configPath, "utf-8")
-      );
+    if (fs.existsSync(configPath)) {
+        try {
+            config = JSON.parse(
+            fs.readFileSync(configPath, "utf-8")
+        );
     } catch (err) {
-      throw new Error(
-        `Invalid JSON in ${configPath}: ${err.message}`
-      );
+            throw new Error(
+                `Invalid JSON in ${configPath}: ${err.message}`
+            );
+        }
     }
-  }
 
-  const valid = validateConfig(config);
+    const valid = validateConfig(config);
 
-  if (!valid) {
-    throw new Error(
-      ajv.errorsText(validateConfig.errors, {
-        separator: "\n",
-      })
-    );
-  }
+    if (!valid) {
+        throw new Error(
+            ajv.errorsText(validateConfig.errors, {
+                separator: "\n",
+            })
+        );
+    } 
 
-  console.log(`Loaded config for ${agentPath}:`, config);
-  return config;
+    console.log(`Loaded config for ${agentPath}:`, config);
+    return config;
 }
 
 module.exports = {

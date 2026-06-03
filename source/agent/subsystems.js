@@ -1,18 +1,14 @@
 
 const { createAgentServer } = require("./server");
 const { createAgentServiceRegistry } = require("./serviceRegistry");
-// const { createAgentTracking } = require("./tracking");
-// const { createAgentAgentManager } = require("./agentManager");
-// const { createAgentAgentSpawner } = require("./agentSpawner");
+const { createAgentTracking } = require("./tracking");
 
 function createAgentSubsystems(agent)
 {
     agent.subsystems = {};
     agent.subsystems.server = createAgentServer(agent);
     agent.subsystems.serviceRegistry = createAgentServiceRegistry(agent);
-    // agent.subsystems.tracking = createAgentTracking(agent);
-    // agent.subsystems.agentManager = createAgentAgentManager(agent);
-    // agent.subsystems.agentSpawner = createAgentAgentSpawner(agent);
+    agent.subsystems.tracking = createAgentTracking(agent);
 }
 
 module.exports = {

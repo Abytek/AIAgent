@@ -16,14 +16,15 @@ module.exports = {
     ...require("./frontend/views/agentMonitor"),
     ...require("./frontend/views/rootDashboard"),
     
+    ...require("./shared/agentManager"),
+    ...require("./shared/agent"),
+
     ...require("./root/main"),
     ...require("./root/config"),
     ...require("./root/logger"),
     ...require("./root/server"),
     ...require("./root/runtimeManager"),
     ...require("./root/runtime"),
-    ...require("./root/agentManager"),
-    ...require("./root/agent"),
     ...require("./root/subsystems"),
     
     ...require("./runtime/main"),
@@ -32,9 +33,7 @@ module.exports = {
     ...require("./runtime/spawn"),
     ...require("./runtime/server"),
     ...require("./runtime/tracking"),
-    ...require("./runtime/agentManager"),
     ...require("./runtime/agentSpawner"),
-    ...require("./runtime/agent"),
     ...require("./runtime/subsystems"),
     
     ...require("./skill/main"),

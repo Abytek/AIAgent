@@ -2,7 +2,7 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 
-function finalizeRuntimeAgentInfo(options)
+function finalizeAgentInfo(options)
 {
     options = options || {};
     const result = {};
@@ -19,6 +19,12 @@ function finalizeRuntimeAgentInfo(options)
     }
     result.brief = options.brief;
 
+    if (!("tags" in options))
+    {
+        throw new Error(`Requires "tags" in options`);
+    }
+    result.tags = options.tags;
+
     if (!("url" in options))
     {
         throw new Error(`Requires "url" in options`);
@@ -29,5 +35,5 @@ function finalizeRuntimeAgentInfo(options)
 }
 
 module.exports = {
-    finalizeRuntimeAgentInfo,
+    finalizeAgentInfo,
 }

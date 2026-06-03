@@ -1,7 +1,6 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeRootAgentInfo } = require("./agent");
 
 function createRootAgentMessageManager(root)
 {

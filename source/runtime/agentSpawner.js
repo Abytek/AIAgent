@@ -1,4 +1,5 @@
 
+const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
 function createRuntimeAgentSpawner(runtime)
@@ -11,15 +12,8 @@ function createRuntimeAgentSpawner(runtime)
         runtime,
     });
 
-    runtimeAgentSpawner.agentTrackers = [];
+    runtimeAgentSpawner.numAgents = 0;
     runtimeAgentSpawner.queues = [];
-
-    const fakeSpawnService = serviceRegistry.service(
-        "/runtimeManagement",
-        async (context, options) => {
-            console.log(options);
-        }
-    );
 
     runtimeAgentSpawner.spawn = async function(options) {
         options = options || {};
@@ -28,38 +22,73 @@ function createRuntimeAgentSpawner(runtime)
         options.messages = options.messages || [];
         options.tags = options.tags || [];
 
-        console.log(`Spawning agent:`, options);
+        runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Spawning agent:`, options);
+
+        runtimeAgentSpawner.numAgents += 1;
+
+        const sync = {
+            read: false,
+            resolve: null,
+            reject: null
+        };
+        sync.wait = () => {
+            return new Promise(
+                (resolve, reject) => {
+                    sync.resolve = resolve;
+                    sync.reject = reject;
+                }
+            );
+        }
 
         const serviceInstance = serviceRegistry.serviceInstance(
             "/runtimeManagement",
             options
         );
-        await new Promise(
-            (resolve, reject) => {
-                serviceInstance.on(
-                    "ready",
-                    async (context) => {
-                        resolve();
-                    }
-                )
-                serviceInstance.on(
-                    "error",
-                    async (err) => {
-                        reject(err);
-                    }
-                )
+        serviceInstance.on(
+            "open",
+            async (context) => {
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} opened`);
+            }
+        )
+        serviceInstance.on(
+            "ready",
+            async (context) => {
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Agent ready:`, options.id);
+                sync.ready = true;
+                sync.resolve();
+            }
+        )
+        serviceInstance.on(
+            "close",
+            async (context) => {
+                runtimeAgentSpawner.numAgents -= 1;
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} closed`);
+                if (!sync.ready)
+                {
+                    return sync.reject(new Error(`Unknown error, cannot spawn agent, the service instance quickly closed before agent ready`));
+                }
+            }
+        )
+        serviceInstance.on(
+            "error",
+            async (err) => {
+                runtimeAgentSpawner.numAgents -= 1;
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn`);
+                return sync.reject(err);
             }
         )
 
         runtimeAgentSpawner.queues.push(
             async () => {
-                await serviceInstance.passive(
+                serviceInstance.passive(
                     async () => {
                         await serviceRegistry.process(serviceInstance.getInfo());
                     }
                 );
             }
         );
+
+        await sync.wait();
         return options.id;
     }
     runtimeAgentSpawner.flush = async function() {
@@ -70,6 +99,28 @@ function createRuntimeAgentSpawner(runtime)
         {
             await command();
         }
+    }
+    runtimeAgentSpawner.syncAgents = async function() {
+        await new Promise(
+            (resolve) => 
+            {
+                let sync = null;
+                sync = () => setTimeout(
+                    () => {
+                        if (runtimeAgentSpawner.numAgents > 0)
+                        {
+                            sync();
+                        }
+                        else 
+                        {
+                            resolve();
+                        }
+                    },
+                    1000
+                );
+                sync();
+            }
+        );
     }
 
     // game loop server events
@@ -111,19 +162,22 @@ function createRuntimeAgentSpawner(runtime)
     runtime.on(
         "ready",
         async () => {
-            await runtimeAgentSpawner.spawn({
+            const spawnPromise = runtimeAgentSpawner.spawn({
             });
+            await runtimeAgentSpawner.flush();
+            await spawnPromise;
         }
     );
     runtime.on(
         "tick",
         async () => {
-            await runtimeAgentSpawner.flush();
         }
     );
     runtime.on(
         "release",
         async () => {
+            await runtimeAgentSpawner.flush();
+            await runtimeAgentSpawner.syncAgents();
         }
     );
     return runtimeAgentSpawner;

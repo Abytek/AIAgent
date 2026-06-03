@@ -38,7 +38,7 @@ function createServiceRegistry(options)
     {
         if (!serviceRegistry.services.has(serviceInstanceInfo.route))
         {
-            throw new Error(`Not registered service with route: ${route}`);
+            throw new Error(`Not registered service with route: ${serviceInstanceInfo.route}`);
         }
         const service = serviceRegistry.services.get(serviceInstanceInfo.route);
         const context = {};
@@ -227,7 +227,15 @@ function createServiceRegistry(options)
         }
         serviceInstance.passive = async function(callback)
         {
-            await callback();
+            try 
+            {
+                await callback();
+            }
+            catch(err)
+            {
+                await serviceInstance.emitReversed("error", err);
+                throw err;
+            }
             return serviceInstance.value;
         }
 

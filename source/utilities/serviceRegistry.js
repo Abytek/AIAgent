@@ -135,7 +135,7 @@ function createServiceRegistry(options)
                     }
                     catch(err)
                     {
-                        return res.status(400).send(err.context);
+                        return res.status(400).send(err.message);
                     }
                 });
             }
@@ -156,6 +156,7 @@ function createServiceRegistry(options)
             opened: false,
             closed: false,
             value: null,
+            error: null,
         });
         serviceInstance.getInfo = function()
         {
@@ -176,10 +177,23 @@ function createServiceRegistry(options)
             serviceInstance.value = value;
             serviceInstance.closed = true;
         });
+        serviceInstance.on("error", async (context, error) => {
+            if (serviceInstance.error != null)
+            {
+                throw new Error(`Cannot re-emit error on a service instance`);
+            }
+            serviceInstance.error = error;
+            serviceInstance.closed = true;
+        });
         
-        serviceInstance.fetch = async function(originURL, options)
+        serviceInstance.fetch = async function(originURL, options, timeout = 10000)
         {
             options = options || {};
+
+            const controller = new AbortController();
+            const timer = setTimeout(() => {
+                controller.abort();
+            }, timeout);
 
             const response = await fetch(
                 `${originURL}${route}`,
@@ -192,6 +206,7 @@ function createServiceRegistry(options)
                         info,
                     }),
                     ...options,
+                    signal: controller.signal
                 }
             );
             if (!response.ok)
@@ -200,36 +215,15 @@ function createServiceRegistry(options)
             }
             return serviceInstance.value;
         }
+        serviceInstance.passive = async function(callback)
+        {
+            await callback();
+            return serviceInstance.value;
+        }
 
         serviceRegistry.serviceInstances.set(id, serviceInstance);
         return serviceInstance;
     }
-
-    // test
-    serviceRegistry.service(
-        "/test", 
-        async (context, content) => {
-            console.log("service 1:", content);
-            console.log("service 2:", await context.emit("test", content));
-        }
-    );
-    gameLoop.on(
-        "ready",
-        async () => {
-            const serviceInstance = serviceRegistry.serviceInstance(
-                "/test", 
-                "hello world"
-            );
-            serviceInstance.on(
-                "test",
-                async (context, content) => {
-                    console.log("service instance 1:", content);
-                    context.json("hello my friend");
-                }
-            );
-            await serviceInstance.fetch(gameLoopServer.url);
-        }
-    );
 
     // gameLoop server events
     gameLoopServer.on(
@@ -297,15 +291,17 @@ function createServiceRegistry(options)
                     return res.status(400).send(`Not found service instance with id: ${id}`);
                 }
                 const serviceInstance = serviceRegistry.serviceInstances.get(id);
+
                 const context = { 
                     result: {}, 
                 };
+                context.json = function(value) 
+                {
+                    context.result = value;
+                }
+                
                 try
                 {
-                    context.json = function(value) 
-                    {
-                        context.result = value;
-                    }
                     if (eventEmitMode == "emit")
                     {
                         await serviceInstance.emit(event, context, ...args);
@@ -321,7 +317,7 @@ function createServiceRegistry(options)
                 }
                 catch(err)
                 {
-                    return res.status(400).send(err.context);
+                    return res.status(400).send(err.message);
                 }
 
                 return res.status(200).json(context.result || {});

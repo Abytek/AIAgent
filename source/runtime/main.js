@@ -52,7 +52,6 @@ function createRuntime(options) {
     runtime.id = createRuntimeId(runtime.config);
     runtime.logger = createRuntimeLogger(runtime);
 
-    runtime.subsystems = {};
     createRuntimeSubsystems(runtime);
     return runtime;
 }

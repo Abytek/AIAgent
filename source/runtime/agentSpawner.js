@@ -55,7 +55,7 @@ function createRuntimeAgentSpawner(runtime)
         serviceInstance.on(
             "ready",
             async (context) => {
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Agent ready:`, options.id);
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} ready`);
                 sync.ready = true;
                 sync.resolve();
             }

@@ -6,6 +6,7 @@ const { createRootAgentMessageManager } = require("./agentMessageManager");
 
 function createRootSubsystems(root)
 {
+    root.subsystems = {};
     root.subsystems.server = createRootServer(root);
     root.subsystems.runtimeManager = createRootRuntimeManager(root);
     root.subsystems.agentManager = createRootAgentManager(root);

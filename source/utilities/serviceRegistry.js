@@ -139,7 +139,7 @@ function createServiceRegistry(options)
                     try
                     {
                         await serviceRegistry.process(info);
-                        return res.status(200).send("ok");
+                        return res.status(200).send(`Successfully processed service "${route}"`);
                     }
                     catch(err)
                     {

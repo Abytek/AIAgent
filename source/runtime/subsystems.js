@@ -7,6 +7,7 @@ const { createRuntimeAgentSpawner } = require("./agentSpawner");
 
 function createRuntimeSubsystems(runtime)
 {
+    runtime.subsystems = {};
     runtime.subsystems.server = createRuntimeServer(runtime);
     runtime.subsystems.serviceRegistry = createRuntimeServiceRegistry(runtime);
     runtime.subsystems.tracking = createRuntimeTracking(runtime);

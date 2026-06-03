@@ -198,10 +198,15 @@ function createServiceRegistry(options)
         {
             options = options || {};
 
-            const controller = new AbortController();
-            const timer = setTimeout(() => {
-                controller.abort();
-            }, timeout);
+            let controllerSignal = null;
+            if (timeout != null)
+            {
+                const controller = new AbortController();
+                controllerSignal = controller.signal;
+                setTimeout(() => {
+                    controller.abort();
+                }, timeout);
+            }
 
             const response = await fetch(
                 `${originURL}/serviceRegistry/fetch${route}`,
@@ -214,7 +219,7 @@ function createServiceRegistry(options)
                         info,
                     }),
                     ...options,
-                    signal: controller.signal
+                    signal: controllerSignal,
                 }
             );
             if (!response.ok)

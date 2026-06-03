@@ -24,6 +24,7 @@ module.exports = {
     ...require("./root/runtime"),
     ...require("./root/agentManager"),
     ...require("./root/agent"),
+    ...require("./root/subsystems"),
     
     ...require("./runtime/main"),
     ...require("./runtime/config"),
@@ -34,6 +35,7 @@ module.exports = {
     ...require("./runtime/agentManager"),
     ...require("./runtime/agentSpawner"),
     ...require("./runtime/agent"),
+    ...require("./runtime/subsystems"),
     
     ...require("./skill/main"),
     ...require("./skill/config"),
@@ -55,4 +57,5 @@ module.exports = {
     ...require("./agent/spawn"),
     ...require("./agent/message"),
     ...require("./agent/tool"),
+    ...require("./agent/subsystems"),
 }

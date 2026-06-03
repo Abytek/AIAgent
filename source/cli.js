@@ -71,13 +71,9 @@ switch (command) {
 
     case "agent":
         {
-            let data = {};
-            if ("ABYTEK_AIAGENT_DATA" in process.env)
-            {
-                data = { ...JSON.parse(process.env.ABYTEK_AIAGENT_DATA) };
-            }
-            data.path = process.cwd();
-            spawnAgentSync(data);
+            spawnAgentSync({
+                path: process.cwd()
+            });
         }
         break;
 

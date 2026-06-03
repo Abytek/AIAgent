@@ -10,22 +10,12 @@ async function spawnAgent(options)
         throw new Error(`Requires options`);
     }
     
-    let data = { ...options };
-
     if (!("path" in options))
     {
         throw new Error(`Requires "path" in options`);
     }
 
-    let args = [];
-    if ("args" in options)
-    {
-        args = options.args;
-    }
-
-    let additionalExeEnv = {
-        ABYTEK_AIAGENT_DATA : JSON.stringify(data, null, 4)
-    };
+    let args = options.args || [];
 
     const agentInstallationExitCode = await simpleRun(
         "npm",
@@ -33,9 +23,9 @@ async function spawnAgent(options)
             "install"
         ],
         {
-            NODE_PATH: path.join(__dirname, "../../module_trick")
+            NODE_PATH: path.join(__dirname, "../../module_trick"),
         },
-        data.path
+        options.path
     );
     if (agentInstallationExitCode != 0)
     {
@@ -51,9 +41,8 @@ async function spawnAgent(options)
         ],
         {
             NODE_PATH: path.join(__dirname, "../../module_trick"),
-            ...additionalExeEnv,
         },
-        data.path
+        options.path
     );
     if (agentExecutionExitCode != 0)
     {

@@ -1,6 +1,7 @@
 
 module.exports = {
     ...require("./utilities/sync"),
+    ...require("./utilities/spawnNodeJSProcess"),
     ...require("./utilities/eventEmitter"),
     ...require("./utilities/simpleRun"),
     ...require("./utilities/gameLoop"),

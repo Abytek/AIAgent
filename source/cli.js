@@ -69,22 +69,6 @@ switch (command) {
         }
         break;
 
-    case "agent":
-        {
-            spawnAgentSync({
-                path: process.cwd()
-            });
-        }
-        break;
-
-    case "skill":
-        {
-            spawnSkillSync({
-                path: process.cwd(),
-            });
-        }
-        break;
-
     case "codex":
         {
             prepareCodex();

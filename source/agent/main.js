@@ -14,57 +14,23 @@ const { coreSetup } = require("./coreSetup/main");
 const { makeAgentMessageFinalizer, logMessageOnAgent } = require("./message");
 const { makeAgentConnectionFinalizer } = require("./connection");
 
-function calculateDefaultAgentId(agentPath, agentConfig)
-{
-    if (agentConfig.anonymous)
-    {
-        try
-        {
-            return doSync(async () => {
-                const response = await fetch(`${agentConfig.root.url}/agent/generate_id`);
-                const responseText = await response.text();
-                if (!response.ok)
-                {
-                    throw new Error(responseText);
-                }
-                return `AIAgent@${responseText}`;
-            });
-        }
-        catch (error)
-        {
-            const result = `AIAgent@${process.pid}`;
-            console.log(`Cannot generate id from root, generate local-environment agent id using process id:`, result);
-            return result;
-        }
-    }
-    const hashCode = crypto
-        .createHash("sha1")
-        .update(path.normalize(agentPath))
-        .digest("base64url")
-        .slice(0, 10);
-    return `AIAgent@Main-${hashCode}`;
-}
-
-const defaultAgentData = JSON.parse(process.env.ABYTEK_AIAGENT_DATA || "{}");
-
 // the main function for users to create agents
 function createAgent(options) {
     options = options || {};
 
     const agent = {};
 
-    agent.path = options.path || defaultAgentData.path || process.cwd();
-    agent.path = path.normalize(agent.path);
+    agent.path = path.normalize(process.cwd());
+    agent.id = process.argv[2];
+    return console.log(process.argv);
 
     agent.config = loadAgentConfig(agent.path);
 
-    agent.id = options.id || defaultAgentData.id || calculateDefaultAgentId(agent.path, agent.config);
-    
     agent.logger = createAgentLogger(agent);
 
     agent.brief = loadAgentBrief(agent);
 
-    agent.connections = options.connections || defaultAgentData.connections || [];
+    agent.connections = [];
 
     agent.tempDir = path.resolve(agent.path, ".abytek-aiagent");
     fs.mkdirSync(agent.tempDir, { recursive: true });
@@ -110,6 +76,7 @@ function createAgent(options) {
         agent.closed = true;
     }
     agent.run = function () {
+        return;
         agent.started = true;
         agent.llmQueue.setup();
         while (!agent.shouldShutdown) {

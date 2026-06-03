@@ -18,7 +18,9 @@ function makeGameLoop(options) {
                 await result.emit("ready");
                 while (!result.shouldShutdown) {
                     await result.emit("tick");
-                    runLoopOnce();
+                    await new Promise(
+                        resolve => setTimeout(resolve, 16)
+                    );
                 }
                 await result.emitReversed("release");
             }

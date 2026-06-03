@@ -1,6 +1,8 @@
 
 const chalk = require("chalk");
+const path = require("path");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
+const { spawnAgent } = require("../agent/spawn");
 
 function createRuntimeAgentSpawner(runtime)
 {
@@ -82,7 +84,9 @@ function createRuntimeAgentSpawner(runtime)
             async () => {
                 serviceInstance.passive(
                     async () => {
-                        await serviceRegistry.process(serviceInstance.getInfo());
+                        await spawnAgent({
+                            path: path.resolve(__dirname, "../../templates/agents/default"),
+                        });
                     }
                 );
             }
@@ -140,7 +144,7 @@ function createRuntimeAgentSpawner(runtime)
                 try
                 {
                     await runtimeAgentSpawner.spawn({
-                        ...req.body
+                        ...req.body,
                     });
                 }
                 catch(err)
@@ -168,6 +172,7 @@ function createRuntimeAgentSpawner(runtime)
     runtime.on(
         "tick",
         async () => {
+            await runtimeAgentSpawner.flush();
         }
     );
     runtime.on(

@@ -114,7 +114,7 @@ function loadAgentConfig(agentPath) {
       );
     } catch (err) {
       throw new Error(
-        `Invalid JSON in config.json\n${err.message}`
+        `Invalid JSON in ${configPath}: ${err.message}`
       );
     }
   }

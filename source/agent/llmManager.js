@@ -29,7 +29,8 @@ function createAgentLLMManager(agent)
     });
 
     //
-    llmManager.lastFlushDate = Date.now();
+    llmManager.initialFlushDate = Date.now();
+    llmManager.lastFlushDate = llmManager.initialFlushDate;
     llmManager.pendingMessages = [];
 
     llmManager.sendMessages = async function(messages)
@@ -77,11 +78,12 @@ function createAgentLLMManager(agent)
         {
             const newFlushDate = Date.now();
             const secondsFromLastFlush = (newFlushDate - llmManager.lastFlushDate) / 1000;
+            const secondsFromInitialFlush = (newFlushDate - llmManager.initialFlushDate) / 1000;
             if (secondsFromLastFlush > agent.config.maxChatDurationInSeconds)
             {
                 agent.message(
                     makeSystemMessage(`
-It's been ${agent.getSeconds()} seconds from the start.
+It's been ${secondsFromInitialFlush} seconds from the start.
 IMPORTANT:
 - Please check what you are waiting for by re-send messages or re-check last tool callings,...
 - If you are waiting responses from other agents, you should follow a message to them for check if they are being stucked,...

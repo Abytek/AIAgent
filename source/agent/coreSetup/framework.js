@@ -18,13 +18,19 @@ ${path.normalize(path.join(__dirname, ".."))}
 # CORE CONCEPTS
 
 ## Root
-The root is the central runtime that manages AI agents.
+The root is the central server that manages AI agents.
 
 Responsibilities:
-- managing connected agents
+- managing agents
 - agent communication
 - coordination
 - runtime management
+
+## Runtime
+A runtime is a manager that manages runtime-side of agents in an OS,...
+
+Responsibilities:
+- managing skills, agent spawning, implementation,...
 
 ## AI Agent
 An AI agent is NOT just a language model.
@@ -137,6 +143,11 @@ abytek-aiagent-cli codex
 - Run root (AI agents are not allowed to run this command)
 \`\`\`batch
 abytek-aiagent-cli root
+\`\`\`
+
+- Run default runtime (AI agents are not allowed to run this command)
+\`\`\`batch
+abytek-aiagent-cli runtime.default
 \`\`\`
 
 # RESPONSE STYLE

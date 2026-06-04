@@ -3,6 +3,7 @@ const { z } = require("zod");
 const { makeSystemMessage } = require("../message");
 const pty = require("node-pty");
 const chalk = require("chalk");
+const { makeEventEmitter } = require("../../utilities/eventEmitter");
 
 const shell = process.platform === "win32"
     ? "powershell.exe"
@@ -12,8 +13,10 @@ const MAX_CHUNK_CHARS = 2000;
 
 function coreSetupTerminal(agent) {
 
-    const terminals = {};
-    agent.external.terminals = terminals;
+    const terminalManager = makeEventEmitter({
+        terminals: {},
+    });
+    agent.subsystems.terminalManager = terminalManager;
 
     let nextTerminalId = 0;
     function generateTerminalId()
@@ -54,7 +57,7 @@ function coreSetupTerminal(agent) {
                         output: "",
                         exitCode: null,
                     };
-                    terminals[terminal.id] = terminal;
+                    terminalManager.terminals[terminal.id] = terminal;
 
                     const ptyInstance = pty.spawn(shell, [], {
                         name: `${agent.id}.${terminal.id}`,
@@ -164,9 +167,9 @@ Created ${terminal.id}:
         tool(
             async ({ id }) => {
 
-                if (id in terminals)
+                if (id in terminalManager.terminals)
                 {
-                    const terminal = terminals[id];
+                    const terminal = terminalManager.terminals[id];
                     const exitCode = terminal.exitCode;
                     if (exitCode == null)
                     {
@@ -203,9 +206,9 @@ Created ${terminal.id}:
         tool(
             async ({ id }) => {
 
-                if (id in terminals)
+                if (id in terminalManager.terminals)
                 {
-                    const terminal = terminals[id];
+                    const terminal = terminalManager.terminals[id];
                     const exitCode = terminal.exitCode;
                     if (exitCode != null)
                     {
@@ -243,9 +246,9 @@ Created ${terminal.id}:
         tool(
             async ({ id, input }) => {
 
-                if (id in terminals)
+                if (id in terminalManager.terminals)
                 {
-                    const terminal = terminals[id];
+                    const terminal = terminalManager.terminals[id];
                     const exitCode = terminal.exitCode;
                     if (exitCode != null)
                     {
@@ -290,9 +293,9 @@ Created ${terminal.id}:
         tool(
             async ({ id, output_chunk_offset, output_chunk_size }) => {
 
-                if (id in terminals)
+                if (id in terminalManager.terminals)
                 {
-                    const terminal = terminals[id];
+                    const terminal = terminalManager.terminals[id];
                     if (output_chunk_offset > terminal.output.length)
                     {
                         return `[${id}] output_chunk_offset (${output_chunk_offset}) out of bounds, current terminal output length: ${terminal.output.length}`;
@@ -351,7 +354,7 @@ Created ${terminal.id}:
             async ({}) => {
 
                 let terminalIds = [];
-                for (id in terminals)
+                for (id in terminalManager.terminals)
                 {
                     terminalIds.push(id);
                 }

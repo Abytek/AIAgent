@@ -5,6 +5,7 @@ const { createAgentTracking } = require("./tracking");
 const { createAgentToolManager } = require("./toolManager");
 const { createAgentLLMContext } = require("./llmContext");
 const { createAgentLLMManager } = require("./llmManager");
+const { coreSetup } = require("./coreSetup/main");
 
 function createAgentSubsystems(agent)
 {
@@ -24,6 +25,8 @@ function createAgentSubsystems(agent)
     agent.subsystems.toolManager = createAgentToolManager(agent);
     agent.subsystems.llmContext = createAgentLLMContext(agent);
     agent.subsystems.llmManager = createAgentLLMManager(agent);
+
+    coreSetup(agent);
 }
 
 module.exports = {

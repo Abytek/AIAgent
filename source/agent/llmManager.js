@@ -44,9 +44,12 @@ function createAgentLLMManager(agent)
         {
             llmContext.messages.push(message);
         }
+        llmContext.save();
+
         const response = await llmManager.model.invoke(llmContext.messages);
 
         llmContext.messages.push(response);
+        llmContext.save();
         if (agent.config.debug)
         {
             agent.logger.log([ `LLM response` ], JSON.stringify(response, null, 4));

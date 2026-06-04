@@ -33,14 +33,6 @@ function createRuntimeAgentSpawner(runtime)
             resolve: null,
             reject: null
         };
-        sync.wait = () => {
-            return new Promise(
-                (resolve, reject) => {
-                    sync.resolve = resolve;
-                    sync.reject = reject;
-                }
-            );
-        }
 
         const serviceInstance = serviceRegistry.serviceInstance(
             "/runtimeManagement",
@@ -87,28 +79,32 @@ function createRuntimeAgentSpawner(runtime)
             }
         )
 
-        runtimeAgentSpawner.queues.push(
-            async () => {
-                (async () => {
-                    try
-                    {
-                        await serviceInstance.passive(
-                            async () => {
-                                await spawnAgent({
-                                    path: path.resolve(__dirname, "../../templates/agents/default"),
-                                    serviceInstanceInfo: serviceInstance.getInfo()
-                                });
+        await new Promise(
+            (resolve, reject) => {
+                sync.resolve = resolve;
+                sync.reject = reject;
+                runtimeAgentSpawner.queues.push(
+                    async () => {
+                        (async () => {
+                            try
+                            {
+                                await serviceInstance.passive(
+                                    async () => {
+                                        await spawnAgent({
+                                            path: path.resolve(__dirname, "../../templates/agents/default"),
+                                            serviceInstanceInfo: serviceInstance.getInfo()
+                                        });
+                                    }
+                                );
                             }
-                        );
+                            catch(err)
+                            {
+                            }
+                        })();
                     }
-                    catch(err)
-                    {
-                    }
-                })();
+                );
             }
         );
-
-        await sync.wait();
         return options.id;
     }
     runtimeAgentSpawner.flush = async function() {

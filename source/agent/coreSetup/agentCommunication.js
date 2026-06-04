@@ -9,11 +9,11 @@ const {
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
     const parsedMessages = [
-        makeAIMessage({ 
+        makeSystemMessage({ 
             content: `[FROM ${agent.id}]\n${messageContent}`,
             name: agent.id
         }),
-        makeAIMessage({ 
+        makeSystemMessage({ 
             content: `[CRITICAL]\nAll communications with ${agent.id} MUST use tool to reply`,
             name: agent.id
         }),
@@ -124,6 +124,64 @@ function coreSetupAgentCommunicationTools(agent) {
 };
 
 function coreSetupAgentCommunication(agent) {
+
+    const server = agent.subsystems.server;
+    server.on(
+        "setup",
+        async () => {
+            server.app.post(
+                "/send_messages",
+                async (req, res) => {
+                    if (!req.body)
+                    {
+                        return res.status(400).send(`Require request body`);
+                    }
+
+                    if (!("from" in req.body))
+                    {
+                        return res.status(400).send(`Require "from" in request body`);
+                    }
+                    const from = req.body.from;
+
+                    if (!("messages" in req.body))
+                    {
+                        return res.status(400).send(`Require "messages" in request body`);
+                    }
+                    const messages = req.body.messages;
+
+            //         if (agent.config.closed_agent_connection_model)
+            //         {
+            //             if (
+            //                 !(
+            //                     (agent.getConnection(from))
+            //                     || (from == "human")
+            //                 )
+            //             )
+            //             {
+            //                 return res.status(400).send(
+            // `${agent.id} uses closed agent connection model but ${from} was not added to ${agent.id}'s agent connections. 
+            // The only way for ${from} to correctly send messages to ${agent.id} is some how leveraging ${from}'s agent networks to tell ${agent.id} add connection to ${from}.`
+            // );
+            //             }
+            //         }
+                
+                    for (const message of messages)
+                    {
+                        try 
+                        {
+                            agent.message(message);
+                        }
+                        catch(err)
+                        {
+                            return res.status(400).send(err.message);
+                        }
+                    }
+                    return res.status(200).send(`Successfully sent messages`);
+                }
+            );
+        }
+    );
+
     coreSetupAgentCommunicationTools(agent);
 };
 

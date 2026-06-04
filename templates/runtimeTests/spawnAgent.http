@@ -5,7 +5,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, send messages to a random agents."
+            "content": "hello, send hello message to a random agents."
         }
     ]
 }

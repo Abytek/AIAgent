@@ -10,6 +10,7 @@ const { makeSync } = require("../utilities/sync");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { createGameLoopServer } = require("../utilities/gameLoopServer");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
+const { renderView_agentMonitor } = require("../frontend/views/agentMonitor");
 
 function createAgentServer(agent)
 {
@@ -24,6 +25,7 @@ function createAgentServer(agent)
         async () => {
             setupFrontendForExpressApp(agentServer.app);
             agentServer.app.get("/", (req, res) => {
+                renderView_agentMonitor(agent, res);
             });
             agentServer.app.post("/stop", (req, res) => {
                 res.status(200).send("Stop agent...");

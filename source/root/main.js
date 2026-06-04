@@ -44,7 +44,9 @@ function createRootId(config)
 function createRoot(options) {
     options = options || {};
 
-    const root = makeGameLoop();
+    const root = makeGameLoop({
+        path: options.path || process.cwd(),
+    });
 
     root.config = loadRootConfig(root);
     root.id = createRootId(root.config);

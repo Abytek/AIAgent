@@ -5,6 +5,7 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const { doSync, makeSync } = require("./utilities/sync");
 const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
+const { spawnRootSync } = require("./root/spawn");
 const { spawnRuntimeSync } = require("./runtime/spawn");
 const { spawnAgentSync } = require("./agent/spawn");
 const { spawnSkillSync } = require("./skill/spawn");
@@ -49,8 +50,16 @@ function prepare9Router()
 switch (command) {
     case "root":
         {
-            const root = createRoot();
-            root.run();
+            spawnRootSync({
+                path: process.cwd()
+            });
+        }
+        break;
+    case "root.default":
+        {
+            spawnRootSync({
+                path: path.resolve(__dirname, "../templates/roots/default"),
+            });
         }
         break;
 

@@ -23,6 +23,7 @@ module.exports = {
     ...require("./root/main"),
     ...require("./root/config"),
     ...require("./root/logger"),
+    ...require("./root/spawn"),
     ...require("./root/server"),
     ...require("./root/runtimeManager"),
     ...require("./root/runtime"),

@@ -22,6 +22,7 @@ function createAgent(options) {
     const agent = makeGameLoop({
         path: options.path || process.cwd(),
         spawnServiceInstanceInfo,
+        desc: agentDesc,
     });
 
     agent.config = loadAgentConfig(agent.path);

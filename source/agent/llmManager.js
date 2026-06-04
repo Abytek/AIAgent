@@ -132,6 +132,10 @@ IMPORTANT:
         "ready",
         async () => {
             llmManager.model = llmManager.model.bindTools(toolManager.getToolList());
+            for (const message of agent.desc.messages)
+            {
+                llmManager.message(message);
+            }
         }
     );
     agent.on(

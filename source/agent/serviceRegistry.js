@@ -34,7 +34,7 @@ function createAgentServiceRegistry(agent)
     agent.on(
         "ready",
         async () => {
-            await agentServiceRegistry.process(agent.spawnServiceInstanceInfo);
+            agentServiceRegistry.process(agent.spawnServiceInstanceInfo);
         }
     );
     return agentServiceRegistry;

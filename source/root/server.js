@@ -10,6 +10,7 @@ const { makeSync } = require("../utilities/sync");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { createGameLoopServer } = require("../utilities/gameLoopServer");
 const { setupFrontendForExpressApp } = require("../frontend/helper");
+const { renderView_rootDashboard } = require("../frontend/views/rootDashboard");
 
 function createRootServer(root)
 {
@@ -24,6 +25,7 @@ function createRootServer(root)
         async () => {
             setupFrontendForExpressApp(rootServer.app);
             rootServer.app.get("/", (req, res) => {
+                renderView_rootDashboard(root, res);
             });
             rootServer.app.post("/stop", (req, res) => {
                 res.status(200).send("Stop root...");

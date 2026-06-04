@@ -1,15 +1,16 @@
 
 function renderView_rootDashboard(root, res)
 {
-    const agentList = [];
+    const agentManager = root.subsystems.agentManager;
+    const agentInfoList = [];
     {
-        root.agents.forEach(
-            agent => { agentList.push(agent) }
+        agentManager.agentInfos.forEach(
+            agentInfo => { agentInfoList.push(agentInfo) }
         )
     }
 
     res.render("rootDashboard", {
-        agentList
+        agentInfoList
     })
 }
 

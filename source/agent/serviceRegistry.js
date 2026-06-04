@@ -1,5 +1,6 @@
 
 const { createServiceRegistry } = require("../utilities/serviceRegistry");
+const { makeConditionalVariable } = require("../utilities/conditionalVariable");
 
 function createAgentServiceRegistry(agent)
 {
@@ -10,18 +11,12 @@ function createAgentServiceRegistry(agent)
     });
     agentServiceRegistry.agent = agent;
 
-    let agentLifetimeSync = {
-        resolve: null,
-    }
+    let agentLifetimeSync = makeConditionalVariable();
     agentServiceRegistry.service(
         "/runtimeManagement",
         async (context, agentDesc) => {
             await context.emit("ready");
-            await new Promise(
-                resolve => {
-                    agentLifetimeSync.resolve = resolve;
-                }
-            );
+            await agentLifetimeSync.wait();
         }
     );
 

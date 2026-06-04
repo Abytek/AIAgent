@@ -6,6 +6,7 @@ module.exports = {
     ...require("./utilities/simpleRun"),
     ...require("./utilities/gameLoop"),
     ...require("./utilities/gameLoopServer"),
+    ...require("./utilities/conditionalVariable"),
 
     ...require("./env/root"),
     ...require("./env/runtime"),

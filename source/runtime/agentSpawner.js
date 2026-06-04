@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const path = require("path");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { spawnAgent } = require("../agent/spawn");
+const { makeConditionalVariable } = require("../utilities/conditionalVariable");
 
 function createRuntimeAgentSpawner(runtime)
 {
@@ -28,11 +29,8 @@ function createRuntimeAgentSpawner(runtime)
 
         runtimeAgentSpawner.numAgents += 1;
 
-        const sync = {
-            read: false,
-            resolve: null,
-            reject: null
-        };
+        let ready = false;
+        const sync = makeConditionalVariable();
 
         const serviceInstance = serviceRegistry.serviceInstance(
             "/runtimeManagement",
@@ -48,7 +46,7 @@ function createRuntimeAgentSpawner(runtime)
             "ready",
             async (context) => {
                 runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} ready`);
-                sync.ready = true;
+                ready = true;
                 sync.resolve();
             }
         )
@@ -57,7 +55,7 @@ function createRuntimeAgentSpawner(runtime)
             async (context) => {
                 runtimeAgentSpawner.numAgents -= 1;
                 runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} closed`);
-                if (!sync.ready)
+                if (!ready)
                 {
                     return sync.reject(new Error(`Unknown error, cannot spawn agent, the service instance quickly closed before agent ready`));
                 }
@@ -67,7 +65,7 @@ function createRuntimeAgentSpawner(runtime)
             "error",
             async (err) => {
                 runtimeAgentSpawner.numAgents -= 1;
-                if (sync.ready)
+                if (ready)
                 {
                     runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} crashed:`, err.message);
                 }
@@ -79,10 +77,8 @@ function createRuntimeAgentSpawner(runtime)
             }
         )
 
-        await new Promise(
-            (resolve, reject) => {
-                sync.resolve = resolve;
-                sync.reject = reject;
+        await sync.wait(
+            () => {
                 runtimeAgentSpawner.queues.push(
                     async () => {
                         (async () => {

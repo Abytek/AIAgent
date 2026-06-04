@@ -9,6 +9,7 @@ const { loadAgentConfig } = require("./config");
 const { createAgentLogger } = require("./logger");
 const { loadAgentBrief } = require("./brief");
 const { createAgentSubsystems } = require("./subsystems");
+const { saveCommonStatus } = require("./commonStatus");
 
 // the main function for users to create agents
 function createAgent(options) {
@@ -30,6 +31,11 @@ function createAgent(options) {
     agent.tags = agentDesc.tags;
     agent.logger = createAgentLogger(agent);
     agent.brief = loadAgentBrief(agent);
+
+    agent.dataDirectory = path.resolve(agent.path, ".abytek-aiagent", agent.id);
+    fs.mkdirSync(agent.dataDirectory, { recursive: true });
+    
+    saveCommonStatus(agent);
 
     createAgentSubsystems(agent);
     return agent;

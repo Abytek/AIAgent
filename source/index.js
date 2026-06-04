@@ -49,6 +49,7 @@ module.exports = {
     ...require("./agent/config"),
     ...require("./agent/brief"),
     ...require("./agent/logger"),
+    ...require("./agent/commonStatus"),
     ...require("./agent/server"),
     ...require("./agent/serviceRegistry"),
     ...require("./agent/llmContext"),

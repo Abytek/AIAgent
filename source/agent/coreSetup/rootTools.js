@@ -5,7 +5,7 @@ function coreSetupRootTools(agent) {
     agent.tool(
         tool(
             async () => {
-                return `${agent.tracking.enabled.toString()}`;
+                return `${agent.subsystems.rootTracking.enabled.toString()}`;
             },
             {
                 name: "root.enabled",
@@ -16,7 +16,7 @@ function coreSetupRootTools(agent) {
     agent.tool(
         tool(
             async () => {
-                if (!agent.tracking.enabled)
+                if (!agent.subsystems.rootTracking.enabled)
                 {
                     return "The AI agent is currently in standalone mode, cannot query agent list";
                 }
@@ -24,7 +24,7 @@ function coreSetupRootTools(agent) {
                 try
                 {
                     const response = await fetch(
-                        `${agent.config.root.url}/agent/list`
+                        `${agent.config.root.url}/agentInfos`
                     );
 
                     if (!response.ok)
@@ -33,7 +33,7 @@ function coreSetupRootTools(agent) {
                     }
 
                     const agents = await response.json();
-                    return JSON.stringify(agents, null, 4);
+                    return `Here is the list of currently connected agents (note that this list could be changed in the future so you MUST re-call "get_agent_list" for refreshing the agent list):\n${JSON.stringify(agents, null, 4)}`;
                 }
                 catch (error)
                 {

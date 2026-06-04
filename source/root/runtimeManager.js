@@ -39,13 +39,18 @@ function createRootRuntimeManager(root)
                 runtimeInfo.id, 
                 runtimeInfo
             );
+            rootRuntimeManager.socketToRuntimeId.set(
+                socket,
+                runtimeInfo.id
+            );
         }
     );
     rootRuntimeManager.on(
         "unregisterRuntime",
         async (socket, runtimeInfo) => {
-            rootRuntimeManager.runtimeinfos.delete(runtimeInfo.id);
             root.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Unregistered runtime:`, chalk.rgb(200, 70, 150)(runtimeInfo.id));
+            rootRuntimeManager.socketToRuntimeId.delete(runtimeInfo.id);
+            rootRuntimeManager.runtimeinfos.delete(runtimeInfo.id);
         }
     );
 
@@ -56,7 +61,7 @@ function createRootRuntimeManager(root)
     }
     async function unregisterRuntime(socket, runtimeInfo)
     {
-        await rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo.id);
+        await rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo);
     }
 
     // root server events

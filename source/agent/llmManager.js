@@ -87,6 +87,7 @@ It's been ${secondsFromInitialFlush} seconds from the start.
 IMPORTANT:
 - Please check what you are waiting for by re-send messages or re-check last tool callings,...
 - If you are waiting responses from other agents, you should follow a message to them for check if they are being stucked,...
+- Things/tool results might be changed, so you may need to re-check, re-call some tools if needed.
 `)
                 );
             }

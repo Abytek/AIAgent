@@ -27,11 +27,11 @@ function createRootAgentMessageManager(root)
                     return res.status(400).send(`Require "target_id" in request body`);
                 }
                 const targetId = req.body.target_id;
-                if (!rootManager.agents.has(targetId))
+                if (!root.agents.has(targetId))
                 {
                     return res.status(400).send(`Not found AI agent ${targetId}`);
                 }
-                const target = rootManager.agents.get(targetId);
+                const target = root.agents.get(targetId);
 
                 if (!("messages" in req.body))
                 {

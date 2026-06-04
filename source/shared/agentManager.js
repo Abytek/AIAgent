@@ -65,13 +65,18 @@ function createAgentManager(options)
                 agentInfo.id, 
                 agentInfo
             );
+            agentManager.socketToAgentId.set(
+                socket,
+                agentInfo.id
+            );
         }
     );
     agentManager.on(
         "unregisterAgent",
         async (socket, agentInfo) => {
-            agentManager.agentInfos.delete(agentInfo.id);
             gameLoop.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Unregistered agent:`, chalk.rgb(200, 70, 150)(agentInfo.id));
+            agentManager.socketToAgentId.delete(agentInfo.id);
+            agentManager.agentInfos.delete(agentInfo.id);
         }
     );
 

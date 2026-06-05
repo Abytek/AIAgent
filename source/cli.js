@@ -58,7 +58,7 @@ switch (command) {
     case "root.default":
         {
             spawnRootSync({
-                path: path.resolve(__dirname, "../templates/roots/default"),
+                path: path.resolve(__dirname, "../templates/root/default"),
             });
         }
         break;
@@ -73,7 +73,7 @@ switch (command) {
     case "runtime.default":
         {
             spawnRuntimeSync({
-                path: path.resolve(__dirname, "../templates/runtimes/default"),
+                path: path.resolve(__dirname, "../templates/runtime/default"),
             });
         }
         break;

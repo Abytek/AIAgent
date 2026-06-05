@@ -108,7 +108,7 @@ function createRuntimeAgentSpawner(runtime)
                                 await serviceInstance.passive(
                                     async () => {
                                         await spawnAgent({
-                                            path: path.resolve(__dirname, "../../templates/agents/default"),
+                                            path: path.resolve(__dirname, "../../templates/agent/default"),
                                             serviceInstanceInfo: serviceInstance.getInfo()
                                         });
                                     }

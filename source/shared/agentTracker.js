@@ -26,6 +26,9 @@ function createAgentTracker(options)
         agentTrackingDatas: new Map(), // key: agent id, value: agent info
         socketToAgentId: new Map(), // key: socket IO, value: agent id
     })
+    agentTracker.list = function() {
+        return [ ...agentTracker.agentTrackingDatas.values() ];
+    }
     agentTracker.has = function(agentId) {
         return agentTracker.agentTrackingDatas.has(agentId);
     }
@@ -42,18 +45,6 @@ function createAgentTracker(options)
             throw new Error(`Not found agent: ${agentId}`);
         }
         return agentTracker.agentTrackingDatas.get(agentId);
-    }
-
-    if (parentId)
-    {
-        let nextAgentIndex = 0;
-        agentTracker.generateAgentId = function()
-        {
-            let agentIndex = nextAgentIndex;
-            ++nextAgentIndex;
-            const right = parentId.slice(parentId.lastIndexOf("@") + 1);
-            return `AIAgent@${right}.${agentIndex}`;
-        }
     }
 
     // root agent manager events
@@ -94,22 +85,9 @@ function createAgentTracker(options)
     gameLoopServer.on(
         "setup",
         async () => {
-            gameLoopServer.app.get("/agentTrackingDatas", (req, res) => {
-                let agentTrackingDatas = [];
-                agentTracker.agentTrackingDatas.forEach(
-                    value => {
-                        agentTrackingDatas.push(value);
-                    }
-                );
-                res.status(200).json(agentTrackingDatas);
+            gameLoopServer.app.get("/agentTracker/list", (req, res) => {
+                res.status(200).json(agentTracker.list());
             });
-
-            if (parentId)
-            {
-                gameLoopServer.app.get("/generateAgentId", (req, res) => {
-                    res.status(200).send(agentTracker.generateAgentId());
-                });
-            }
         }
     );
     gameLoopServer.on(

@@ -52,6 +52,7 @@ function createAgentTracking(agent, ownerName, url)
                                 else
                                 {
                                     throw new Error(`Failed to connect to ${ownerName}${ownerName}: ${res.message}`);
+                                    process.exit(1);
                                     sync();
                                 }
                             }
@@ -60,11 +61,13 @@ function createAgentTracking(agent, ownerName, url)
             
                     agentTracking.io.on("connect_error", (err) => {
                         agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Connect to ${ownerName} failed`);
+                        process.exit(1);
                         sync();
                     });
             
                     agentTracking.io.on("disconnect", (reason) => {
                         agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Disconnected from ${ownerName}:`, reason);
+                        process.exit(1);
                         sync();
                     });
                 }

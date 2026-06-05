@@ -52,6 +52,7 @@ function createRuntimeTracking(runtime)
                                 else
                                 {
                                     throw new Error(`Failed to connect to root: ${res.message}`);
+                                    process.exit(1);
                                     sync();
                                 }
                             }
@@ -60,11 +61,13 @@ function createRuntimeTracking(runtime)
             
                     runtimeTracking.io.on("connect_error", (err) => {
                         runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Connect to root failed");
+                        process.exit(1);
                         sync();
                     });
             
                     runtimeTracking.io.on("disconnect", (reason) => {
                         runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root:", reason);
+                        process.exit(1);
                         sync();
                     });
                 }

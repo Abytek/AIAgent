@@ -1,6 +1,7 @@
 
-const chalk = require("chalk");
+const fs = require("fs");
 const path = require("path");
+const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { spawnAgent } = require("../agent/spawn");
 const { makeConditionalVariable } = require("../utilities/conditionalVariable");
@@ -50,23 +51,31 @@ function createRuntimeAgentSpawner(runtime)
 
         runtimeAgentSpawner.numAgents += 1;
 
+        const agentDataDirectory = path.resolve(runtime.dataDirectory, "agents", options.id);
+        fs.mkdirSync(agentDataDirectory, { recursive: true });
+
+        const parsedOptions = {
+            ...options,
+            dataDirectory: agentDataDirectory,
+        };
+
         let ready = false;
         const sync = makeConditionalVariable();
 
         const serviceInstance = serviceRegistry.serviceInstance(
             "/runtimeManagement",
-            options
+            parsedOptions
         );
         serviceInstance.on(
             "open",
             async (context) => {
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} opened`);
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} opened`);
             }
         )
         serviceInstance.on(
             "ready",
             async (context) => {
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} ready`);
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} ready`);
                 ready = true;
                 sync.resolve();
             }
@@ -75,7 +84,7 @@ function createRuntimeAgentSpawner(runtime)
             "close",
             async (context) => {
                 runtimeAgentSpawner.numAgents -= 1;
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} closed`);
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} closed`);
                 if (!ready)
                 {
                     return sync.reject(new Error(`Unknown error, cannot spawn agent, the service instance quickly closed before agent ready`));
@@ -88,11 +97,11 @@ function createRuntimeAgentSpawner(runtime)
                 runtimeAgentSpawner.numAgents -= 1;
                 if (ready)
                 {
-                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} crashed:`, err.message);
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} crashed:`, err.message);
                 }
                 else
                 {
-                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${options.id} failed to spawn:`, err.message);
+                    runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} failed to spawn:`, err.message);
                     return sync.reject(err);
                 }
             }

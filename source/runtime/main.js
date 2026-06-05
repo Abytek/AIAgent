@@ -51,6 +51,9 @@ function createRuntime(options) {
     runtime.config = loadRuntimeConfig(runtime.path);
     runtime.id = createRuntimeId(runtime.config);
     runtime.logger = createRuntimeLogger(runtime);
+    
+    runtime.dataDirectory = path.resolve(runtime.path, ".abytek-aiagent", runtime.id);
+    fs.mkdirSync(runtime.dataDirectory, { recursive: true });
 
     createRuntimeSubsystems(runtime);
     return runtime;

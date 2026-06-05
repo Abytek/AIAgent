@@ -32,7 +32,7 @@ function createAgent(options) {
     agent.logger = createAgentLogger(agent);
     agent.brief = loadAgentBrief(agent);
 
-    agent.dataDirectory = path.resolve(agent.path, ".abytek-aiagent", agent.id);
+    agent.dataDirectory = agentDesc.dataDirectory;
     fs.mkdirSync(agent.dataDirectory, { recursive: true });
     
     agent.on(

@@ -8,15 +8,16 @@ module.exports = {
     ...require("./utilities/gameLoopServer"),
     ...require("./utilities/conditionalVariable"),
 
-    ...require("./shared/env/root"),
-    ...require("./shared/env/runtime"),
-    ...require("./shared/env/skill"),
-    ...require("./shared/env/agent"),
-
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),
     ...require("./frontend/views/rootDashboard"),
     
+    ...require("./shared/env/root"),
+    ...require("./shared/env/runtime"),
+    ...require("./shared/env/skill"),
+    ...require("./shared/env/agent"),
+    ...require("./shared/agentId"),
+    ...require("./shared/agentInfo"),
     ...require("./shared/agentTracker"),
     ...require("./shared/agentTrackingData"),
     ...require("./shared/message"),

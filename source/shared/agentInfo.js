@@ -1,6 +1,7 @@
 
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
+const { checkAgentId } = require("./agentId");
 
 function finalizeAgentInfo(options)
 {
@@ -12,6 +13,10 @@ function finalizeAgentInfo(options)
         throw new Error(`Requires "id" in options`);
     }
     result.id = options.id;
+    if (!checkAgentId(result.id))
+    {
+        throw new Error(`Invalid "id": ${result.id}`);
+    }
 
     result.brief = options.brief || "";
     result.tags = options.tags || [];

@@ -1,6 +1,6 @@
 
 const path = require("path");
-const { makeSystemMessage } = require("../message");
+const { makeSystemMessage } = require("../../shared/message");
 
 function coreSetupFramework(agent)
 {

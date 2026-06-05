@@ -10,7 +10,7 @@ const {
     makeSystemMessage,
     logMessageOnAgent,
     makeAgentMessageFinalizer,
-} = require("./message");
+} = require("../shared/message");
 
 function createAgentLLMManager(agent)
 {

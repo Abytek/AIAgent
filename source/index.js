@@ -19,6 +19,7 @@ module.exports = {
     
     ...require("./shared/agentTracker"),
     ...require("./shared/agentTrackingData"),
+    ...require("./shared/message"),
 
     ...require("./root/main"),
     ...require("./root/config"),
@@ -57,7 +58,6 @@ module.exports = {
     ...require("./agent/llmManager"),
     ...require("./agent/tracking"),
     ...require("./agent/spawn"),
-    ...require("./agent/message"),
     ...require("./agent/toolManager"),
     ...require("./agent/subsystems"),
     ...require("./agent/coreSetup/main"),

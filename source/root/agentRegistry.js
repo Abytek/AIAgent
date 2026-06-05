@@ -2,7 +2,7 @@
 const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
-const { getMessageRole, getMessageContent } = require("../agent/message");
+const { getMessageRole, getMessageContent } = require("../shared/message");
 const { finalizeAgentTrackingData } = require("../shared/agentTrackingData");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 

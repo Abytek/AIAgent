@@ -1,6 +1,6 @@
 
 const chalk = require("chalk");
-const { getMessageRole, getMessageContent } = require("../agent/message");
+const { getMessageRole, getMessageContent } = require("../shared/message");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
 function createRootAgentCommunicationManager(root)

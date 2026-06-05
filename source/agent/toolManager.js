@@ -7,7 +7,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage
-} = require("./message");
+} = require("../shared/message");
 
 function createAgentToolManager(agent)
 {

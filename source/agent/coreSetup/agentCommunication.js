@@ -4,7 +4,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage
-} = require("../message");
+} = require("../../shared/message");
 
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 

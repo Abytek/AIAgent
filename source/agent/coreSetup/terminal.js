@@ -1,6 +1,6 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
-const { makeSystemMessage } = require("../message");
+const { makeSystemMessage } = require("../../shared/message");
 const pty = require("node-pty");
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../../utilities/eventEmitter");

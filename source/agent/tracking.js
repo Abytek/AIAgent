@@ -40,8 +40,6 @@ function createAgentTracking(agent, ownerName, url)
                             "registerAgent", 
                             { 
                                 id: agent.id,
-                                brief: agent.brief,
-                                tags: agent.tags,
                                 url: agentServer.url
                             },
                             (res) => {

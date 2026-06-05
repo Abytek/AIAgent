@@ -1,5 +1,5 @@
 
-function finalizeRootRuntimeInfo(options)
+function finalizeRootRuntimeTrackingData(options)
 {
     options = options || {};
     const result = {};
@@ -20,5 +20,5 @@ function finalizeRootRuntimeInfo(options)
 }
 
 module.exports = {
-    finalizeRootRuntimeInfo
+    finalizeRootRuntimeTrackingData
 }

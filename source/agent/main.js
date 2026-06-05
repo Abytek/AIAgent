@@ -7,7 +7,6 @@ const chalk = require("chalk");
 const { makeGameLoop } = require("../utilities/gameLoop");
 const { loadAgentConfig } = require("./config");
 const { createAgentLogger } = require("./logger");
-const { loadAgentBrief } = require("./brief");
 const { createAgentSubsystems } = require("./subsystems");
 const { saveCommonStatus } = require("./commonStatus");
 
@@ -28,9 +27,10 @@ function createAgent(options) {
 
     agent.config = loadAgentConfig(agent.path);
     agent.id = agentDesc.id;
-    agent.tags = agentDesc.tags;
     agent.logger = createAgentLogger(agent);
-    agent.brief = loadAgentBrief(agent);
+    agent.tags = agentDesc.tags;
+    agent.brief = agentDesc.brief;
+    agent.logger.log([ chalk.rgb(60, 200, 30)("Brief") ], agent.brief);
 
     agent.dataDirectory = agentDesc.dataDirectory;
     fs.mkdirSync(agent.dataDirectory, { recursive: true });

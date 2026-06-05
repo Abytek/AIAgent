@@ -30,16 +30,14 @@ function createRuntimeAgentSpawner(runtime)
         }
         options.messages = options.messages || [];
 
+        let agentInfo = null;
         {
-            const response = await fetch(`${runtime.config.root.url}/agentRegistry/has/${encodeURIComponent(options.id)}`);
+            const response = await fetch(`${runtime.config.root.url}/agentRegistry/get/${encodeURIComponent(options.id)}`);
             if (!response.ok)
             {
-                throw new Error(`Failed to check id: ${await response.text()}`);
+                throw new Error(`Failed to get agent info with id ${options.id}: ${await response.text()}`);
             }
-            if (!await response.json())
-            {
-                throw new Error(`Not found agent in root agent registry with id: ${options.id}`);
-            }
+            agentInfo = await response.json();
         }
 
         {
@@ -56,6 +54,7 @@ function createRuntimeAgentSpawner(runtime)
 
         const parsedOptions = {
             ...options,
+            ...agentInfo,
             dataDirectory: agentDataDirectory,
         };
 

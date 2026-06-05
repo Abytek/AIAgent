@@ -456,10 +456,7 @@
                                 <button
                                     type="button"
 
-                                    <%= agent.isOnline
-                                        ? `onclick="window.location.href='${agent.url}'"`
-                                        : ''
-                                    %>
+                                    onclick="if ('<%- agent.isOnline %>' == 'true') window.location.href='<%- agent.url %>'"
 
                                     class="
                                         flex-1

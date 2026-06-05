@@ -50,7 +50,6 @@ module.exports = {
 
     ...require("./agent/main"),
     ...require("./agent/config"),
-    ...require("./agent/brief"),
     ...require("./agent/logger"),
     ...require("./agent/commonStatus"),
     ...require("./agent/server"),

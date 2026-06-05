@@ -12,18 +12,18 @@ function createRootRuntimeTracker(root)
         runtimeTrackingDatas: new Map(), // key: runtime id, value: runtime info
         socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
     })
-    rootRuntimeTracker.hasRuntimeTrackingData = function(runtimeId) {
+    rootRuntimeTracker.has = function(runtimeId) {
         return rootRuntimeTracker.runtimeTrackingDatas.has(runtimeId);
     }
-    rootRuntimeTracker.findRuntimeTrackingData = function(runtimeId) {
-        if (!rootRuntimeTracker.hasRuntimeTrackingData(runtimeId))
+    rootRuntimeTracker.find = function(runtimeId) {
+        if (!rootRuntimeTracker.has(runtimeId))
         {
             return null;
         }
         return rootRuntimeTracker.runtimeTrackingDatas.get(runtimeId);
     }
-    rootRuntimeTracker.getRuntimeTrackingData = function(runtimeId) {
-        if (!rootRuntimeTracker.hasRuntimeTrackingData(runtimeId))
+    rootRuntimeTracker.get = function(runtimeId) {
+        if (!rootRuntimeTracker.has(runtimeId))
         {
             throw new Error(`Not found runtime: ${runtimeId}`);
         }

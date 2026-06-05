@@ -42,7 +42,7 @@ function createRuntimeAgentSpawner(runtime)
         }
 
         {
-            if (runtimeAgentTracker.hasAgentTrackingData(options.id))
+            if (runtimeAgentTracker.has(options.id))
             {
                 throw new Error(`${options.id} was already spawned`);
             }

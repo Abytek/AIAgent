@@ -26,18 +26,18 @@ function createAgentTracker(options)
         agentTrackingDatas: new Map(), // key: agent id, value: agent info
         socketToAgentId: new Map(), // key: socket IO, value: agent id
     })
-    agentTracker.hasAgentTrackingData = function(agentId) {
+    agentTracker.has = function(agentId) {
         return agentTracker.agentTrackingDatas.has(agentId);
     }
-    agentTracker.findAgentTrackingData = function(agentId) {
-        if (!agentTracker.hasAgentTrackingData(agentId))
+    agentTracker.find = function(agentId) {
+        if (!agentTracker.has(agentId))
         {
             return null;
         }
         return agentTracker.agentTrackingDatas.get(agentId);
     }
-    agentTracker.getAgentTrackingData = function(agentId) {
-        if (!agentTracker.hasAgentTrackingData(agentId))
+    agentTracker.get = function(agentId) {
+        if (!agentTracker.has(agentId))
         {
             throw new Error(`Not found agent: ${agentId}`);
         }

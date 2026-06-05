@@ -581,9 +581,7 @@
 
                     if (!response.ok)
                     {
-                        throw new Error(
-                            "HTTP " + response.status
-                        );
+                        throw new Error(await response.text());
                     }
 
                     location.reload();
@@ -593,7 +591,7 @@
                     console.error(error);
 
                     alert(
-                        "Failed to save agent info."
+                        `Failed to save agent info: ${error.message}`
                     );
                 }
             }
@@ -640,9 +638,7 @@
 
                     if (!response.ok)
                     {
-                        throw new Error(
-                            "HTTP " + response.status
-                        );
+                        throw new Error(await response.text());
                     }
 
                     location.reload();
@@ -652,7 +648,7 @@
                     console.error(error);
 
                     alert(
-                        "Failed to remove agent."
+                        `Failed to remove agent: ${error.message}`
                     );
                 }
             }

@@ -65,6 +65,11 @@ function createRootAgentRegistry(root)
         {
             throw new Error(`Not found agent with id: ${id}`);
         }
+        const agentTracker = root.subsystems.agentTracker;
+        if (agentTracker.has(id))
+        {
+            throw new Error(`${id} is running, cannot unset/delete`);
+        }
         rootAgentRegistry.data.delete(id);
         rootAgentRegistry.save();
         root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Delete: `, id);

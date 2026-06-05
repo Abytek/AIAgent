@@ -2,7 +2,7 @@ POST http://localhost:39999/agentSpawner/spawn
 Content-Type: application/json
 
 {
-    "id": "AIAgent@simple",
+    "id": "AIAgent@simple2",
     "messages": [
         {
             "type": "human",

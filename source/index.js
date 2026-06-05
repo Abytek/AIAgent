@@ -25,7 +25,7 @@ module.exports = {
     ...require("./root/logger"),
     ...require("./root/spawn"),
     ...require("./root/server"),
-    ...require("./root/runtimeManager"),
+    ...require("./root/runtimeTracker"),
     ...require("./root/runtime"),
     ...require("./root/agentRegistry"),
     ...require("./root/subsystems"),

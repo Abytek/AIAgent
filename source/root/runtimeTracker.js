@@ -3,65 +3,65 @@ const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { finalizeRootRuntimeInfo } = require("./runtime");
 
-function createRootRuntimeManager(root)
+function createRootRuntimeTracker(root)
 {
     const rootServer = root.subsystems.server;
 
-    const rootRuntimeManager = makeEventEmitter({
+    const rootRuntimeTracker = makeEventEmitter({
         root,
         runtimeinfos: new Map(), // key: runtime id, value: runtime info
         socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
     })
-    rootRuntimeManager.hasRuntimeInfo = function(runtimeId) {
-        return rootRuntimeManager.runtimeinfos.has(runtimeId);
+    rootRuntimeTracker.hasRuntimeInfo = function(runtimeId) {
+        return rootRuntimeTracker.runtimeinfos.has(runtimeId);
     }
-    rootRuntimeManager.findRuntimeInfo = function(runtimeId) {
-        if (!rootRuntimeManager.hasRuntimeInfo(runtimeId))
+    rootRuntimeTracker.findRuntimeInfo = function(runtimeId) {
+        if (!rootRuntimeTracker.hasRuntimeInfo(runtimeId))
         {
             return null;
         }
-        return rootRuntimeManager.runtimeinfos.get(runtimeId);
+        return rootRuntimeTracker.runtimeinfos.get(runtimeId);
     }
-    rootRuntimeManager.getRuntimeInfo = function(runtimeId) {
-        if (!rootRuntimeManager.hasRuntimeInfo(runtimeId))
+    rootRuntimeTracker.getRuntimeInfo = function(runtimeId) {
+        if (!rootRuntimeTracker.hasRuntimeInfo(runtimeId))
         {
             throw new Error(`Not found runtime: ${runtimeId}`);
         }
-        return rootRuntimeManager.runtimeinfos.get(runtimeId);
+        return rootRuntimeTracker.runtimeinfos.get(runtimeId);
     }
 
     // root runtime manager events
-    rootRuntimeManager.on(
+    rootRuntimeTracker.on(
         "registerRuntime",
         async (socket, runtimeInfo) => {
             root.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Registered runtime:`, runtimeInfo);
-            rootRuntimeManager.runtimeinfos.set(
+            rootRuntimeTracker.runtimeinfos.set(
                 runtimeInfo.id, 
                 runtimeInfo
             );
-            rootRuntimeManager.socketToRuntimeId.set(
+            rootRuntimeTracker.socketToRuntimeId.set(
                 socket,
                 runtimeInfo.id
             );
         }
     );
-    rootRuntimeManager.on(
+    rootRuntimeTracker.on(
         "unregisterRuntime",
         async (socket, runtimeInfo) => {
             root.logger.log([ chalk.rgb(60, 200, 30)("Runtime") ], `Unregistered runtime:`, chalk.rgb(200, 70, 150)(runtimeInfo.id));
-            rootRuntimeManager.socketToRuntimeId.delete(runtimeInfo.id);
-            rootRuntimeManager.runtimeinfos.delete(runtimeInfo.id);
+            rootRuntimeTracker.socketToRuntimeId.delete(runtimeInfo.id);
+            rootRuntimeTracker.runtimeinfos.delete(runtimeInfo.id);
         }
     );
 
     // 
     async function registerRuntime(socket, runtimeInfo)
     {
-        await rootRuntimeManager.emit("registerRuntime", socket, runtimeInfo);
+        await rootRuntimeTracker.emit("registerRuntime", socket, runtimeInfo);
     }
     async function unregisterRuntime(socket, runtimeInfo)
     {
-        await rootRuntimeManager.emitReversed("unregisterRuntime", socket, runtimeInfo);
+        await rootRuntimeTracker.emitReversed("unregisterRuntime", socket, runtimeInfo);
     }
 
     // root server events
@@ -70,7 +70,7 @@ function createRootRuntimeManager(root)
         async () => {
             rootServer.app.get("/runtimeInfos", (req, res) => {
                 let runtimeInfos = [];
-                rootRuntimeManager.runtimeinfos.forEach(
+                rootRuntimeTracker.runtimeinfos.forEach(
                     value => {
                         runtimeInfos.push(value);
                     }
@@ -107,7 +107,7 @@ function createRootRuntimeManager(root)
             socket.on(
                 "unregisterRuntime",
                 async (runtimeId, ack) => {
-                    if (!rootRuntimeManager.runtimeinfos.has(runtimeId))
+                    if (!rootRuntimeTracker.runtimeinfos.has(runtimeId))
                     {
                         if (ack)
                         {
@@ -115,7 +115,7 @@ function createRootRuntimeManager(root)
                         }
                     }
 
-                    const runtimeInfo = rootRuntimeManager.runtimeinfos.get(runtimeId);
+                    const runtimeInfo = rootRuntimeTracker.runtimeinfos.get(runtimeId);
 
                     try 
                     {
@@ -139,13 +139,13 @@ function createRootRuntimeManager(root)
     rootServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
-            if (!rootRuntimeManager.socketToRuntimeId.has(socket))
+            if (!rootRuntimeTracker.socketToRuntimeId.has(socket))
             {
                 return;
             }
 
-            const runtimeId = rootRuntimeManager.socketToRuntimeId.get(socket);
-            const runtimeInfo = rootRuntimeManager.runtimeinfos.get(runtimeId);
+            const runtimeId = rootRuntimeTracker.socketToRuntimeId.get(socket);
+            const runtimeInfo = rootRuntimeTracker.runtimeinfos.get(runtimeId);
             await unregisterRuntime(socket, runtimeInfo);
         }
     );
@@ -161,9 +161,9 @@ function createRootRuntimeManager(root)
         async () => {
         }
     );
-    return rootRuntimeManager;
+    return rootRuntimeTracker;
 }
 
 module.exports = {
-    createRootRuntimeManager
+    createRootRuntimeTracker
 }

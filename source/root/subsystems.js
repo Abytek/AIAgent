@@ -1,6 +1,6 @@
 
 const { createRootServer } = require("./server");
-const { createRootRuntimeManager } = require("./runtimeManager");
+const { createRootRuntimeTracker } = require("./runtimeTracker");
 const { createRootAgentRegistry } = require("./agentRegistry");
 const { createRootAgentTracker } = require("./agentTracker");
 const { createRootAgentCommunicationManager } = require("./agentCommunicationManager");
@@ -9,7 +9,7 @@ function createRootSubsystems(root)
 {
     root.subsystems = {};
     root.subsystems.server = createRootServer(root);
-    root.subsystems.runtimeManager = createRootRuntimeManager(root);
+    root.subsystems.runtimeTracker = createRootRuntimeTracker(root);
     root.subsystems.agentRegistry = createRootAgentRegistry(root);
     root.subsystems.agentTracker = createRootAgentTracker(root);
     root.subsystems.agentCommunicationManager = createRootAgentCommunicationManager(root);

@@ -1,0 +1,7 @@
+POST http://localhost:33999/agentRegistry/set
+Content-Type: application/json
+
+{
+    "id": "AIAgent@hellomyfriend",
+    "url": "test"
+}

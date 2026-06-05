@@ -4,9 +4,9 @@ const path = require("path");
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
 
-const { getDefaultRootURL } = require("../env/root");
-const { getDefaultRuntimeURL } = require("../env/runtime");
-const { } = require("../env/agent");
+const { getDefaultRootURL } = require("../shared/env/root");
+const { getDefaultRuntimeURL } = require("../shared/env/runtime");
+const { } = require("../shared/env/agent");
 
 const ajv = new Ajv({
   useDefaults: true,

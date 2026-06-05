@@ -44,6 +44,10 @@ function createRootAgentRegistry(root)
             JSON.stringify([ ...rootAgentRegistry.data.values() ], null, 4)
         );
     }
+    rootAgentRegistry.list = function()
+    {
+        return [ ...rootAgentRegistry.data.values() ];
+    }
     rootAgentRegistry.has = function(id)
     {
         return rootAgentRegistry.data.has(id);
@@ -76,20 +80,18 @@ function createRootAgentRegistry(root)
     rootServer.on(
         "setup",
         async () => {
-            rootServer.app.post("/agentRegistry/has", async (req, res) =>
+            rootServer.app.get("/agentRegistry/list", async (req, res) =>
             {
-                if (!req.body)
+                res.status(200).json(rootAgentRegistry.list());
+            });
+            rootServer.app.get("/agentRegistry/has/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
                 {
-                    return res.status(400).send(`Require request body`);
+                    return res.status(400).send(`Require "id" parameter`);
                 }
-
-                if (!("id" in req.body))
-                {
-                    return res.status(400).send(`Require "id" in request body`);
-                }
-                const id = req.body.id;
-
-                res.status(200).json(rootAgentRegistry.data.has(id));
+                const id = req.params.id;
+                res.status(200).json(rootAgentRegistry.has(id));
             });
             rootServer.app.post("/agentRegistry/set", async (req, res) =>
             {
@@ -97,31 +99,48 @@ function createRootAgentRegistry(root)
                 {
                     return res.status(400).send(`Require request body`);
                 }
-
-                if (!("id" in req.body))
+                try
                 {
-                    return res.status(400).send(`Require "id" in request body`);
+                    rootAgentRegistry.set({ ...req.body });
+                    res.status(200).send(`Succeeded`);
                 }
-                const id = req.body.id;
-
-                if (!("brief" in req.body))
+                catch(err)
                 {
-                    return res.status(400).send(`Require "brief" in request body`);
+                    res.status(400).send(err.message);
                 }
-                const brief = req.body.brief;
             });
-            rootServer.app.post("/agentRegistry/unset", async (req, res) =>
+            rootServer.app.post("/agentRegistry/unset/:id", async (req, res) =>
             {
-                if (!req.body)
+                if (!("id" in req.params))
                 {
-                    return res.status(400).send(`Require request body`);
+                    return res.status(400).send(`Require "id" parameter`);
                 }
-
-                if (!("id" in req.body))
+                const id = req.params.id;
+                try
                 {
-                    return res.status(400).send(`Require "id" in request body`);
+                    rootAgentRegistry.unset(id);
+                    res.status(200).send(`Succeeded`);
                 }
-                const id = req.body.id;
+                catch(err)
+                {
+                    res.status(400).send(err.message);
+                }
+            });
+            rootServer.app.get("/agentRegistry/get/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
+                {
+                    return res.status(400).send(`Require "id" parameter`);
+                }
+                const id = req.params.id;
+                try
+                {
+                    res.status(200).json(rootAgentRegistry.get(id));
+                }
+                catch(err)
+                {
+                    res.status(400).send(err.message);
+                }
             });
         }
     );

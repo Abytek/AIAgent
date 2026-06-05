@@ -8,10 +8,10 @@ module.exports = {
     ...require("./utilities/gameLoopServer"),
     ...require("./utilities/conditionalVariable"),
 
-    ...require("./env/root"),
-    ...require("./env/runtime"),
-    ...require("./env/skill"),
-    ...require("./env/agent"),
+    ...require("./shared/env/root"),
+    ...require("./shared/env/runtime"),
+    ...require("./shared/env/skill"),
+    ...require("./shared/env/agent"),
 
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),

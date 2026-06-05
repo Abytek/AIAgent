@@ -21,11 +21,33 @@ function createRuntimeAgentSpawner(runtime)
     runtimeAgentSpawner.spawn = async function(options) {
         options = options || {};
 
-        options.id = options.id || runtimeAgentTracker.generateAgentId();
+        runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Spawning agent:`, options);
+
+        if (!("id" in options))
+        {
+            throw new Error(`Requires "id" in options`);
+        }
         options.messages = options.messages || [];
         options.tags = options.tags || [];
 
-        runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Spawning agent:`, options);
+        {
+            const response = await fetch(`${runtime.config.root.url}/agentRegistry/has/${encodeURIComponent(options.id)}`);
+            if (!response.ok)
+            {
+                throw new Error(`Failed to check id: ${await response.text()}`);
+            }
+            if (!await response.json())
+            {
+                throw new Error(`Not found agent in root agent registry with id: ${options.id}`);
+            }
+        }
+
+        {
+            if (runtimeAgentTracker.hasAgentTrackingData(options.id))
+            {
+                throw new Error(`${options.id} was already spawned`);
+            }
+        }
 
         runtimeAgentSpawner.numAgents += 1;
 
@@ -101,7 +123,6 @@ function createRuntimeAgentSpawner(runtime)
                 );
             }
         );
-        return options.id;
     }
     runtimeAgentSpawner.flush = async function() {
         const commands = [ ...runtimeAgentSpawner.queues ];
@@ -139,7 +160,7 @@ function createRuntimeAgentSpawner(runtime)
     gameLoopServer.on(
         "setup",
         async () => {
-            gameLoopServer.app.post("/agent/spawn", async (req, res) => {
+            gameLoopServer.app.post("/agentSpawner/spawn", async (req, res) => {
                 if (req.body == null)
                 {
                     return res.status(400).send(`Requires request body`);
@@ -151,10 +172,10 @@ function createRuntimeAgentSpawner(runtime)
 
                 try
                 {
-                    const id = await runtimeAgentSpawner.spawn({
+                    await runtimeAgentSpawner.spawn({
                         ...req.body,
                     });
-                    return res.status(200).send(id);
+                    return res.status(200).send("Spawned agent successfully");
                 }
                 catch(err)
                 {

@@ -28,7 +28,6 @@ function createRuntimeAgentSpawner(runtime)
             throw new Error(`Requires "id" in options`);
         }
         options.messages = options.messages || [];
-        options.tags = options.tags || [];
 
         {
             const response = await fetch(`${runtime.config.root.url}/agentRegistry/has/${encodeURIComponent(options.id)}`);

@@ -44,20 +44,9 @@ function createRootAgentRegistry(root)
             JSON.stringify([ ...rootAgentRegistry.data.values() ], null, 4)
         );
     }
-    rootAgentRegistry.list = function({
-        filterActive = false,
-    })
+    rootAgentRegistry.list = function()
     {
-        const result = [];
-        const agentTracker = root.subsystems.agentTracker;
-        for (const agentInfo of rootAgentRegistry.data.values())
-        {
-            if (agentTracker.has(agentInfo.id) || !filterActive)
-            {
-                result.push(agentInfo);
-            }
-        }
-        return result;
+        return [ ...rootAgentRegistry.data.values() ];
     }
     rootAgentRegistry.has = function(id)
     {
@@ -95,12 +84,7 @@ function createRootAgentRegistry(root)
         async () => {
             rootServer.app.get("/agentRegistry/list", async (req, res) =>
             {
-                const filterActive = req.query.filterActive === "true";
-                res.status(200).json(
-                    rootAgentRegistry.list({
-                        filterActive,
-                    })
-                );
+                res.status(200).json(rootAgentRegistry.list());
             });
             rootServer.app.get("/agentRegistry/has/:id", async (req, res) =>
             {

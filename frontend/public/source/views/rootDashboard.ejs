@@ -79,7 +79,7 @@
                 </p>
 
                 <h2 class="text-3xl font-bold mt-1">
-                    <%= agentInfoList.length %>
+                    <%= agentSlots.length %>
                 </h2>
             </div>
         </div>
@@ -96,7 +96,7 @@
             "
         >
 
-            <% agentInfoList.forEach(agent => { %>
+            <% agentSlots.forEach(agent => { %>
 
                 <div
                     class="
@@ -178,8 +178,8 @@
                                     w-3
                                     h-3
                                     rounded-full
-                                    bg-emerald-400
-                                    shadow-[0_0_20px_rgba(74,222,128,0.8)]
+                                    <%= agent.isOnline ? 'bg-emerald-400' : 'bg-gray-400' %>
+                                    <%= agent.isOnline ? 'shadow-[0_0_20px_rgba(74,222,128,0.8)]' : 'shadow-[0_0_20px_rgba(128,128,128,0.8)]' %>
                                 "
                             ></div>
                         </div>
@@ -202,7 +202,7 @@
                                     mb-2
                                 "
                             >
-                                Path
+                                Brief
                             </p>
 
                             <p
@@ -213,7 +213,7 @@
                                     leading-relaxed
                                 "
                             >
-                                <%= agent.path %>
+                                <%= agent.brief %>
                             </p>
                         </div>
 
@@ -225,16 +225,19 @@
                             "
                         >
                             <button
-                                onclick=" window.location.href = '<%= agent.url %>'"
+                                onclick="window.location.href = '<%- agent.url %>' || window.location.href;"
                                 class="
                                     flex-1
-                                    bg-indigo-500
-                                    hover:bg-indigo-400
                                     transition
                                     rounded-xl
                                     py-3
                                     font-semibold
+                                    <%= agent.isOnline
+                                        ? 'bg-indigo-500 hover:bg-indigo-400 cursor-pointer'
+                                        : 'bg-gray-500 cursor-not-allowed opacity-60'
+                                    %>
                                 "
+                                <%= agent.isOnline ? '' : 'disabled' %>
                             >
                                 Open
                             </button>

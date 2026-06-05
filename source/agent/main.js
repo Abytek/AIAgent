@@ -35,7 +35,10 @@ function createAgent(options) {
     agent.dataDirectory = path.resolve(agent.path, ".abytek-aiagent", agent.id);
     fs.mkdirSync(agent.dataDirectory, { recursive: true });
     
-    saveCommonStatus(agent);
+    agent.on(
+        "ready",
+        async () => saveCommonStatus(agent)
+    );
 
     createAgentSubsystems(agent);
     return agent;

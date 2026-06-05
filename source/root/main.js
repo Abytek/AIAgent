@@ -51,6 +51,9 @@ function createRoot(options) {
     root.config = loadRootConfig(root);
     root.id = createRootId(root.config);
     root.logger = createRootLogger(root);
+    
+    root.dataDirectory = path.resolve(root.path, ".abytek-aiagent", root.id);
+    fs.mkdirSync(root.dataDirectory, { recursive: true });
 
     root.subsystems = {};
     createRootSubsystems(root);

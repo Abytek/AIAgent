@@ -3,12 +3,12 @@ const chalk = require("chalk");
 const { getMessageRole, getMessageContent } = require("../agent/message");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
-function createRootAgentMessageManager(root)
+function createRootAgentCommunicationManager(root)
 {
     const rootServer = root.subsystems.server;
-    const agentManager = root.subsystems.agentManager;
+    const agentTracker = root.subsystems.agentTracker;
 
-    const rootAgentMessageManager = makeEventEmitter({
+    const rootAgentCommunicationManager = makeEventEmitter({
         root,
     })
 
@@ -28,11 +28,11 @@ function createRootAgentMessageManager(root)
                     return res.status(400).send(`Require "target_id" in request body`);
                 }
                 const targetId = req.body.target_id;
-                if (!agentManager.agentInfos.has(targetId))
+                if (!agentTracker.agentTrackingDatas.has(targetId))
                 {
                     return res.status(400).send(`Not found AI agent ${targetId}`);
                 }
-                const target = agentManager.agentInfos.get(targetId);
+                const target = agentTracker.agentTrackingDatas.get(targetId);
 
                 if (!("from" in req.body))
                 {
@@ -85,9 +85,9 @@ function createRootAgentMessageManager(root)
             });
         }
     );
-    return rootAgentMessageManager;
+    return rootAgentCommunicationManager;
 }
 
 module.exports = {
-    createRootAgentMessageManager
+    createRootAgentCommunicationManager
 }

@@ -9,7 +9,7 @@ function createRuntimeAgentSpawner(runtime)
 {
     const gameLoopServer = runtime.subsystems.server;
     const serviceRegistry = runtime.subsystems.serviceRegistry;
-    const runtimeAgentManager = runtime.subsystems.agentManager;
+    const runtimeAgentTracker = runtime.subsystems.agentTracker;
 
     let runtimeAgentSpawner = makeEventEmitter({
         runtime,
@@ -21,7 +21,7 @@ function createRuntimeAgentSpawner(runtime)
     runtimeAgentSpawner.spawn = async function(options) {
         options = options || {};
 
-        options.id = options.id || runtimeAgentManager.generateAgentId();
+        options.id = options.id || runtimeAgentTracker.generateAgentId();
         options.messages = options.messages || [];
         options.tags = options.tags || [];
 

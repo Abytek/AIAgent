@@ -2,7 +2,7 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 
-function finalizeAgentInfo(options)
+function finalizeAgentTrackingData(options)
 {
     options = options || {};
     const result = {};
@@ -35,5 +35,5 @@ function finalizeAgentInfo(options)
 }
 
 module.exports = {
-    finalizeAgentInfo,
+    finalizeAgentTrackingData,
 }

@@ -1,9 +1,9 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeAgentInfo } = require("./agent");
+const { finalizeAgentTrackingData } = require("./agentTrackingData");
 
-function createAgentManager(options)
+function createAgentTracker(options)
 {
     options = options || {};
 
@@ -21,33 +21,33 @@ function createAgentManager(options)
 
     const parentId = options.parentId;
 
-    const agentManager = makeEventEmitter({
+    const agentTracker = makeEventEmitter({
         gameLoop,
-        agentInfos: new Map(), // key: agent id, value: agent info
+        agentTrackingDatas: new Map(), // key: agent id, value: agent info
         socketToAgentId: new Map(), // key: socket IO, value: agent id
     })
-    agentManager.hasAgentInfo = function(agentId) {
-        return agentManager.agentInfos.has(agentId);
+    agentTracker.hasAgentTrackingData = function(agentId) {
+        return agentTracker.agentTrackingDatas.has(agentId);
     }
-    agentManager.findAgentInfo = function(agentId) {
-        if (!agentManager.hasAgentInfo(agentId))
+    agentTracker.findAgentTrackingData = function(agentId) {
+        if (!agentTracker.hasAgentTrackingData(agentId))
         {
             return null;
         }
-        return agentManager.agentInfos.get(agentId);
+        return agentTracker.agentTrackingDatas.get(agentId);
     }
-    agentManager.getAgentInfo = function(agentId) {
-        if (!agentManager.hasAgentInfo(agentId))
+    agentTracker.getAgentTrackingData = function(agentId) {
+        if (!agentTracker.hasAgentTrackingData(agentId))
         {
             throw new Error(`Not found agent: ${agentId}`);
         }
-        return agentManager.agentInfos.get(agentId);
+        return agentTracker.agentTrackingDatas.get(agentId);
     }
 
     if (parentId)
     {
         let nextAgentIndex = 0;
-        agentManager.generateAgentId = function()
+        agentTracker.generateAgentId = function()
         {
             let agentIndex = nextAgentIndex;
             ++nextAgentIndex;
@@ -57,57 +57,57 @@ function createAgentManager(options)
     }
 
     // root agent manager events
-    agentManager.on(
+    agentTracker.on(
         "registerAgent",
-        async (socket, agentInfo) => {
-            gameLoop.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Registered agent:`, agentInfo);
-            agentManager.agentInfos.set(
-                agentInfo.id, 
-                agentInfo
+        async (socket, agentTrackingData) => {
+            gameLoop.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Registered agent:`, agentTrackingData);
+            agentTracker.agentTrackingDatas.set(
+                agentTrackingData.id, 
+                agentTrackingData
             );
-            agentManager.socketToAgentId.set(
+            agentTracker.socketToAgentId.set(
                 socket,
-                agentInfo.id
+                agentTrackingData.id
             );
         }
     );
-    agentManager.on(
+    agentTracker.on(
         "unregisterAgent",
-        async (socket, agentInfo) => {
-            gameLoop.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Unregistered agent:`, chalk.rgb(200, 70, 150)(agentInfo.id));
-            agentManager.socketToAgentId.delete(agentInfo.id);
-            agentManager.agentInfos.delete(agentInfo.id);
+        async (socket, agentTrackingData) => {
+            gameLoop.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `Unregistered agent:`, chalk.rgb(200, 70, 150)(agentTrackingData.id));
+            agentTracker.socketToAgentId.delete(agentTrackingData.id);
+            agentTracker.agentTrackingDatas.delete(agentTrackingData.id);
         }
     );
 
     // 
-    async function registerAgent(socket, agentInfo)
+    async function registerAgent(socket, agentTrackingData)
     {
-        await agentManager.emit("registerAgent", socket, agentInfo);
+        await agentTracker.emit("registerAgent", socket, agentTrackingData);
     }
-    async function unregisterAgent(socket, agentInfo)
+    async function unregisterAgent(socket, agentTrackingData)
     {
-        await agentManager.emitReversed("unregisterAgent", socket, agentInfo);
+        await agentTracker.emitReversed("unregisterAgent", socket, agentTrackingData);
     }
 
     // root server events
     gameLoopServer.on(
         "setup",
         async () => {
-            gameLoopServer.app.get("/agentInfos", (req, res) => {
-                let agentInfos = [];
-                agentManager.agentInfos.forEach(
+            gameLoopServer.app.get("/agentTrackingDatas", (req, res) => {
+                let agentTrackingDatas = [];
+                agentTracker.agentTrackingDatas.forEach(
                     value => {
-                        agentInfos.push(value);
+                        agentTrackingDatas.push(value);
                     }
                 );
-                res.status(200).json(agentInfos);
+                res.status(200).json(agentTrackingDatas);
             });
 
             if (parentId)
             {
                 gameLoopServer.app.get("/generateAgentId", (req, res) => {
-                    res.status(200).send(agentManager.generateAgentId());
+                    res.status(200).send(agentTracker.generateAgentId());
                 });
             }
         }
@@ -117,11 +117,11 @@ function createAgentManager(options)
         async (socket) => {
             socket.on(
                 "registerAgent",
-                async (agentInfo, ack) => {
+                async (agentTrackingData, ack) => {
                     try 
                     {
-                        agentInfo = finalizeAgentInfo(agentInfo);
-                        await registerAgent(socket, agentInfo);
+                        agentTrackingData = finalizeAgentTrackingData(agentTrackingData);
+                        await registerAgent(socket, agentTrackingData);
                     }
                     catch(err)
                     {
@@ -139,7 +139,7 @@ function createAgentManager(options)
             socket.on(
                 "unregisterAgent",
                 async (agentId, ack) => {
-                    if (!agentManager.agentInfos.has(agentId))
+                    if (!agentTracker.agentTrackingDatas.has(agentId))
                     {
                         if (ack)
                         {
@@ -147,11 +147,11 @@ function createAgentManager(options)
                         }
                     }
 
-                    const agentInfo = agentManager.agentInfos.get(agentId);
+                    const agentTrackingData = agentTracker.agentTrackingDatas.get(agentId);
 
                     try 
                     {
-                        await unregisterAgent(socket, agentInfo);
+                        await unregisterAgent(socket, agentTrackingData);
                     }
                     catch(err)
                     {
@@ -171,14 +171,14 @@ function createAgentManager(options)
     gameLoopServer.on(
         "socketClient_disconnected",
         async (socket, reason) => {
-            if (!agentManager.socketToAgentId.has(socket))
+            if (!agentTracker.socketToAgentId.has(socket))
             {
                 return;
             }
 
-            const agentId = agentManager.socketToAgentId.get(socket);
-            const agentInfo = agentManager.agentInfos.get(agentId);
-            await unregisterAgent(socket, agentInfo);
+            const agentId = agentTracker.socketToAgentId.get(socket);
+            const agentTrackingData = agentTracker.agentTrackingDatas.get(agentId);
+            await unregisterAgent(socket, agentTrackingData);
         }
     );
 
@@ -193,7 +193,7 @@ function createAgentManager(options)
         async () => {
             {
                 let agentURLs = [];
-                agentManager.agentInfos.forEach(
+                agentTracker.agentTrackingDatas.forEach(
                     value => {
                         agentURLs.push(value.url);
                     }
@@ -213,9 +213,9 @@ function createAgentManager(options)
             }
         }
     );
-    return agentManager;
+    return agentTracker;
 }
 
 module.exports = {
-    createAgentManager
+    createAgentTracker
 }

@@ -17,8 +17,8 @@ module.exports = {
     ...require("./frontend/views/agentMonitor"),
     ...require("./frontend/views/rootDashboard"),
     
-    ...require("./shared/agentManager"),
-    ...require("./shared/agent"),
+    ...require("./shared/agentTracker"),
+    ...require("./shared/agentTrackingData"),
 
     ...require("./root/main"),
     ...require("./root/config"),
@@ -27,6 +27,7 @@ module.exports = {
     ...require("./root/server"),
     ...require("./root/runtimeManager"),
     ...require("./root/runtime"),
+    ...require("./root/agentRegistry"),
     ...require("./root/subsystems"),
     
     ...require("./runtime/main"),

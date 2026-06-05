@@ -212,6 +212,86 @@
                 </form>
             </div>
 
+            <!-- Remove Agent Panel -->
+            <div
+                class="
+                    bg-red-950/30
+                    border
+                    border-red-900/60
+                    rounded-3xl
+                    p-8
+                    backdrop-blur
+                "
+            >
+                <div class="flex items-start justify-between gap-6">
+                    <div>
+                        <h3 class="text-2xl font-bold text-red-300">
+                            Remove Agent
+                        </h3>
+
+                        <p class="text-zinc-400 mt-2">
+                            Only offline agents can be removed.
+                        </p>
+
+                        <p class="text-zinc-500 text-sm mt-3">
+                            Endpoint:
+                            <span class="text-red-400 font-mono">
+                                <script>
+                                    document.write(
+                                        window.location.origin +
+                                        "/agentRegistry/unset"
+                                    );
+                                </script>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <form
+                    id="removeAgentForm"
+                    class="
+                        mt-8
+                        flex
+                        flex-col
+                        md:flex-row
+                        gap-4
+                    "
+                >
+                    <input
+                        id="removeAgentId"
+                        type="text"
+                        placeholder="Agent ID"
+                        class="
+                            flex-1
+                            bg-zinc-950
+                            border
+                            border-red-900/60
+                            rounded-xl
+                            px-4
+                            py-3
+                            outline-none
+                            focus:border-red-500
+                            transition
+                        "
+                    />
+
+                    <button
+                        type="submit"
+                        class="
+                            px-8
+                            py-3
+                            rounded-xl
+                            bg-red-500
+                            hover:bg-red-400
+                            transition
+                            font-semibold
+                        "
+                    >
+                        Remove Agent
+                    </button>
+                </form>
+            </div>
+
             <!-- Agent List -->
             <div
                 class="
@@ -343,6 +423,35 @@
                                     Edit
                                 </button>
 
+                                <!-- Remove -->
+                                <button
+                                    type="button"
+
+                                    onclick='fillRemoveForm(
+                                        <%- JSON.stringify(agent.id) %>
+                                    )'
+
+                                    class="
+                                        px-5
+                                        py-3
+                                        rounded-xl
+                                        transition
+                                        font-semibold
+
+                                        <%= agent.isOnline
+                                            ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                                            : 'bg-red-500 hover:bg-red-400'
+                                        %>
+                                    "
+
+                                    <%= agent.isOnline
+                                        ? 'disabled'
+                                        : ''
+                                    %>
+                                >
+                                    Remove
+                                </button>
+
                                 <!-- Open -->
                                 <button
                                     type="button"
@@ -382,6 +491,10 @@
             "agentRegistryForm"
         );
 
+        const removeForm = document.getElementById(
+            "removeAgentForm"
+        );
+
         const clearButton = document.getElementById(
             "clearButton"
         );
@@ -399,6 +512,18 @@
 
             window.scrollTo({
                 top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        function fillRemoveForm(id)
+        {
+            document.getElementById(
+                "removeAgentId"
+            ).value = id || "";
+
+            window.scrollTo({
+                top: document.body.scrollHeight,
                 behavior: "smooth"
             });
         }
@@ -472,6 +597,65 @@
 
                     alert(
                         "Failed to save agent info."
+                    );
+                }
+            }
+        );
+
+        removeForm.addEventListener(
+            "submit",
+            async (event) =>
+            {
+                event.preventDefault();
+
+                const id = document
+                    .getElementById("removeAgentId")
+                    .value
+                    .trim();
+
+                if (!id)
+                {
+                    alert(
+                        "Please enter an agent ID."
+                    );
+
+                    return;
+                }
+
+                const confirmed = confirm(
+                    `Remove offline agent "${id}" ?`
+                );
+
+                if (!confirmed)
+                {
+                    return;
+                }
+
+                try
+                {
+                    const response = await fetch(
+                        window.location.origin +
+                        "/agentRegistry/unset/" + id,
+                        {
+                            method: "POST",
+                        }
+                    );
+
+                    if (!response.ok)
+                    {
+                        throw new Error(
+                            "HTTP " + response.status
+                        );
+                    }
+
+                    location.reload();
+                }
+                catch (error)
+                {
+                    console.error(error);
+
+                    alert(
+                        "Failed to remove agent."
                     );
                 }
             }

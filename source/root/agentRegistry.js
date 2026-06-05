@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 const { getMessageRole, getMessageContent } = require("../shared/message");
-const { finalizeAgentTrackingData } = require("../shared/agentTrackingData");
+const { finalizeAgentInfo } = require("../shared/agentInfo");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
 function createRootAgentRegistry(root)
@@ -25,11 +25,11 @@ function createRootAgentRegistry(root)
 
         try
         {
-            const agentTrackingDatas = JSON.parse(fs.readFileSync(rootAgentRegistry.file, "utf8"));
-            for (const agentTrackingData of agentTrackingDatas)
+            const agentInfos = JSON.parse(fs.readFileSync(rootAgentRegistry.file, "utf8"));
+            for (const agentInfo of agentInfos)
             {
-                const finalizedAgentTrackingData = finalizeAgentTrackingData(agentTrackingData);
-                rootAgentRegistry.data.set(finalizedAgentTrackingData.id, finalizedAgentTrackingData);
+                const finalizedAgentInfo = finalizeAgentInfo(agentInfo);
+                rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
             }
         }
         catch(err)
@@ -52,11 +52,12 @@ function createRootAgentRegistry(root)
     {
         return rootAgentRegistry.data.has(id);
     }
-    rootAgentRegistry.set = function(agentTrackingData)
+    rootAgentRegistry.set = function(agentInfo)
     {
-        const finalizedAgentTrackingData = finalizeAgentTrackingData(agentTrackingData);
-        rootAgentRegistry.data.set(finalizedAgentTrackingData.id, finalizedAgentTrackingData);
+        const finalizedAgentInfo = finalizeAgentInfo(agentInfo);
+        rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
         rootAgentRegistry.save();
+        root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Set:`, agentInfo);
     }
     rootAgentRegistry.unset = function(id)
     {
@@ -66,6 +67,7 @@ function createRootAgentRegistry(root)
         }
         rootAgentRegistry.data.delete(id);
         rootAgentRegistry.save();
+        root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Delete: `, id);
     }
     rootAgentRegistry.get = function(id)
     {

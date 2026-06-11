@@ -10,6 +10,7 @@ function createAgentSkillManager(agent)
     const agentSkillManager = makeEventEmitter({
         agent,
         skills: new Map(),
+        sortedSkills: [],
     });
     agentSkillManager.has = function(skillName)
     {
@@ -51,12 +52,74 @@ function createAgentSkillManager(agent)
             agent.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Imported skill: ${chalk.rgb(100, 150, 250)(skill.name)}`);
         }
     }
+    function sortSkills()
+    {
+        const visited = new Set();
+        const visiting = new Set();
+        const sorted = [];
+
+        function visit(skill)
+        {
+            if (visited.has(skill.name))
+            {
+                return;
+            }
+
+            if (visiting.has(skill.name))
+            {
+                throw new Error(`Circular dependency detected at skill: ${skill.name}`);
+            }
+
+            visiting.add(skill.name);
+
+            const dependencies = skill.dependencies || [];
+            for (const dependencyName of dependencies)
+            {
+                const dependency = agentSkillManager.skills.get(dependencyName);
+
+                if (dependency == null)
+                {
+                    throw new Error(
+                        `Skill "${skill.name}" depends on missing skill "${dependencyName}"`
+                    );
+                }
+
+                visit(dependency);
+            }
+
+            visiting.delete(skill.name);
+            visited.add(skill.name);
+
+            sorted.push(skill);
+        }
+
+        for (const skill of agentSkillManager.skills.values())
+        {
+            visit(skill);
+        }
+
+        agentSkillManager.sortedSkills = sorted;
+    };
     
     // agent events
     agent.on(
         "init",
         async () => {
             importSkills();
+            sortSkills();
+            for (const skill of agentSkillManager.sortedSkills)
+            {
+                await skill.emit("init");
+            }
+        }
+    );
+    agent.on(
+        "ready",
+        async () => {
+            for (const skill of agentSkillManager.sortedSkills)
+            {
+                await skill.emit("ready");
+            }
         }
     );
     return agentSkillManager;

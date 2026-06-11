@@ -10,6 +10,7 @@ function makeSkill(agent, reference)
         agent,
         path: reference.path,
         name: null,
+        dependencies: [],
     });
     skill.setup = function(options)
     {
@@ -23,6 +24,22 @@ function makeSkill(agent, reference)
 
         return skill;
     }
+    skill.depends = function(skillName)
+    {
+        skill.dependencies.push(skillName);
+    }
+
+    // skill events
+    skill.on(
+        "init",
+        async () => {
+        }
+    );
+    skill.on(
+        "ready",
+        async () => {
+        }
+    );
     return skill;
 }
 

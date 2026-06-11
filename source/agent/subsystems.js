@@ -26,6 +26,7 @@ function createAgentSubsystems(agent)
     agent.subsystems.llmContext = createAgentLLMContext(agent);
     agent.subsystems.llmManager = createAgentLLMManager(agent);
     agent.subsystems.skillManager = createAgentSkillManager(agent);
+    agent.subsystems.llmManager.markConversationStarted();
 }
 
 module.exports = {

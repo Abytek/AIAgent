@@ -120,6 +120,8 @@ function createAgentLLMContext(agent)
 
     const agentContext = makeEventEmitter({
         agent,
+        numNonConversationMessages: 0,
+        isConversationStarted: false,
         messages: [],
         textAttachments: new Map(),
         memory: [],
@@ -166,7 +168,7 @@ function createAgentLLMContext(agent)
     {
         const dataToSave = {
             initialDate: initialDate,
-            messages: agentContext.messages,
+            messages: agentContext.messages.slice(agentContext.numNonConversationMessages, agentContext.messages.length),
             textAttachments: Array.from(agentContext.textAttachments.values()),
         };
         fs.writeFileSync(agentContext.file, JSON.stringify(dataToSave, null, 4));
@@ -208,18 +210,34 @@ function createAgentLLMContext(agent)
                     ].join(''),
             };
 
+            if (!agentContext.isConversationStarted)
+            {
+                agentContext.numNonConversationMessages++;
+            }
             agentContext.messages.push(attachmentMessage);
         }
         else
         {
+            if (!agentContext.isConversationStarted)
+            {
+                agentContext.numNonConversationMessages++;
+            }
             agentContext.messages.push(message);
         }
         agentContext.save();
     }
     agentContext.outputMessage = function(message) 
     {
+        if (!agentContext.isConversationStarted)
+        {
+            agentContext.numNonConversationMessages++;
+        }
         agentContext.messages.push(message);
         agentContext.save();
+    }
+    agentContext.markConversationStarted = function()
+    {
+        agentContext.isConversationStarted = true;
     }
 
     //

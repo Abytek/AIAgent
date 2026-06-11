@@ -352,6 +352,8 @@ function createAgentSkillManager(agent)
         }
     });
 
+    agent.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Imported skills`);
+
     // agent events
     agent.on(
         "init",

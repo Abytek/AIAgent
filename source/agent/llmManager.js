@@ -32,18 +32,18 @@ function createAgentLLMManager(agent)
     //
     llmManager.initialFlushDate = Date.now();
     llmManager.lastFlushDate = llmManager.initialFlushDate;
-    llmManager.pendingMessages = [];
+    llmManager.pendingCommands = [];
 
-    llmManager.sendMessages = async function(messages)
+    llmManager.processCommands = async function(commands)
     {
         if (agent.config.debug)
         {
-            agent.logger.log([ `Sending messages` ], messages);
+            agent.logger.log([ `Processing commands` ], commands);
         }
 
-        for (const message of messages)
+        for (const command of commands)
         {
-            llmContext.inputMessage(message);
+            command();
         }
 
         const response = await llmManager.model.invoke(llmContext.messages);
@@ -90,20 +90,20 @@ IMPORTANT:
             }
         }
 
-        if (llmManager.pendingMessages.length == 0)
+        if (llmManager.pendingCommands.length == 0)
         {
             return;
         }
 
         llmManager.lastFlushDate = Date.now();
 
-        const cachedMessages = [
-            ...llmManager.pendingMessages
+        const cachedCommands = [
+            ...llmManager.pendingCommands
         ];
-        llmManager.pendingMessages = [];
+        llmManager.pendingCommands = [];
 
-        const response = await llmManager.sendMessages(
-            cachedMessages
+        const response = await llmManager.processCommands(
+            cachedCommands
         );
         logMessageOnAgent(agent, response);
     };
@@ -112,11 +112,28 @@ IMPORTANT:
     {
         const cachedMessage = agentMessageSchema.finalize({ ...message });
         logMessageOnAgent(agent, cachedMessage);
-        llmManager.pendingMessages.push(cachedMessage);
+        llmManager.pendingCommands.push(
+            () => {
+                if (agent.config.debug)
+                {
+                    agent.logger.log([ `Sending message` ], cachedMessage);
+                }
+                llmContext.inputMessage(cachedMessage);
+            }
+        );
     }
     agent.message = function(message)
     {
         return llmManager.message(message);
+    }
+
+    llmManager.markConversationStarted = function(message)
+    {
+        llmManager.pendingCommands.push(
+            () => {
+                llmContext.markConversationStarted();
+            }
+        );
     }
 
     // agent events

@@ -117,8 +117,6 @@ function importMemory(skill) {
 
     const agent = skill.agent;
 
-    console.log(buildMemorySystemPrompt(agent));
-
     skill.on(
         "lateSetup",
         async () => {

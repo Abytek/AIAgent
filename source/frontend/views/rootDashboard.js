@@ -1,8 +1,8 @@
 
 function renderView_rootDashboard(root, res)
 {
-    const agentRegistry = root.subsystems.agentRegistry;
     const agentTracker = root.subsystems.agentTracker;
+    const agentRegistry = root.subsystems.agentRegistry;
 
     const agentInfoList = agentRegistry.list();
 

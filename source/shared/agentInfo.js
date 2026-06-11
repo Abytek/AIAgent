@@ -2,28 +2,39 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 const { checkAgentId } = require("./agentId");
+const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
 
-function finalizeAgentInfo(options)
-{
-    options = options || {};
-    const result = {};
+const agentInfoSchema = {
+    type: "object",
 
-    if (!("id" in options))
-    {
-        throw new Error(`Requires "id" in options`);
-    }
-    result.id = options.id;
-    if (!checkAgentId(result.id))
-    {
-        throw new Error(`Invalid "id": ${result.id}`);
-    }
+    properties: {
+        id: {
+            type: "string",
+        },
 
-    result.brief = options.brief || "";
-    result.tags = options.tags || [];
+        brief: {
+            type: "string",
+            default: "",
+        },
 
-    return result;
-}
+        tags: {
+            type: "array",
+            items: {
+                type: "string",
+            },
+            default: [],
+        },
+    },
+
+    required: [
+        "id",
+    ],
+};
+const makeAgentInfoFinalizer = () => makeSchemaFinalizer(agentInfoSchema);
+const finalizeAgentInfo = makeFinalizeSchemaFunction(agentInfoSchema);
 
 module.exports = {
+    agentInfoSchema,
+    makeAgentInfoFinalizer,
     finalizeAgentInfo,
 }

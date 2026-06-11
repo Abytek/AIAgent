@@ -2,31 +2,32 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 const { checkAgentId } = require("./agentId");
+const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
 
-function finalizeAgentTrackingData(options)
-{
-    options = options || {};
-    const result = {};
 
-    if (!("id" in options))
-    {
-        throw new Error(`Requires "id" in options`);
-    }
-    result.id = options.id;
-    if (!checkAgentId(result.id))
-    {
-        throw new Error(`Invalid "id": ${result.id}`);
-    }
+const agentTrackingDataSchema = {
+    type: "object",
 
-    if (!("url" in options))
-    {
-        throw new Error(`Requires "url" in options`);
-    }
-    result.url = options.url;
+    properties: {
+        id: {
+            type: "string",
+        },
+        
+        url: {
+            type: "string",
+        },
+    },
 
-    return result;
-}
+    required: [
+        "id",
+        "url",
+    ],
+};
+const makeAgentTrackingDataFinalizer = () => makeSchemaFinalizer(agentTrackingDataSchema);
+const finalizeAgentTrackingData = makeFinalizeSchemaFunction(agentTrackingDataSchema);
 
 module.exports = {
+    agentTrackingDataSchema,
+    makeAgentTrackingDataFinalizer,
     finalizeAgentTrackingData,
 }

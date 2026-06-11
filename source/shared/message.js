@@ -8,15 +8,7 @@ const {
 
 const chalk = require("chalk");
 
-const Ajv = require("ajv");
-const addFormats = require("ajv-formats");
-
-const ajv = new Ajv({
-    useDefaults: true,
-    allErrors: true,
-});
-
-addFormats(ajv);
+const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
 
 const agentMessageSchema = {
     type: "object",
@@ -79,25 +71,8 @@ const agentMessageSchema = {
 
     additionalProperties: true,
 };
-
-const makeAgentMessageFinalizer = () => {
-    const result = ajv.compile(agentMessageSchema);
-    result.toErrorsText = function()
-    {
-        return result.errors
-        .map(err =>
-        {
-            if (err.keyword === "additionalProperties")
-            {
-                return `${err.instancePath || "/"} has unknown property "${err.params.additionalProperty}"`;
-            }
-
-            return `${err.instancePath || "/"} ${err.message}`;
-        })
-        .join("\n");
-    }
-    return result;
-}
+const makeAgentMessageFinalizer = () => makeSchemaFinalizer(agentMessageSchema);
+const finalizeAgentMessage = makeFinalizeSchemaFunction(agentMessageSchema);
 
 function makeAIMessage(options)
 {
@@ -223,7 +198,9 @@ function logMessageOnAgent(agent, message)
 }
 
 module.exports = {
+    agentMessageSchema,
     makeAgentMessageFinalizer,
+    finalizeAgentMessage,
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage,

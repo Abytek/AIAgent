@@ -7,6 +7,7 @@ module.exports = {
     ...require("./utilities/gameLoop"),
     ...require("./utilities/gameLoopServer"),
     ...require("./utilities/conditionalVariable"),
+    ...require("./utilities/schema"),
 
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),

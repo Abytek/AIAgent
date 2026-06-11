@@ -45,6 +45,56 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
     return text;
 }
 
+function setupServer(skill) {
+
+    const agent = skill.agent;
+
+    skill.on(
+        "setup",
+        async () => {
+            const server = agent.subsystems.server;
+            server.on(
+                "setup",
+                async () => {
+                    server.app.post(
+                        "/send_messages",
+                        async (req, res) => {
+                            if (!req.body)
+                            {
+                                return res.status(400).send(`Require request body`);
+                            }
+
+                            if (!("from" in req.body))
+                            {
+                                return res.status(400).send(`Require "from" in request body`);
+                            }
+                            const from = req.body.from;
+
+                            if (!("messages" in req.body))
+                            {
+                                return res.status(400).send(`Require "messages" in request body`);
+                            }
+                            const messages = req.body.messages;
+                        
+                            for (const message of messages)
+                            {
+                                try 
+                                {
+                                    agent.message(message);
+                                }
+                                catch(err)
+                                {
+                                    return res.status(400).send(err.message);
+                                }
+                            }
+                            return res.status(200).send(`Successfully sent messages`);
+                        }
+                    );
+                }
+            );
+        }
+    );
+}
 function importAgentCommunicationTools(skill) {
 
     const agent = skill.agent;
@@ -135,68 +185,33 @@ function importAgentCommunication(skill) {
 
     const agent = skill.agent;
 
+    setupServer(skill);
     skill.on(
         "setup",
         async () => {
-            const server = agent.subsystems.server;
-            server.on(
-                "setup",
-                async () => {
-                    server.app.post(
-                        "/send_messages",
-                        async (req, res) => {
-                            if (!req.body)
-                            {
-                                return res.status(400).send(`Require request body`);
-                            }
+            agent.message(
+                makeSystemMessage({
+                    content: `
+# INTER-AGENT COMMUNICATION RULES
 
-                            if (!("from" in req.body))
-                            {
-                                return res.status(400).send(`Require "from" in request body`);
-                            }
-                            const from = req.body.from;
+IMPORTANT:
+You NEVER communicate with other agents directly in normal text output.
 
-                            if (!("messages" in req.body))
-                            {
-                                return res.status(400).send(`Require "messages" in request body`);
-                            }
-                            const messages = req.body.messages;
+ALL inter-agent communication MUST happen through provided tools.
 
-                    //         if (agent.config.closed_agent_connection_model)
-                    //         {
-                    //             if (
-                    //                 !(
-                    //                     (agent.getConnection(from))
-                    //                     || (from == "human")
-                    //                 )
-                    //             )
-                    //             {
-                    //                 return res.status(400).send(
-                    // `${agent.id} uses closed agent connection model but ${from} was not added to ${agent.id}'s agent connections. 
-                    // The only way for ${from} to correctly send messages to ${agent.id} is some how leveraging ${from}'s agent networks to tell ${agent.id} add connection to ${from}.`
-                    // );
-                    //             }
-                    //         }
-                        
-                            for (const message of messages)
-                            {
-                                try 
-                                {
-                                    agent.message(message);
-                                }
-                                catch(err)
-                                {
-                                    return res.status(400).send(err.message);
-                                }
-                            }
-                            return res.status(200).send(`Successfully sent messages`);
-                        }
-                    );
-                }
+When you are waiting for other agent responses for too long, please SEND FOLLOWING MESSAGE TO THEM.
+
+Do NOT:
+- simulate another agent response
+- pretend another agent replied
+- hallucinate agent communication
+- roleplay inter-agent messaging
+
+Only tools are allowed to perform agent communication.`,
+                })
             );
         }
     );
-
     importAgentCommunicationTools(skill);
 };
 

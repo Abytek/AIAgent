@@ -14,7 +14,7 @@ const agentInfoSchema = makeSchema({
 
         brief: {
             type: "string",
-            default: "abc",
+            default: "",
         },
 
         tags: {

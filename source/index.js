@@ -22,6 +22,7 @@ module.exports = {
     ...require("./shared/agentTracker"),
     ...require("./shared/agentTrackingData"),
     ...require("./shared/message"),
+    ...require("./shared/skillReference"),
 
     ...require("./root/main"),
     ...require("./root/config"),
@@ -39,6 +40,7 @@ module.exports = {
     ...require("./runtime/spawn"),
     ...require("./runtime/server"),
     ...require("./runtime/tracking"),
+    ...require("./runtime/skillRegistry"),
     ...require("./runtime/agentSpawner"),
     ...require("./runtime/subsystems"),
     

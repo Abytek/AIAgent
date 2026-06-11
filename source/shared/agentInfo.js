@@ -50,7 +50,7 @@ const agentInfoSchema = makeSchema({
                     properties: {
                         lookbackMessages: {
                             type: "number",
-                            default: 20,
+                            default: 100,
                         },
                     },
 

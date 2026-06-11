@@ -172,9 +172,16 @@ function createAgentSkillManager(agent)
     importSkills();
     sortSkills();
     doSync(async () => {
+        // add skill's items (tags,...)
         for (const skill of agentSkillManager.sortedSkills)
         {
             await skill.emit("construct");
+        }
+
+        // setup subsystems, prompts, tools,...
+        for (const skill of agentSkillManager.sortedSkills)
+        {
+            await skill.emit("setup");
         }
     });
     resolveTags();

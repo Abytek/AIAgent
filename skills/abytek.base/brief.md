@@ -1,1 +1,1 @@
-The main skill for AI agents to use Abytek AI Agent framework.
+The base skill for AI agents using Abytek AI Agent framework.

@@ -33,7 +33,8 @@ function makeSkill(agent, reference)
     {
         const tag = {
             name: tagName,
-            dependencies: []
+            dependencies: [],
+            brief: "",
         };
         tag.depends = function(...dependencies)
         {

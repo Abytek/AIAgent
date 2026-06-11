@@ -16,6 +16,15 @@ function importTerminal(skill) {
     const agent = skill.agent;
 
     skill.on(
+        "construct",
+        async () => {
+            skill.tag("abytek.terminal")
+                .setBrief(`
+AI agents with this tag will have access to the terminal tool.
+`);
+        }
+    );
+    skill.on(
         "setup",
         async () => {
             const terminalManager = makeEventEmitter({
@@ -34,12 +43,23 @@ function importTerminal(skill) {
             agent.message(
                 makeSystemMessage({
                     content: `
-        # AI AGENT TERMINAL SYSTEM
-        - To use terminal, you need to create a terminal then the system will return you a terminal id.
-        - To send input into a specific terminal, use "add_terminal_input" tool with terminal id.
-        - Output from a specific terminal is continuously streaming to you by system messages.
-        - IMPORTANT: your terminals cannot be accessed by other agents!
-        `
+# AI AGENT TERMINAL SYSTEM
+- Terminal tools are extremely powerful and should be used when appropriate:
+    + Examples:
+        + Filesystem operations
+        + Project inspection
+        + Script execution
+        + Debugging
+        + Runtime inspection
+    + However:
+        + Avoid destructive commands
+        + Avoid unnecessary long-running commands
+        + Avoid interactive terminal programs unless required
+- To use terminal, you need to create a terminal then the system will return you a terminal id.
+- To send input into a specific terminal, use "add_terminal_input" tool with terminal id.
+- Output from a specific terminal is continuously streaming to you by system messages.
+- IMPORTANT: your terminals cannot be accessed by other agents!
+`
                 })
             )
 

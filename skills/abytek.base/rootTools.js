@@ -11,26 +11,10 @@ function importRootTools(skill) {
             agent.tool(
                 tool(
                     async () => {
-                        return `${agent.subsystems.rootTracking.enabled.toString()}`;
-                    },
-                    {
-                        name: "root.enabled",
-                        description: "Check if you are running in managed mode",
-                    }
-                )
-            );
-            agent.tool(
-                tool(
-                    async () => {
-                        if (!agent.subsystems.rootTracking.enabled)
-                        {
-                            return "The AI agent is currently in standalone mode, cannot query agent list";
-                        }
-
                         try
                         {
                             const response = await fetch(
-                                `${agent.rootURL}/agentTrackingDatas`
+                                `${agent.rootURL}/agentRegistry/list`
                             );
 
                             if (!response.ok)
@@ -51,19 +35,10 @@ function importRootTools(skill) {
                         }
                     },
                     {
-                        name: "get_agent_list",
+                        name: "agent_registry_get_list",
                         description:
                             [
-                                "[AGENT MANAGEMENT]",
-                                "Returns a list of all currently connected AI agents.",
-                                "Use this tool when the user asks:",
-                                "- what agents are available",
-                                "- which agents exist",
-                                "- connected agents",
-                                "- active agents",
-                                "- available workers",
-                                "- list agents",
-                                "This tool does not require any arguments."
+                                "Returns a list of all registered AI agents (some agents may be offline).",
                             ].join("\n"),
                     }
                 )

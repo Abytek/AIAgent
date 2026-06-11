@@ -3,6 +3,7 @@ const {} = require("abytek-aiagent");
 
 const { importAgentRuntimeTools } = require("./agentRuntimeTools");
 const { importRootTools } = require("./rootTools");
+const { importRuntimeTools } = require("./runtimeTools");
 const { importAgentCommunication } = require("./agentCommunication");
 
 const { importTerminal } = require("./terminal");
@@ -24,6 +25,7 @@ module.exports = skill => {
 
     importAgentRuntimeTools(skill);
     importRootTools(skill);
+    importRuntimeTools(skill);
     importAgentCommunication(skill);
     
     importTerminal(skill);

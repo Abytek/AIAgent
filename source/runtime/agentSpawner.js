@@ -10,6 +10,7 @@ function createRuntimeAgentSpawner(runtime)
 {
     const gameLoopServer = runtime.subsystems.server;
     const serviceRegistry = runtime.subsystems.serviceRegistry;
+    const skillRegistry = runtime.subsystems.skillRegistry;
     const runtimeAgentTracker = runtime.subsystems.agentTracker;
 
     let runtimeAgentSpawner = makeEventEmitter({
@@ -58,6 +59,7 @@ function createRuntimeAgentSpawner(runtime)
             dataDirectory: agentDataDirectory,
             rootURL: runtime.config.root.url,
             runtimeURL: runtime.subsystems.server.url,
+            skillReferences: skillRegistry.list(),
         };
 
         let ready = false;

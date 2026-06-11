@@ -32,6 +32,7 @@ function createAgent(options) {
     agent.brief = agentDesc.brief;
     agent.rootURL = agentDesc.rootURL;
     agent.runtimeURL = agentDesc.runtimeURL;
+    agent.skillReferences = agentDesc.skillReferences;
     agent.logger.log([ chalk.rgb(60, 200, 30)("Brief") ], agent.brief);
 
     agent.dataDirectory = agentDesc.dataDirectory;

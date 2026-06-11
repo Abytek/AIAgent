@@ -11,6 +11,7 @@ function makeSkill(agent, reference)
         path: reference.path,
         name: null,
         dependencies: [],
+        tags: new Map(),
     });
     skill.setup = function(options)
     {
@@ -27,6 +28,27 @@ function makeSkill(agent, reference)
     skill.depends = function(skillName)
     {
         skill.dependencies.push(skillName);
+    }
+    skill.tag = function(tagName)
+    {
+        const tag = {
+            name: tagName,
+            dependencies: []
+        };
+        tag.depends = function(...dependencies)
+        {
+            for (const dependency of dependencies)
+            {
+                if (tag.dependencies.includes(dependency))
+                {
+                    continue;
+                }
+                tag.dependencies.push(dependency);
+            }
+            return tag;
+        }
+        skill.tags.set(tagName, tag);
+        return tag;
     }
 
     // skill events

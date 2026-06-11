@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 const chalk = require("chalk");
+const { tool } = require("@langchain/core/tools");
+const { z } = require("zod");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { 
     makeAIMessage,
@@ -17,6 +19,97 @@ const MAX_MESSAGE_CHARACTERS = (
     4000 
     + 300 // padding
 );
+
+function getTextAttachmentContentAsText(content)
+{
+    if (typeof content === "string")
+    {
+        return content;
+    }
+
+    if (Array.isArray(content))
+    {
+        return content
+            .filter(
+                item =>
+                    item
+                    && item.type === "text"
+                    && typeof item.text === "string"
+            )
+            .map(item => item.text)
+            .join("\n");
+    }
+
+    return "";
+}
+
+function importTextAttachmentTools(agentContext)
+{
+    const agent = agentContext.agent;
+
+    const MAX_CHUNK_CHARS = 2000;
+
+    agent.tool(
+        tool(
+            async ({ id, chunk_offset, chunk_size }) => {
+
+                if (agentContext.textAttachments.has(id))
+                {
+                    const textAttachment = agentContext.textAttachments[id];
+                    if (chunk_offset > textAttachment.textContent.length)
+                    {
+                        return `[${id}] chunk_offset (${chunk_offset}) out of bounds, current textAttachment content length: ${textAttachment.textContent.length}`;
+                    }
+                    const end_chunk_offset = Math.min(
+                        chunk_offset + chunk_size,
+                        textAttachment.textContent.length
+                    );
+                    const real_chunk_size = end_chunk_offset - chunk_offset;
+                    const contentChunk = textAttachment.textContent.slice(chunk_offset, end_chunk_offset);
+                    return `[${id}] [Text content size: ${textAttachment.textContent.length}] [Text content chunk: offset=${chunk_offset}, size=${real_chunk_size}]\n${contentChunk}`;
+                }
+                else
+                {
+                    return `Not found text attachment with id: ${id}`;
+                }
+            },
+            {
+                name: "read_text_attachment",
+
+                description:
+                    [
+                        "Read text attachment by text attachment id and chunk range",
+                    ].join("\n"),
+
+                schema: z.object({
+                    id: z
+                        .string()
+                        .describe(
+                            [
+                                "The text attachment id."
+                            ].join(" ")
+                        ),
+                    chunk_offset: z
+                        .number()
+                        .describe(
+                            [
+                                "The chunk offset to read."
+                            ].join(" ")
+                        ),
+                    chunk_size: z
+                        .number()
+                        .min(1)
+                        .max(MAX_CHUNK_CHARS)
+                        .describe(
+                            [
+                                `The chunk size to read`
+                            ].join(" ")
+                        ),
+                }),
+            }
+        )
+    );
+}
 
 function createAgentLLMContext(agent)
 {
@@ -103,13 +196,14 @@ function createAgentLLMContext(agent)
                     id: textAttachmentId,
                     createdAt: new Date().toISOString(),
                     content: messageContent,
+                    text: getTextAttachmentContentAsText(messageContent),
                 }
             );
 
             const attachmentMessage = {
                 type: messageRole,
                 content: [
-                        `[Text Attachment: ${textAttachmentId}] [Original content length: ${getMessageContentLength(messageContent)}]\n`,
+                        `[Text Attachment Id: ${textAttachmentId}] [Original content length: ${getMessageContentLength(messageContent)}]\n`,
                         messageContent.slice(0, MAX_MESSAGE_CHARACTERS),
                     ].join(''),
             };
@@ -130,6 +224,9 @@ function createAgentLLMContext(agent)
 
     //
     agentContext.loadMemory();
+
+    //
+    importTextAttachmentTools(agentContext);
     return agentContext;
 }
 

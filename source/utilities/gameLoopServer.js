@@ -78,7 +78,7 @@ function createGameLoopServer(options)
 
                 await new Promise(
                     (resolve, reject) => {
-                        gameLoopServer.server.listen(gameLoop.config.server.port, null, async () =>
+                        gameLoopServer.server.listen(port, null, async () =>
                         {
                             const address = gameLoopServer.server.address();
                             gameLoopServer.url = `http://127.0.0.1:${address.port}`;

@@ -39,7 +39,6 @@ function createAgentServer(agent)
         async () => {
             const address = agentServer.server.address();
             agentServer.url = `http://127.0.0.1:${address.port}`;
-            agent.config.server.port = address.port;
             agent.logger.log([ chalk.rgb(60, 200, 30)("Server") ], `Agent server is running at:`, address);
         }
     );

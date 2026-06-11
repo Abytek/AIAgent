@@ -20,7 +20,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
     ];
 
     const response = await fetch(
-        `${agent.config.root.url}/agent/send_messages`,
+        `${agent.rootURL}/agent/send_messages`,
         {
             method: "POST",
             headers:

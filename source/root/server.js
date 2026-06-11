@@ -16,6 +16,7 @@ function createRootServer(root)
 {
     let rootServer = createGameLoopServer({
         gameLoop: root,
+        port: root.config.server.port,
     });
     rootServer.root = root;
 

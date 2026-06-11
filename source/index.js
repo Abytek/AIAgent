@@ -50,7 +50,6 @@ module.exports = {
     ...require("./skill/spawn"),
 
     ...require("./agent/main"),
-    ...require("./agent/config"),
     ...require("./agent/logger"),
     ...require("./agent/commonStatus"),
     ...require("./agent/server"),

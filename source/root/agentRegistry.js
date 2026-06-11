@@ -57,7 +57,7 @@ function createRootAgentRegistry(root)
         const finalizedAgentInfo = agentInfoSchema.finalize(agentInfo);
         rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
         rootAgentRegistry.save();
-        root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Set:`, agentInfo);
+        root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Set:`, finalizedAgentInfo);
     }
     rootAgentRegistry.unset = function(id)
     {

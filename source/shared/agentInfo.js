@@ -14,7 +14,7 @@ const agentInfoSchema = makeSchema({
 
         brief: {
             type: "string",
-            default: "",
+            default: "abc",
         },
 
         tags: {
@@ -24,6 +24,52 @@ const agentInfoSchema = makeSchema({
             },
             default: [],
         },
+
+        config: {
+            type: "object",
+
+            properties: {
+                debug: {
+                    type: "boolean",
+                    default: false,
+                },
+
+                model: {
+                    type: "string",
+                    default: "default",
+                },
+
+                maxChatDurationInSeconds: {
+                    type: "number",
+                    default: 20,
+                },
+
+                provider: {
+                    type: "object",
+
+                    properties: {
+                        apiKey: {
+                            type: "string",
+                            default: "",
+                        },
+
+                        baseURL: {
+                            type: "string",
+                            default: "http://localhost:20128/v1",
+                        },
+                    },
+
+                    required: [],
+
+                    additionalProperties: false,
+
+                    default: {},
+                },
+            },
+
+            additionalProperties: false,
+            default: {},
+        }
     },
 
     required: [

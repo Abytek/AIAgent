@@ -1,1 +1,0 @@
-An agent database owner manages AI agent templates

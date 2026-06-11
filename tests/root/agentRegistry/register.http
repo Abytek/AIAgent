@@ -3,6 +3,5 @@ Content-Type: application/json
 
 {
     "id": "AIAgent@simple",
-    "brief": "A simple agent",
-    "tags": []
+    "brief": "A simple agent"
 }

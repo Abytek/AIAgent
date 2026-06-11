@@ -56,6 +56,8 @@ function createRuntimeAgentSpawner(runtime)
             ...options,
             ...agentInfo,
             dataDirectory: agentDataDirectory,
+            rootURL: runtime.config.root.url,
+            runtimeURL: runtime.subsystems.server.url,
         };
 
         let ready = false;

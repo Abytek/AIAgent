@@ -15,6 +15,7 @@ function createRuntimeServer(runtime)
 {
     let runtimeServer = createGameLoopServer({
         gameLoop: runtime,
+        port: runtime.config.server.port,
     });
     runtimeServer.runtime = runtime;
 

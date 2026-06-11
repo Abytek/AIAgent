@@ -24,7 +24,7 @@ function coreSetupRootTools(agent) {
                 try
                 {
                     const response = await fetch(
-                        `${agent.config.root.url}/agentTrackingDatas`
+                        `${agent.rootURL}/agentTrackingDatas`
                     );
 
                     if (!response.ok)

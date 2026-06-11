@@ -15,12 +15,12 @@ function createAgentSubsystems(agent)
     agent.subsystems.runtimeTracking = createAgentTracking(
         agent,
         "runtime",
-        agent.config.runtime.url
+        agent.runtimeURL
     );
     agent.subsystems.rootTracking = createAgentTracking(
         agent,
         "root",
-        agent.config.root.url
+        agent.rootURL
     );
     agent.subsystems.toolManager = createAgentToolManager(agent);
     agent.subsystems.llmContext = createAgentLLMContext(agent);

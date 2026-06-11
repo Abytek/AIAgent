@@ -58,6 +58,7 @@ module.exports = {
     ...require("./agent/serviceRegistry"),
     ...require("./agent/llmContext"),
     ...require("./agent/llmManager"),
+    ...require("./agent/skill"),
     ...require("./agent/skillManager"),
     ...require("./agent/tracking"),
     ...require("./agent/spawn"),

@@ -1,8 +1,8 @@
 
 const path = require("path");
-const { makeSystemMessage } = require("../../shared/message");
+const { makeSystemMessage } = require("../../source/shared/message");
 
-function coreSetupAgentIdentity(agent)
+function setupAgentIdentity(agent)
 {
     agent.message(
         makeSystemMessage(`
@@ -56,5 +56,5 @@ If another agent is better suited:
 }
 
 module.exports = {
-    coreSetupAgentIdentity
+    setupAgentIdentity
 }

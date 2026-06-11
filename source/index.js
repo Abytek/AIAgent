@@ -57,11 +57,4 @@ module.exports = {
     ...require("./agent/spawn"),
     ...require("./agent/toolManager"),
     ...require("./agent/subsystems"),
-    ...require("./agent/coreSetup/main"),
-    ...require("./agent/coreSetup/framework"),
-    ...require("./agent/coreSetup/agentIdentity"),
-    ...require("./agent/coreSetup/agentRuntimeTools"),
-    ...require("./agent/coreSetup/rootTools"),
-    ...require("./agent/coreSetup/agentCommunication"),
-    ...require("./agent/coreSetup/terminal"),
 }

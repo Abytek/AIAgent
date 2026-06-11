@@ -1,9 +1,9 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
-const { makeSystemMessage } = require("../../shared/message");
+const { makeSystemMessage } = require("../../source/shared/message");
 const pty = require("node-pty");
 const chalk = require("chalk");
-const { makeEventEmitter } = require("../../utilities/eventEmitter");
+const { makeEventEmitter } = require("../../source/utilities/eventEmitter");
 
 const shell = process.platform === "win32"
     ? "powershell.exe"
@@ -11,7 +11,7 @@ const shell = process.platform === "win32"
 
 const MAX_CHUNK_CHARS = 2000;
 
-function coreSetupTerminal(agent) {
+function setupTerminal(agent) {
 
     const terminalManager = makeEventEmitter({
         terminals: {},
@@ -376,5 +376,5 @@ Created ${terminal.id}:
 }
 
 module.exports = {
-    coreSetupTerminal
+    setupTerminal
 }

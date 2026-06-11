@@ -4,7 +4,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage
-} = require("../../shared/message");
+} = require("../../source/shared/message");
 
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
@@ -45,7 +45,7 @@ async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
     return text;
 }
 
-function coreSetupAgentCommunicationTools(agent) {
+function setupAgentCommunicationTools(agent) {
     agent.tool(
         tool(
             async ({
@@ -123,7 +123,7 @@ function coreSetupAgentCommunicationTools(agent) {
     );
 };
 
-function coreSetupAgentCommunication(agent) {
+function setupAgentCommunication(agent) {
 
     const server = agent.subsystems.server;
     server.on(
@@ -182,9 +182,9 @@ function coreSetupAgentCommunication(agent) {
         }
     );
 
-    coreSetupAgentCommunicationTools(agent);
+    setupAgentCommunicationTools(agent);
 };
 
 module.exports = {
-    coreSetupAgentCommunication
+    setupAgentCommunication
 }

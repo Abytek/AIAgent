@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function coreSetupAgentRuntimeTools(agent) {
+function setupAgentRuntimeTools(agent) {
     agent.tool(
         tool(
             async () => {
@@ -39,5 +39,5 @@ function coreSetupAgentRuntimeTools(agent) {
 }
 
 module.exports = {
-    coreSetupAgentRuntimeTools
+    setupAgentRuntimeTools
 }

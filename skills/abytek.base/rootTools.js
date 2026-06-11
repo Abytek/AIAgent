@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function coreSetupRootTools(agent) {
+function setupRootTools(agent) {
     agent.tool(
         tool(
             async () => {
@@ -65,5 +65,5 @@ function coreSetupRootTools(agent) {
 };
 
 module.exports = {
-    coreSetupRootTools
+    setupRootTools
 }

@@ -1,8 +1,8 @@
 
 const path = require("path");
-const { makeSystemMessage } = require("../../shared/message");
+const { makeSystemMessage } = require("../../source/shared/message");
 
-function coreSetupFramework(agent)
+function setupFramework(agent)
 {
     agent.message(
         makeSystemMessage(`
@@ -167,5 +167,5 @@ Avoid:
 }
 
 module.exports = {
-    coreSetupFramework
+    setupFramework
 }

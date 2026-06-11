@@ -50,18 +50,6 @@ function makeSkill(agent, reference)
         skill.tags.set(tagName, tag);
         return tag;
     }
-
-    // skill events
-    skill.on(
-        "init",
-        async () => {
-        }
-    );
-    skill.on(
-        "ready",
-        async () => {
-        }
-    );
     return skill;
 }
 

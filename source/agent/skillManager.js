@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
+const { doSync } = require("../utilities/sync");
 const { makeSkill } = require("./skill");
 
 function createAgentSkillManager(agent)
@@ -167,13 +168,21 @@ function createAgentSkillManager(agent)
         agent.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Resolved tags:`, agent.tags);
     };
     
+    //
+    importSkills();
+    sortSkills();
+    doSync(async () => {
+        for (const skill of agentSkillManager.sortedSkills)
+        {
+            await skill.emit("construct");
+        }
+    });
+    resolveTags();
+
     // agent events
     agent.on(
         "init",
         async () => {
-            importSkills();
-            sortSkills();
-            resolveTags();
             for (const skill of agentSkillManager.sortedSkills)
             {
                 await skill.emit("init");
@@ -186,6 +195,24 @@ function createAgentSkillManager(agent)
             for (const skill of agentSkillManager.sortedSkills)
             {
                 await skill.emit("ready");
+            }
+        }
+    );
+    agent.on(
+        "ready",
+        async () => {
+            for (const skill of agentSkillManager.sortedSkills)
+            {
+                await skill.emit("ready");
+            }
+        }
+    );
+    agent.on(
+        "release",
+        async () => {
+            for (const skill of agentSkillManager.sortedSkills)
+            {
+                await skill.emitReversed("release");
             }
         }
     );

@@ -100,6 +100,72 @@ function createAgentSkillManager(agent)
 
         agentSkillManager.sortedSkills = sorted;
     };
+    function resolveTags()
+    {
+        const tagDefinitions = new Map();
+
+        // Gather all tag definitions from skills
+        for (const skill of agentSkillManager.skills.values())
+        {
+            for (const tag of skill.tags.values())
+            {
+                if (tagDefinitions.has(tag.name))
+                {
+                    throw new Error(
+                        `Duplicate tag definition: ${tag.name}`
+                    );
+                }
+
+                tagDefinitions.set(tag.name, tag);
+            }
+        }
+
+        const resolved = new Set();
+        const visiting = new Set();
+
+        function visit(tagName)
+        {
+            if (resolved.has(tagName))
+            {
+                return;
+            }
+
+            if (visiting.has(tagName))
+            {
+                throw new Error(
+                    `Circular tag dependency detected: ${tagName}`
+                );
+            }
+
+            const tag = tagDefinitions.get(tagName);
+
+            if (tag == null)
+            {
+                throw new Error(
+                    `Unknown tag: ${tagName}`
+                );
+            }
+
+            visiting.add(tagName);
+
+            for (const dependency of tag.dependencies)
+            {
+                visit(dependency);
+            }
+
+            visiting.delete(tagName);
+
+            resolved.add(tagName);
+        }
+
+        for (const tagName of agent.tags)
+        {
+            visit(tagName);
+        }
+
+        agent.tags = Array.from(resolved);
+        agent.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Resolved tags:`, agent.tags);
+    };
     
     // agent events
     agent.on(
@@ -107,6 +173,7 @@ function createAgentSkillManager(agent)
         async () => {
             importSkills();
             sortSkills();
+            resolveTags();
             for (const skill of agentSkillManager.sortedSkills)
             {
                 await skill.emit("init");

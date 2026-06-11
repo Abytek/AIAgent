@@ -27,6 +27,11 @@ AI agents with this tag will have access to the terminal tool.
     skill.on(
         "setup",
         async () => {
+            if (!agent.tags.includes("abytek.terminal"))
+            {
+                return;
+            }
+
             const terminalManager = makeEventEmitter({
                 terminals: {},
             });

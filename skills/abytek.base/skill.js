@@ -17,7 +17,8 @@ module.exports = skill => {
     skill.on(
         "construct",
         async () => {
-            skill.tag("abytek.default");
+            skill.tag("abytek.default")
+                .depends("abytek.terminal");
         }
     );
 

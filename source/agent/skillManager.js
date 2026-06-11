@@ -128,6 +128,9 @@ ${agent.path}
 Agent Brief:
 ${agent.brief}
 
+Agent Tags:
+${agent.tags}
+
 ## Runtime Environment
 
 Process ID:
@@ -325,7 +328,6 @@ function createAgentSkillManager(agent)
     };
     
     //
-    minimalSetupAgent(agent);
     importSkills();
     sortSkills();
     doSync(async () => {
@@ -334,23 +336,15 @@ function createAgentSkillManager(agent)
         {
             await skill.emit("construct");
         }
-
-        // setup system prompt for tags
-        // for (const skill of agentSkillManager.sortedSkills)
-        // {
-        //     for (const tag of skill.tags)
-        //     {
-        //         agent.message();
-        //     }
-        // }
-
-        // setup subsystems, prompts, tools,...
+    });
+    resolveTags();
+    minimalSetupAgent(agent);
+    doSync(async () => {
         for (const skill of agentSkillManager.sortedSkills)
         {
             await skill.emit("setup");
         }
     });
-    resolveTags();
 
     // agent events
     agent.on(

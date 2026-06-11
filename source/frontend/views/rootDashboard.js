@@ -3,8 +3,10 @@ function renderView_rootDashboard(root, res)
 {
     const agentTracker = root.subsystems.agentTracker;
     const agentRegistry = root.subsystems.agentRegistry;
+    const runtimeTracker = root.subsystems.runtimeTracker;
 
     const agentInfoList = agentRegistry.list();
+    const runtimeTrackingDataList = runtimeTracker.list();
 
     let agentSlots = [];
     for (const agentInfo of agentInfoList)
@@ -22,6 +24,7 @@ function renderView_rootDashboard(root, res)
 
     res.render("rootDashboard", {
         agentSlots,
+        runtimeTrackingDataList,
     })
 }
 

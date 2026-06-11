@@ -12,6 +12,9 @@ function createRootRuntimeTracker(root)
         runtimeTrackingDatas: new Map(), // key: runtime id, value: runtime info
         socketToRuntimeId: new Map(), // key: socket IO, value: runtime id
     })
+    rootRuntimeTracker.list = function() {
+        return [ ...rootRuntimeTracker.runtimeTrackingDatas.values() ];
+    }
     rootRuntimeTracker.has = function(runtimeId) {
         return rootRuntimeTracker.runtimeTrackingDatas.has(runtimeId);
     }
@@ -68,14 +71,8 @@ function createRootRuntimeTracker(root)
     rootServer.on(
         "setup",
         async () => {
-            rootServer.app.get("/runtimeTrackingDatas", (req, res) => {
-                let runtimeTrackingDatas = [];
-                rootRuntimeTracker.runtimeTrackingDatas.forEach(
-                    value => {
-                        runtimeTrackingDatas.push(value);
-                    }
-                );
-                res.status(200).json(runtimeTrackingDatas);
+            rootServer.app.get("/runtimeTracker/list", (req, res) => {
+                res.status(200).json(rootRuntimeTracker.list());
             });
         }
     );

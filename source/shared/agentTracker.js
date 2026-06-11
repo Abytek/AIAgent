@@ -1,7 +1,7 @@
 
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
-const { finalizeAgentTrackingData } = require("./agentTrackingData");
+const { agentTrackingDataSchema } = require("./agentTrackingData");
 
 function createAgentTracker(options)
 {
@@ -98,7 +98,7 @@ function createAgentTracker(options)
                 async (agentTrackingData, ack) => {
                     try 
                     {
-                        agentTrackingData = finalizeAgentTrackingData(agentTrackingData);
+                        agentTrackingData = agentTrackingDataSchema.finalize(agentTrackingData);
                         await registerAgent(socket, agentTrackingData);
                     }
                     catch(err)

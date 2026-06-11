@@ -9,7 +9,7 @@ const {
     makeHumanMessage,
     makeSystemMessage,
     logMessageOnAgent,
-    finalizeAgentMessage,
+    agentMessageSchema,
 } = require("../shared/message");
 
 function createAgentLLMManager(agent)
@@ -116,7 +116,7 @@ IMPORTANT:
 
     llmManager.message = function(message)
     {
-        const cachedMessage = finalizeAgentMessage({ ...message });
+        const cachedMessage = agentMessageSchema.finalize({ ...message });
         logMessageOnAgent(agent, cachedMessage);
         llmManager.push(cachedMessage);
     }

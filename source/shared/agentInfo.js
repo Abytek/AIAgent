@@ -2,9 +2,9 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 const { checkAgentId } = require("./agentId");
-const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
+const { makeSchema } = require("../utilities/schema");
 
-const agentInfoSchema = {
+const agentInfoSchema = makeSchema({
     type: "object",
 
     properties: {
@@ -29,12 +29,8 @@ const agentInfoSchema = {
     required: [
         "id",
     ],
-};
-const makeAgentInfoFinalizer = () => makeSchemaFinalizer(agentInfoSchema);
-const finalizeAgentInfo = makeFinalizeSchemaFunction(agentInfoSchema);
+});
 
 module.exports = {
     agentInfoSchema,
-    makeAgentInfoFinalizer,
-    finalizeAgentInfo,
 }

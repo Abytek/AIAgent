@@ -18,35 +18,36 @@ const ajv = new Ajv({
 
 addFormats(ajv);
 
-const makeSchemaFinalizer = (schema) => {
-    const result = ajv.compile(schema);
-    result.toErrorsText = function()
-    {
-        return result.errors
-        .map(err =>
+const makeSchema = (raw) => {
+    const result = { raw, };
+    result.makeFinalizer = () => {
+        const finalizer = ajv.compile(raw);
+        finalizer.toErrorsText = function()
         {
-            if (err.keyword === "additionalProperties")
-            {
-                return `${err.instancePath || "/"} has unknown property "${err.params.additionalProperty}"`;
-            }
+            return finalizer.errors
+                .map(err =>
+                {
+                    if (err.keyword === "additionalProperties")
+                    {
+                        return `${err.instancePath || "/"} has unknown property "${err.params.additionalProperty}"`;
+                    }
 
-            return `${err.instancePath || "/"} ${err.message}`;
-        })
-        .join("\n");
+                    return `${err.instancePath || "/"} ${err.message}`;
+                })
+                .join("\n");
+        }
+        return finalizer;
     }
-    return result;
-}
-const makeFinalizeSchemaFunction = (schema) => {
-    return (value) => {
-        const finalizer = makeSchemaFinalizer(schema);
+    result.finalize = (value) => {
+        const finalizer = result.makeFinalizer();
         if (!finalizer(value)) {
             throw new Error(finalizer.toErrorsText());
         }
         return value;
-    }
+    };
+    return result;
 }
 
 module.exports = {
-    makeSchemaFinalizer,
-    makeFinalizeSchemaFunction
+    makeSchema,
 }

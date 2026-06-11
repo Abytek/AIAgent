@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 const { getMessageRole, getMessageContent } = require("../shared/message");
-const { finalizeAgentInfo } = require("../shared/agentInfo");
+const { agentInfoSchema } = require("../shared/agentInfo");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
 function createRootAgentRegistry(root)
@@ -28,7 +28,7 @@ function createRootAgentRegistry(root)
             const agentInfos = JSON.parse(fs.readFileSync(rootAgentRegistry.file, "utf8"));
             for (const agentInfo of agentInfos)
             {
-                const finalizedAgentInfo = finalizeAgentInfo(agentInfo);
+                const finalizedAgentInfo = agentInfoSchema.finalize(agentInfo);
                 rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
             }
         }
@@ -54,7 +54,7 @@ function createRootAgentRegistry(root)
     }
     rootAgentRegistry.set = function(agentInfo)
     {
-        const finalizedAgentInfo = finalizeAgentInfo(agentInfo);
+        const finalizedAgentInfo = agentInfoSchema.finalize(agentInfo);
         rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
         rootAgentRegistry.save();
         root.logger.log([ chalk.rgb(60, 200, 30)("Agent Registry") ], `Set:`, agentInfo);

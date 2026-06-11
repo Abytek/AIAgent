@@ -5,12 +5,10 @@ const {
     SystemMessage,
     ToolMessage
 } = require("@langchain/core/messages");
-
 const chalk = require("chalk");
+const { makeSchema } = require("../utilities/schema");
 
-const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
-
-const agentMessageSchema = {
+const agentMessageSchema = makeSchema({
     type: "object",
 
     properties: {
@@ -70,9 +68,7 @@ const agentMessageSchema = {
     ],
 
     additionalProperties: true,
-};
-const makeAgentMessageFinalizer = () => makeSchemaFinalizer(agentMessageSchema);
-const finalizeAgentMessage = makeFinalizeSchemaFunction(agentMessageSchema);
+});
 
 function makeAIMessage(options)
 {
@@ -199,8 +195,6 @@ function logMessageOnAgent(agent, message)
 
 module.exports = {
     agentMessageSchema,
-    makeAgentMessageFinalizer,
-    finalizeAgentMessage,
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage,

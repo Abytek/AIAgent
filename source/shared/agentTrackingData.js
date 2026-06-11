@@ -2,10 +2,9 @@
 const path = require("path");
 const { spawnAgent } = require("../agent/spawn");
 const { checkAgentId } = require("./agentId");
-const { makeSchemaFinalizer, makeFinalizeSchemaFunction } = require("../utilities/schema");
+const { makeSchema } = require("../utilities/schema");
 
-
-const agentTrackingDataSchema = {
+const agentTrackingDataSchema = makeSchema({
     type: "object",
 
     properties: {
@@ -22,12 +21,8 @@ const agentTrackingDataSchema = {
         "id",
         "url",
     ],
-};
-const makeAgentTrackingDataFinalizer = () => makeSchemaFinalizer(agentTrackingDataSchema);
-const finalizeAgentTrackingData = makeFinalizeSchemaFunction(agentTrackingDataSchema);
+});
 
 module.exports = {
     agentTrackingDataSchema,
-    makeAgentTrackingDataFinalizer,
-    finalizeAgentTrackingData,
 }

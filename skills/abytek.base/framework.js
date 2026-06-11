@@ -2,10 +2,15 @@
 const path = require("path");
 const { makeSystemMessage } = require("../../source/shared/message");
 
-function setupFramework(agent)
-{
-    agent.message(
-        makeSystemMessage(`
+function importFramework(skill) {
+
+    const agent = skill.agent;
+
+    skill.on(
+        "setup",
+        async () => {
+            agent.message(
+                makeSystemMessage(`
 # SYSTEM: Abytek.AIAgent Framework
 
 You are an AI agent running inside the Abytek.AIAgent Framework.
@@ -162,10 +167,12 @@ Avoid:
 - excessive narration
 - unnecessary explanations
 - pretending actions were executed when they were not
-        `)
+                `)
+            );
+        }
     );
 }
 
 module.exports = {
-    setupFramework
+    importFramework
 }

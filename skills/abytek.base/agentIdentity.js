@@ -2,10 +2,15 @@
 const path = require("path");
 const { makeSystemMessage } = require("../../source/shared/message");
 
-function setupAgentIdentity(agent)
-{
-    agent.message(
-        makeSystemMessage(`
+function importAgentIdentity(skill) {
+
+    const agent = skill.agent;
+
+    skill.on(
+        "setup",
+        async () => {
+            agent.message(
+                makeSystemMessage(`
 # AGENT IDENTITY
 
 You are a runtime AI agent instance.
@@ -51,10 +56,12 @@ Do NOT:
 If another agent is better suited:
 - communicate through agent communication tools
 - delegate the task clearly
-        `)
+                `)
+            );
+        }
     );
 }
 
 module.exports = {
-    setupAgentIdentity
+    importAgentIdentity
 }

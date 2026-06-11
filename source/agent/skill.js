@@ -36,6 +36,11 @@ function makeSkill(agent, reference)
             dependencies: [],
             brief: "",
         };
+        tag.setBrief = function(brief)
+        {
+            tag.brief = brief;
+            return tag;
+        }
         tag.depends = function(...dependencies)
         {
             for (const dependency of dependencies)

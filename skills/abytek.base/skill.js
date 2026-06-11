@@ -1,14 +1,14 @@
 
 const {} = require("abytek-aiagent");
 
-const { setupFramework } = require("./framework");
-const { setupAgentIdentity } = require("./agentIdentity");
+const { importFramework } = require("./framework");
+const { importAgentIdentity } = require("./agentIdentity");
 
-const { setupAgentRuntimeTools } = require("./agentRuntimeTools");
-const { setupRootTools } = require("./rootTools");
-const { setupAgentCommunication } = require("./agentCommunication");
+const { importAgentRuntimeTools } = require("./agentRuntimeTools");
+const { importRootTools } = require("./rootTools");
+const { importAgentCommunication } = require("./agentCommunication");
 
-const { setupTerminal } = require("./terminal");
+const { importTerminal } = require("./terminal");
 
 module.exports = skill => {
 
@@ -20,22 +20,16 @@ module.exports = skill => {
     skill.on(
         "construct",
         async () => {
-            skill.tag("abytek.minimal");
-            skill.tag("abytek.default")
-                .depends("abytek.minimal");
+            skill.tag("abytek.default");
         }
     );
-    skill.on(
-        "setup",
-        async () => {
-            setupFramework(agent);
-            setupAgentIdentity(agent);
 
-            setupAgentRuntimeTools(agent);
-            setupRootTools(agent);
-            setupAgentCommunication(agent);
-            
-            setupTerminal(agent);
-        }
-    );
+    importFramework(skill);
+    importAgentIdentity(skill);
+
+    importAgentRuntimeTools(skill);
+    importRootTools(skill);
+    importAgentCommunication(skill);
+    
+    importTerminal(skill);
 }

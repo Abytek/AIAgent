@@ -6,6 +6,8 @@ const {
     makeSystemMessage
 } = require("../../source/shared/message");
 
+const MAX_MESSAGE_CHARACTERS = 2000;
+
 async function sendMessageToAnotherAgent(agent, targetId, messageContent) {
 
     const parsedMessages = [
@@ -131,7 +133,7 @@ function importAgentCommunicationTools(skill) {
                         description:
                             [
                                 "[AGENT COMMUNICATION]",
-                                "Send a message to another AI agent.",
+                                `Send a message (limit: ${MAX_MESSAGE_CHARACTERS} characters) to another AI agent.`,
                                 "",
                                 "Use this tool when:",
                                 "- another agent is better suited for the task",

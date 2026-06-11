@@ -1,6 +1,8 @@
 
 const {} = require("abytek-aiagent");
 
+const { importMemory } = require("./memory");
+
 const { importAgentRuntimeTools } = require("./agentRuntimeTools");
 const { importRootTools } = require("./rootTools");
 const { importRuntimeTools } = require("./runtimeTools");
@@ -22,6 +24,8 @@ module.exports = skill => {
                 .depends("abytek.terminal");
         }
     );
+
+    importMemory(skill);
 
     importAgentRuntimeTools(skill);
     importRootTools(skill);

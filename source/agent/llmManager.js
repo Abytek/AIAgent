@@ -8,6 +8,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage,
+    getMessageContent,
     logMessageOnAgent,
     agentMessageSchema,
 } = require("../shared/message");
@@ -42,14 +43,12 @@ function createAgentLLMManager(agent)
 
         for (const message of messages)
         {
-            llmContext.messages.push(message);
+            llmContext.inputMessage(message);
         }
-        llmContext.save();
 
         const response = await llmManager.model.invoke(llmContext.messages);
 
-        llmContext.messages.push(response);
-        llmContext.save();
+        llmContext.outputMessage(response);
         if (agent.config.debug)
         {
             agent.logger.log([ `LLM response` ], JSON.stringify(response, null, 4));
@@ -68,11 +67,6 @@ function createAgentLLMManager(agent)
         }
 
         return response;
-    };
-
-    llmManager.push = function(message)
-    {
-        llmManager.pendingMessages.push(message);
     };
 
     llmManager.flush = async function()
@@ -118,7 +112,7 @@ IMPORTANT:
     {
         const cachedMessage = agentMessageSchema.finalize({ ...message });
         logMessageOnAgent(agent, cachedMessage);
-        llmManager.push(cachedMessage);
+        llmManager.pendingMessages.push(cachedMessage);
     }
     agent.message = function(message)
     {

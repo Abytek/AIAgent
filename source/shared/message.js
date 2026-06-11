@@ -129,6 +129,63 @@ function getMessageContent(message)
     }
     return messageContent;
 }
+function getMessageContentLength(messageContent)
+{
+    if (messageContent == null)
+    {
+        return 0;
+    }
+
+    // Plain text content
+    if (typeof messageContent === "string")
+    {
+        return messageContent.length;
+    }
+
+    // LangChain content blocks
+    if (Array.isArray(messageContent))
+    {
+        let totalLength = 0;
+
+        for (const block of messageContent)
+        {
+            if (typeof block === "string")
+            {
+                totalLength += block.length;
+                continue;
+            }
+
+            if (!(typeof block === "object") || block === null)
+            {
+                continue;
+            }
+
+            switch (block.type)
+            {
+                case "text":
+                    totalLength += (block.text || "").length;
+                    break;
+
+                case "image_url":
+                case "image":
+                    // Images don't contribute text tokens directly
+                    break;
+
+                default:
+                    // Fallback: count any text field if present
+                    if (typeof block.text === "string")
+                    {
+                        totalLength += block.text.length;
+                    }
+                    break;
+            }
+        }
+
+        return totalLength;
+    }
+
+    return 0;
+}
 
 function getMessageName(message)
 {
@@ -200,5 +257,6 @@ module.exports = {
     makeSystemMessage,
     getMessageRole,
     getMessageContent,
+    getMessageContentLength,
     logMessageOnAgent
 };

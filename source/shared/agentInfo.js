@@ -44,6 +44,19 @@ const agentInfoSchema = makeSchema({
                     default: 20,
                 },
 
+                memory: {
+                    type: "object",
+
+                    properties: {
+                        lookbackMessages: {
+                            type: "number",
+                            default: 20,
+                        },
+                    },
+
+                    default: {},
+                },
+
                 provider: {
                     type: "object",
 

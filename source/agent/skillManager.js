@@ -345,6 +345,12 @@ function createAgentSkillManager(agent)
             await skill.emit("setup");
         }
     });
+    doSync(async () => {
+        for (const skill of agentSkillManager.sortedSkills)
+        {
+            await skill.emit("lateSetup");
+        }
+    });
 
     // agent events
     agent.on(

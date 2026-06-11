@@ -9,7 +9,20 @@ function makeSkill(agent, reference)
     const skill = makeEventEmitter({
         agent,
         path: reference.path,
+        name: null,
     });
+    skill.setup = function(options)
+    {
+        options = options || {};
+
+        if (options.name == null)
+        {
+            throw new Error(`Requires valid skill name`);
+        }
+        skill.name = options.name;
+
+        return skill;
+    }
     return skill;
 }
 

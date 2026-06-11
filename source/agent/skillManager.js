@@ -9,7 +9,28 @@ function createAgentSkillManager(agent)
 {
     const agentSkillManager = makeEventEmitter({
         agent,
+        skills: new Map(),
     });
+    agentSkillManager.has = function(skillName)
+    {
+        return agentSkillManager.skills.has(skillName);
+    }
+    agentSkillManager.find = function(skillName)
+    {
+        if (!agentSkillManager.has(skillName))
+        {
+            return null;
+        }
+        return agentSkillManager.skills.find(skillName);
+    }
+    agentSkillManager.get = function(skillName)
+    {
+        if (!agentSkillManager.has(skillName))
+        {
+            throw new Error(`Not found skill with name: ${skillName}`);
+        }
+        return agentSkillManager.skills.get(skillName);
+    }
 
     function importSkills()
     {
@@ -18,6 +39,16 @@ function createAgentSkillManager(agent)
             const skillImportFunction = require(path.resolve(skillReference.path, "skill.js"));
             const skill = makeSkill(agent, skillReference);
             skillImportFunction(skill);
+            if (skill.name == null)
+            {
+                throw new Error(`Skill at ${skillReference.path} has name of null`);
+            }
+            if (agentSkillManager.has(skill.name))
+            {
+                throw new Error(`Already added skill with name: ${skill.name}`);
+            }
+            agentSkillManager.skills.set(skill.name, skill);
+            agent.logger.log([ chalk.rgb(60, 200, 30)("Skill") ], `Imported skill: ${chalk.rgb(100, 150, 250)(skill.name)}`);
         }
     }
     

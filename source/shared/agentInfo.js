@@ -22,7 +22,7 @@ const agentInfoSchema = makeSchema({
             items: {
                 type: "string",
             },
-            default: [ "abytek.base" ],
+            default: [ "abytek.default" ],
         },
 
         config: {

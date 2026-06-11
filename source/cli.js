@@ -8,7 +8,6 @@ const { simpleRun, simpleRunSync } = require("./utilities/simpleRun");
 const { spawnRootSync } = require("./root/spawn");
 const { spawnRuntimeSync } = require("./runtime/spawn");
 const { spawnAgentSync } = require("./agent/spawn");
-const { spawnSkillSync } = require("./skill/spawn");
 const { createRoot, createRuntime, getDefaultRuntimeURL } = require("./index");
 
 const command = process.argv[2];

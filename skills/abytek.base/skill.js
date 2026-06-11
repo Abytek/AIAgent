@@ -1,4 +1,6 @@
 
+const {} = require("abytek-aiagent");
+
 module.exports = skill => {
     skill.setup({
         name: "abytek.base"
@@ -7,6 +9,11 @@ module.exports = skill => {
         "construct",
         async () => {
             skill.tag("abytek.base");
+        }
+    );
+    skill.on(
+        "setup",
+        async () => {
         }
     );
 }

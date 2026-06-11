@@ -43,13 +43,6 @@ module.exports = {
     ...require("./runtime/skillRegistry"),
     ...require("./runtime/agentSpawner"),
     ...require("./runtime/subsystems"),
-    
-    ...require("./skill/main"),
-    ...require("./skill/config"),
-    ...require("./skill/logger"),
-    ...require("./skill/server"),
-    ...require("./skill/tracking"),
-    ...require("./skill/spawn"),
 
     ...require("./agent/main"),
     ...require("./agent/logger"),

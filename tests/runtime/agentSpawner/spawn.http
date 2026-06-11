@@ -6,7 +6,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, tell me about yourself."
+            "content": "hello, continue your work."
         }
     ]
 }

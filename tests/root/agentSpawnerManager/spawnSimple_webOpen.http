@@ -6,7 +6,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, read \"https://www.jcgt.org/published/0003/02/03/paper.pdf\"."
+            "content": "hey, read the paper of Understanding the masking shadowing function."
         }
     ]
 }

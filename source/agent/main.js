@@ -37,6 +37,9 @@ function createAgent(options) {
 
     agent.dataDirectory = agentDesc.dataDirectory;
     fs.mkdirSync(agent.dataDirectory, { recursive: true });
+
+    agent.sandboxDirectory = path.resolve(agent.dataDirectory, "sandbox");
+    fs.mkdirSync(agent.sandboxDirectory, { recursive: true });
     
     agent.on(
         "ready",

@@ -3,6 +3,7 @@ const { z } = require("zod");
 const { makeSystemMessage } = require("../../source/shared/message");
 const pty = require("node-pty");
 const chalk = require("chalk");
+const path = require("path");
 const { makeEventEmitter } = require("../../source/utilities/eventEmitter");
 
 const shell = process.platform === "win32"
@@ -169,7 +170,7 @@ function importTerminal(skill) {
                                         "Example: C:\\Projects\\MyApp"
                                     ].join(" ")
                                 )
-                                .default(process.cwd()),
+                                .default(agent.sandboxDirectory),
                             env: z
                                 .object()
                                 .passthrough()

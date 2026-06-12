@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function importRuntimeTools(skill) {
+function importRuntime(skill) {
 
     const agent = skill.agent;
 
@@ -48,5 +48,5 @@ function importRuntimeTools(skill) {
 };
 
 module.exports = {
-    importRuntimeTools
+    importRuntime
 }

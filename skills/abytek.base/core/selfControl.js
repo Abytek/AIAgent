@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function importAgentRuntimeTools(skill) {
+function importSelfControl(skill) {
 
     const agent = skill.agent;
 
@@ -23,17 +23,6 @@ function importAgentRuntimeTools(skill) {
             agent.tool(
                 tool(
                     async () => {
-                        return agent.generateChildId();
-                    },
-                    {
-                        name: "generate_child_agent_id",
-                        description: "Generate child AI agent id. You MUST you this tool for assigning child AI agent id before spawning child AI agents"
-                    }
-                )
-            );
-            agent.tool(
-                tool(
-                    async () => {
                         return `${agent.id}'s process env: ${JSON.stringify(process.env, null, 4)}`;
                     },
                     {
@@ -47,5 +36,5 @@ function importAgentRuntimeTools(skill) {
 }
 
 module.exports = {
-    importAgentRuntimeTools
+    importSelfControl
 }

@@ -4,7 +4,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage
-} = require("../../source/shared/message");
+} = require("../../../source/shared/message");
 
 const MAX_MESSAGE_CHARACTERS = 2000;
 
@@ -97,7 +97,7 @@ function setupServer(skill) {
         }
     );
 }
-function importAgentCommunicationTools(skill) {
+function importCommunicationTools(skill) {
 
     const agent = skill.agent;
 
@@ -196,7 +196,7 @@ function importAgentCommunicationTools(skill) {
     );
 };
 
-function importAgentCommunication(skill) {
+function importCommunication(skill) {
 
     const agent = skill.agent;
 
@@ -227,9 +227,9 @@ Only tools are allowed to perform agent communication.`,
             );
         }
     );
-    importAgentCommunicationTools(skill);
+    importCommunicationTools(skill);
 };
 
 module.exports = {
-    importAgentCommunication
+    importCommunication
 }

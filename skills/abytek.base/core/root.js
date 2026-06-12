@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 
-function importRootTools(skill) {
+function importRoot(skill) {
 
     const agent = skill.agent;
 
@@ -48,5 +48,5 @@ function importRootTools(skill) {
 };
 
 module.exports = {
-    importRootTools
+    importRoot
 }

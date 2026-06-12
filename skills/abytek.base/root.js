@@ -11,6 +11,20 @@ function importRoot(skill) {
             agent.tool(
                 tool(
                     async () => {
+                        return agent.rootURL;
+                    },
+                    {
+                        name: "get_default_root_url",
+                        description:
+                            [
+                                "Get URL of the root that is managing you.",
+                            ].join("\n"),
+                    }
+                )
+            );
+            agent.tool(
+                tool(
+                    async () => {
                         try
                         {
                             const response = await fetch(

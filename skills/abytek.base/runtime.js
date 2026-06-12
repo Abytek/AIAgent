@@ -11,6 +11,20 @@ function importRuntime(skill) {
             agent.tool(
                 tool(
                     async () => {
+                        return agent.runtimeURL;
+                    },
+                    {
+                        name: "get_default_runtime_url",
+                        description:
+                            [
+                                "Get URL of the runtime that is managing you.",
+                            ].join("\n"),
+                    }
+                )
+            );
+            agent.tool(
+                tool(
+                    async () => {
                         try
                         {
                             const response = await fetch(

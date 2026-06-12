@@ -12,6 +12,7 @@ function makeSkill(agent, reference)
         name: null,
         dependencies: [],
         tags: new Map(),
+        subsystems: {},
     });
     skill.setup = function(options)
     {

@@ -1,6 +1,8 @@
 
 const {} = require("abytek-aiagent");
 
+const { importAgentManagement } = require("./agentManagement");
+
 module.exports = skill => {
 
     const agent = skill.agent;
@@ -18,4 +20,6 @@ module.exports = skill => {
                 .depends("abytek.default");
         }
     );
+
+    importAgentManagement(skill);
 }

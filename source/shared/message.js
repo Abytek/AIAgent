@@ -251,6 +251,8 @@ function logMessageOnAgent(agent, message)
     {
         const RoleTagColor = [ 150, 0, 255 ];
 
+        let isAIMessage = false;
+
         let tags = [
             chalk.rgb(60, 200, 30)("Message")
         ];
@@ -268,6 +270,7 @@ function logMessageOnAgent(agent, message)
         }
         else if (messageRole == "ai")
         {
+            isAIMessage = true;
             tags.push(chalk.rgb(...RoleTagColor)("AI"));
         }
         else
@@ -284,8 +287,15 @@ function logMessageOnAgent(agent, message)
         }
 
         const messageContentAsText = getMessageContentAsText(message);
-        const contentLimit = 500;
-        agent.logger.log(tags, messageContentAsText.slice(0, Math.min(messageContentAsText.length, contentLimit)) + ((messageContentAsText.length > contentLimit) ? "..." : ""));
+        if (isAIMessage)
+        {
+            agent.logger.log(tags, messageContentAsText);
+        }
+        else
+        {
+            const contentLimit = 500;
+            agent.logger.log(tags, messageContentAsText.slice(0, Math.min(messageContentAsText.length, contentLimit)) + ((messageContentAsText.length > contentLimit) ? "..." : ""));
+        }
     }
 }
 

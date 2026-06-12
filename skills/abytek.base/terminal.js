@@ -66,7 +66,7 @@ function importTerminal(skill) {
 
                         const dirtyEnv = env || {};
 
-                        cwd = cwd || process.cwd();
+                        cwd = cwd || agent.sandboxDirectory;
                         env = { 
                             ...process.env, 
                             ...dirtyEnv,
@@ -165,7 +165,7 @@ function importTerminal(skill) {
                                 .optional()
                                 .describe(
                                     [
-                                        "Optional working directory path.",
+                                        `Optional working directory path, use "${agent.sandboxDirectory}" by default.`,
                                         "Only provide this if a specific directory is required.",
                                         "Example: C:\\Projects\\MyApp"
                                     ].join(" ")

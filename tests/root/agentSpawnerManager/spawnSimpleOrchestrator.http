@@ -1,4 +1,4 @@
-POST http://localhost:39999/agentSpawner/spawn
+POST http://localhost:33999/agentSpawnerManager/spawn
 Content-Type: application/json
 
 {
@@ -6,7 +6,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, spawn AIAgent@simple, then kill it."
+            "content": "hello, spawn AIAgent@simple."
         }
     ]
 }

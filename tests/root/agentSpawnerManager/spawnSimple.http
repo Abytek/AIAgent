@@ -1,0 +1,12 @@
+POST http://localhost:33999/agentSpawnerManager/spawn
+Content-Type: application/json
+
+{
+    "id": "AIAgent@simple",
+    "messages": [
+        {
+            "type": "human",
+            "content": "hello, tell me about yourself."
+        }
+    ]
+}

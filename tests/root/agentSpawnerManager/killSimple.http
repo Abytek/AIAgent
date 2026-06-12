@@ -1,0 +1,6 @@
+POST http://localhost:33999/agentSpawnerManager/kill
+Content-Type: application/json
+
+{
+    "id": "AIAgent@simple"
+}

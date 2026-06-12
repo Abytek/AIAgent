@@ -32,6 +32,9 @@ module.exports = {
     ...require("./root/runtimeTracker"),
     ...require("./root/runtimeTrackingData"),
     ...require("./root/agentRegistry"),
+    ...require("./root/agentCommunicationManager"),
+    ...require("./root/agentSpawnerManager"),
+    ...require("./root/agentTracker"),
     ...require("./root/subsystems"),
     
     ...require("./runtime/main"),

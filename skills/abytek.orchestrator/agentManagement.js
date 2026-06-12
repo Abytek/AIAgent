@@ -23,11 +23,11 @@ function importAgentManagement(skill)
 
             agent.tool(
                 tool(
-                    async ({ runtimeURL, targetAgentId, initialMessage }) => {
+                    async ({ targetAgentId, initialMessage }) => {
                         try
                         {
                             const response = await fetch(
-                                `${runtimeURL}/agentSpawner/spawn`,
+                                `${agent.rootURL}/agentSpawnerManager/spawn`,
                                 {
                                     method: "POST",
                                     headers: {
@@ -68,14 +68,6 @@ function importAgentManagement(skill)
                             ].join("\n"),
 
                         schema: z.object({
-                            runtimeURL: z
-                                .string()
-                                .describe(
-                                    [
-                                        "The runtime URL to spawn agent on, you should use default value if wanting to spawn agent on your current runtime."
-                                    ].join(" ")
-                                )
-                                .default(agent.runtimeURL),
                             targetAgentId: z
                                 .string()
                                 .describe(
@@ -88,6 +80,54 @@ function importAgentManagement(skill)
                                 .describe(
                                     [
                                         "The initial text message."
+                                    ].join(" ")
+                                ),
+                        }),
+                    }
+                )
+            );
+            agent.tool(
+                tool(
+                    async ({ targetAgentId, initialMessage }) => {
+                        try
+                        {
+                            const response = await fetch(
+                                `${agent.rootURL}/agentSpawnerManager/kill`,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        id: targetAgentId,
+                                    }),
+                                }
+                            );
+                            if (!response.ok)
+                            {
+                                return `Failed to kill agent ${targetAgentId}: ` + await response.text();
+                            }
+                            return `Killed agent ${targetAgentId}: ` + await response.text();
+                        }
+                        catch(err)
+                        {
+                            return `Failed to kill agent, error: ` + err.message;
+                        }
+                    },
+                    {
+                        name: "kill_agent",
+
+                        description:
+                            [
+                                "Kill an agent by id",
+                            ].join("\n"),
+
+                        schema: z.object({
+                            targetAgentId: z
+                                .string()
+                                .describe(
+                                    [
+                                        "The agent id to kill."
                                     ].join(" ")
                                 ),
                         }),

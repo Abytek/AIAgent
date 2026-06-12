@@ -40,6 +40,10 @@ function createRuntimeAgentSpawner(runtime)
                 throw new Error(`Failed to get agent info with id ${options.id}: ${await response.text()}`);
             }
             agentInfo = await response.json();
+            if (agentInfo.runtimeId != runtime.id)
+            {
+                throw new Error(`${options.id} is from another runtime (${agentInfo.runtimeId}) => cannot spawn ${options.id}`);
+            }
         }
 
         {

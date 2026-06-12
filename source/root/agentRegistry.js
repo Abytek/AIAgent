@@ -9,6 +9,7 @@ const { makeEventEmitter } = require("../utilities/eventEmitter");
 function createRootAgentRegistry(root)
 {
     const rootServer = root.subsystems.server;
+    const runtimeTracker = root.subsystems.runtimeTracker;
 
     const rootAgentRegistry = makeEventEmitter({
         root,
@@ -54,6 +55,15 @@ function createRootAgentRegistry(root)
     }
     rootAgentRegistry.set = function(agentInfo)
     {
+        if (agentInfo.runtimeId == null)
+        {
+            const runtimeTrackingDataList = runtimeTracker.list();
+            if (runtimeTrackingDataList.length == 0)
+            {
+                throw new Error(`Requires either having "runtimeId" in agentInfo or having at least 1 connected runtime`);
+            }
+            agentInfo.runtimeId = runtimeTrackingDataList[0].id;
+        }
         const finalizedAgentInfo = agentInfoSchema.finalize(agentInfo);
         rootAgentRegistry.data.set(finalizedAgentInfo.id, finalizedAgentInfo);
         rootAgentRegistry.save();

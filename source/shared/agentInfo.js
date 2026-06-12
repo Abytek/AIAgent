@@ -12,6 +12,10 @@ const agentInfoSchema = makeSchema({
             type: "string",
         },
 
+        runtimeId: {
+            type: "string",
+        },
+
         brief: {
             type: "string",
             default: "",
@@ -87,6 +91,7 @@ const agentInfoSchema = makeSchema({
 
     required: [
         "id",
+        "runtimeId",
     ],
 });
 

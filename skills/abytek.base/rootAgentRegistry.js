@@ -5,6 +5,7 @@ function importRootAgentRegistry(skill)
 {
     const agent = skill.agent;
 
+    // read-only
     skill.on(
         "setup",
         async () =>
@@ -133,6 +134,18 @@ function importRootAgentRegistry(skill)
                     }
                 )
             );
+        }
+    );
+
+    // read-write
+    skill.on(
+        "setup",
+        async () =>
+        {
+            if (!agent.tags.includes("abytek.orchestrator"))
+            {
+                return;
+            }
 
             // set
             agent.tool(

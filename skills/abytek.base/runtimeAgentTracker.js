@@ -35,7 +35,7 @@ function importRuntimeAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "runtimeAgentTracker.list",
+                        name: "runtimeAgentTracker_list",
                         description:
                             [
                                 "Returns a list of all connected AI agents in your connected runtime.",
@@ -76,7 +76,7 @@ function importRuntimeAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "runtimeAgentTracker.has",
+                        name: "runtimeAgentTracker_has",
                         description:
                             "Checks whether an agent is currently connected to this runtime.",
                         schema: z.object({
@@ -120,7 +120,7 @@ function importRuntimeAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "runtimeAgentTracker.get",
+                        name: "runtimeAgentTracker_get",
                         description:
                             "Returns tracking information about a currently connected agent.",
                         schema: z.object({

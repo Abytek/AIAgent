@@ -58,7 +58,7 @@ function importRootAgentSpawnerManager(skill)
                         }
                     },
                     {
-                        name: "rootAgentSpawnerManager.spawn",
+                        name: "rootAgentSpawnerManager_spawn",
 
                         description:
                             [
@@ -113,7 +113,7 @@ function importRootAgentSpawnerManager(skill)
                         }
                     },
                     {
-                        name: "rootAgentSpawnerManager.kill",
+                        name: "rootAgentSpawnerManager_kill",
 
                         description:
                             [

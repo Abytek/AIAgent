@@ -42,7 +42,7 @@ function importRootAgentRegistry(skill)
                         }
                     },
                     {
-                        name: "rootAgentRegistry.list",
+                        name: "rootAgentRegistry_list",
                         description:
                             "Returns all registered AI agents.",
                     }
@@ -81,7 +81,7 @@ function importRootAgentRegistry(skill)
                         }
                     },
                     {
-                        name: "rootAgentRegistry.has",
+                        name: "rootAgentRegistry_has",
                         description:
                             "Checks whether an agent exists in the registry.",
                         schema: z.object({
@@ -124,7 +124,7 @@ function importRootAgentRegistry(skill)
                         }
                     },
                     {
-                        name: "rootAgentRegistry.get",
+                        name: "rootAgentRegistry_get",
                         description:
                             "Returns detailed information about a registered agent.",
                         schema: z.object({
@@ -171,7 +171,7 @@ function importRootAgentRegistry(skill)
                         }
                     },
                     {
-                        name: "rootAgentRegistry.set",
+                        name: "rootAgentRegistry_set",
                         description:
                             [
                                 "Registers a new agent or updates an existing one.",
@@ -217,7 +217,7 @@ function importRootAgentRegistry(skill)
                         }
                     },
                     {
-                        name: "rootAgentRegistry.unset",
+                        name: "rootAgentRegistry_unset",
                         description:
                             "Removes an agent from the registry. The agent must not currently be running.",
                         schema: z.object({

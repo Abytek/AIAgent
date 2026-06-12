@@ -35,7 +35,7 @@ function importRootAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "rootAgentTracker.list",
+                        name: "rootAgentTracker_list",
                         description:
                             [
                                 "Returns a list of all connected AI agents in your connected root.",
@@ -76,7 +76,7 @@ function importRootAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "rootAgentTracker.has",
+                        name: "rootAgentTracker_has",
                         description:
                             "Checks whether an agent is currently connected to this root.",
                         schema: z.object({
@@ -120,7 +120,7 @@ function importRootAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "rootAgentTracker.get",
+                        name: "rootAgentTracker_get",
                         description:
                             "Returns tracking information about a currently connected agent.",
                         schema: z.object({

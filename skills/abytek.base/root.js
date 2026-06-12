@@ -14,7 +14,7 @@ function importRoot(skill) {
                         return agent.rootURL;
                     },
                     {
-                        name: "root.url",
+                        name: "root_url",
                         description:
                             [
                                 "Get URL of the root that is managing you.",

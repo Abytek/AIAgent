@@ -4,7 +4,7 @@ const {
     makeAIMessage,
     makeHumanMessage,
     makeSystemMessage
-} = require("../../../source/shared/message");
+} = require("../../source/shared/message");
 
 const MAX_MESSAGE_CHARACTERS = 2000;
 

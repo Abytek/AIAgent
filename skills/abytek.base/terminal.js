@@ -1,9 +1,9 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
-const { makeSystemMessage } = require("../../../source/shared/message");
+const { makeSystemMessage } = require("../../source/shared/message");
 const pty = require("node-pty");
 const chalk = require("chalk");
-const { makeEventEmitter } = require("../../../source/utilities/eventEmitter");
+const { makeEventEmitter } = require("../../source/utilities/eventEmitter");
 
 const shell = process.platform === "win32"
     ? "powershell.exe"

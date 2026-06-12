@@ -1,14 +1,14 @@
 
 const {} = require("abytek-aiagent");
 
-const { importMemory } = require("./core/memory");
+const { importMemory } = require("./memory");
 
-const { importSelfControl } = require("./core/selfControl");
-const { importRoot } = require("./core/root");
-const { importRuntime } = require("./core/runtime");
-const { importCommunication } = require("./core/communication");
+const { importSelfControl } = require("./selfControl");
+const { importRoot } = require("./root");
+const { importRuntime } = require("./runtime");
+const { importCommunication } = require("./communication");
 
-const { importTerminal } = require("./core/terminal");
+const { importTerminal } = require("./terminal");
 
 module.exports = skill => {
 

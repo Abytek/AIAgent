@@ -1,7 +1,7 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 const cheerio = require("cheerio");
-const pdfParse = require("pdf-parse");
+const { PDFParse } = require('pdf-parse');
 
 async function webOpen({ url })
 {
@@ -10,8 +10,10 @@ async function webOpen({ url })
     const contentType =
         response.headers.get("content-type") || "";
 
-    const buffer =
-        Buffer.from(await response.arrayBuffer());
+    async function getBuffer()
+    {
+        return Buffer.from(await response.arrayBuffer());;
+    }
 
     const meta = {
         contentType,
@@ -26,8 +28,8 @@ async function webOpen({ url })
         url.endsWith(".pdf")
     )
     {
-        const pdf =
-            await pdfParse(buffer);
+        const parser = new PDFParse({ url, });
+        const pdf = await parser.getText();
 
         return {
             url,
@@ -47,7 +49,7 @@ async function webOpen({ url })
     )
     {
         const html =
-            buffer.toString("utf-8");
+            (await getBuffer()).toString("utf-8");
 
         const $ =
             cheerio.load(html);
@@ -89,7 +91,7 @@ async function webOpen({ url })
             url,
             type: "text",
             title: null,
-            content: buffer.toString("utf-8"),
+            content: (await getBuffer()).toString("utf-8"),
             links: [],
             meta
         };
@@ -102,7 +104,7 @@ async function webOpen({ url })
         url,
         type: "unknown",
         title: null,
-        content: buffer.toString("utf-8"),
+        content: (await getBuffer()).toString("utf-8"),
         links: [],
         meta
     };
@@ -138,7 +140,7 @@ function importOpen(skill)
                         name: "web_open",
 
                         description:
-                            "Open web by url. Prefer using web_open to using terminal for opening websites, website URLs,...",
+                            "Open web by url. You MUST use web_open insteads of terminal for opening websites, website URLs, reading files (pdf, markdown) by URLs,...",
 
                         schema: z.object({
 

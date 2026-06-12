@@ -6,7 +6,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, spawn AIAgent@simple."
+            "content": "hello, spawn AIAgent@simple, then kill it."
         }
     ]
 }

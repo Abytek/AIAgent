@@ -6,6 +6,7 @@ const { importMemory } = require("./memory");
 const { importSelfControl } = require("./selfControl");
 const { importRoot } = require("./root");
 const { importRootAgentRegistry } = require("./rootAgentRegistry");
+const { importRootAgentSpawnerManager } = require("./rootAgentSpawnerManager");
 const { importRuntime } = require("./runtime");
 const { importCommunication } = require("./communication");
 
@@ -20,6 +21,7 @@ module.exports = skill => {
     importSelfControl(skill);
     importRoot(skill);
     importRootAgentRegistry(skill);
+    importRootAgentSpawnerManager(skill);
     importRuntime(skill);
     importCommunication(skill);
     

@@ -14,6 +14,10 @@
             "brief": "Provide access to the terminal tool."
         },
         {
+            "name": "abytek.orchestrator",
+            "brief": "For agent management (spawn, kill, register/remove agents,...)"
+        },
+        {
             "name": "abytek.default",
             "brief": "Default tag for AI agents",
             "dependencies": [

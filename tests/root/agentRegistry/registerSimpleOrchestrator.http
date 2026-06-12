@@ -1,0 +1,11 @@
+POST http://localhost:33999/agentRegistry/set
+Content-Type: application/json
+
+{
+    "id": "AIAgent@simpleOrchestrator",
+    "brief": "A simple orchestrator agent",
+    "tags": [
+        "abytek.default",
+        "abytek.orchestrator"
+    ]
+}

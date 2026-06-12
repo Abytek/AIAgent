@@ -1,0 +1,12 @@
+POST http://localhost:39999/agentSpawner/spawn
+Content-Type: application/json
+
+{
+    "id": "AIAgent@simpleOrchestrator",
+    "messages": [
+        {
+            "type": "human",
+            "content": "hello, spawn AIAgent@simple."
+        }
+    ]
+}

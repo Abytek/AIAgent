@@ -6,7 +6,7 @@ Content-Type: application/json
     "messages": [
         {
             "type": "human",
-            "content": "hello, spawn AIAgent@simple, then kill it."
+            "content": "hello, I want you to create a team consists of 4 AI agents: 2 programmers + 1 manager (you) + 1 technical leader."
         }
     ]
 }

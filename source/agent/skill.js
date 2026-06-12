@@ -4,6 +4,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { agentTagSchema } = require("../shared/agentTag");
+const { loadAgentTagsFromSkillDirectory } = require("../shared/skillStructure");
 
 function makeSkill(agent, reference)
 {
@@ -25,17 +26,9 @@ function makeSkill(agent, reference)
         }
         skill.name = options.name;
 
+        for (const tag of loadAgentTagsFromSkillDirectory(reference.path))
         {
-            const tagsJSONFile = path.resolve(reference.path, "tags.json");
-            if (fs.existsSync(tagsJSONFile))
-            {
-                const tags = JSON.parse(fs.readFileSync(tagsJSONFile, "utf8"));
-                for (const tag of tags)
-                {
-                    const finalizedTag = agentTagSchema.finalize(tag);
-                    skill.tags.set(finalizedTag.name, finalizedTag);
-                }
-            }
+            skill.tags.set(tag.name, tag);
         }
         return skill;
     }

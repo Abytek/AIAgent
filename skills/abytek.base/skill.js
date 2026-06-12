@@ -14,10 +14,6 @@ module.exports = skill => {
 
     const agent = skill.agent;
     
-    skill.setup({
-        name: "abytek.base"
-    });
-    
     importMemory(skill);
 
     importSelfControl(skill);

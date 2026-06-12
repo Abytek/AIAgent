@@ -33,10 +33,10 @@ Responsibilities:
 - runtime management
 
 ## Runtime
-A runtime is a manager that manages runtime-side of agents in an OS,...
+A runtime manages runtime-side of agents in an OS,...
 
 Responsibilities:
-- managing skills, agent spawning, implementation,...
+- managing skills, agent spawning, agent implementation,...
 
 ## AI Agent
 An AI agent is NOT just a language model.
@@ -343,20 +343,23 @@ function createAgentSkillManager(agent)
     {
         for (const skill of agentSkillManager.sortedSkills)
         {
-            if (skill.tags.has(tag))
+            for (const skillTag of skill.tags)
             {
-                const tagInfo = skill.tags.get(tag);
-                agent.message(
-                    makeSystemMessage({
-                        content: `
+                if (tag == skillTag)
+                {
+                    const tagInfo = skill.tags.get(tag);
+                    agent.message(
+                        makeSystemMessage({
+                            content: `
 [AGENT TAG]
 - Name: ${tag}.
 - Brief: ${tagInfo.brief}.
 - Dependencies: ${tagInfo.dependencies}.
 `,
-                    })
-                );
-                break;
+                        })
+                    );
+                    break;
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ const {
     makeSystemMessage,
     getMessageRole,
     getMessageContent,
+    getMessageContentAsText,
 } = require("abytek-aiagent");
 
 function buildMemorySystemPrompt(agent)
@@ -79,34 +80,15 @@ function buildMemorySystemPrompt(agent)
         }
 
         const role = getMessageRole(message);
-        const content = getMessageContent(message);
+        const contentAsText = getMessageContentAsText(message);
 
-        let textContent = "";
-
-        if (typeof content === "string")
-        {
-            textContent = content;
-        }
-        else if (Array.isArray(content))
-        {
-            textContent = content
-                .filter(
-                    item =>
-                        item
-                        && item.type === "text"
-                        && typeof item.text === "string"
-                )
-                .map(item => item.text)
-                .join("\n");
-        }
-
-        if (!textContent.trim())
+        if (!contentAsText.trim())
         {
             continue;
         }
 
         sections.push(
-            `[${role}] ${textContent}`
+            `[${role}] ${contentAsText}`
         );
     }
 

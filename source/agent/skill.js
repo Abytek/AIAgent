@@ -4,65 +4,17 @@ const fs = require("fs");
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { agentTagSchema } = require("../shared/agentTag");
-const { loadAgentTagsFromSkillDirectory } = require("../shared/skillStructure");
+const { loadSkillConfig } = require("../shared/skillConfig");
 
 function makeSkill(agent, reference)
 {
     const skill = makeEventEmitter({
         agent,
         path: reference.path,
-        name: null,
-        dependencies: [],
-        tags: new Map(),
+        ...loadSkillConfig(reference.path),
         subsystems: {},
     });
-    skill.setup = function(options)
-    {
-        options = options || {};
-
-        if (options.name == null)
-        {
-            throw new Error(`Requires valid skill name`);
-        }
-        skill.name = options.name;
-
-        for (const tag of loadAgentTagsFromSkillDirectory(reference.path))
-        {
-            skill.tags.set(tag.name, tag);
-        }
-        return skill;
-    }
-    skill.depends = function(skillName)
-    {
-        skill.dependencies.push(skillName);
-    }
-    skill.tag = function(tagName)
-    {
-        const tag = {
-            name: tagName,
-            dependencies: [],
-            brief: "",
-        };
-        tag.setBrief = function(brief)
-        {
-            tag.brief = brief;
-            return tag;
-        }
-        tag.depends = function(...dependencies)
-        {
-            for (const dependency of dependencies)
-            {
-                if (tag.dependencies.includes(dependency))
-                {
-                    continue;
-                }
-                tag.dependencies.push(dependency);
-            }
-            return tag;
-        }
-        skill.tags.set(tagName, tag);
-        return tag;
-    }
+    console.log(skill);
     return skill;
 }
 

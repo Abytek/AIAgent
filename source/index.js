@@ -8,6 +8,7 @@ module.exports = {
     ...require("./utilities/gameLoopServer"),
     ...require("./utilities/conditionalVariable"),
     ...require("./utilities/schema"),
+    ...require("./utilities/textToHTML"),
 
     ...require("./frontend/helper"),
     ...require("./frontend/views/agentMonitor"),
@@ -24,6 +25,7 @@ module.exports = {
     ...require("./shared/agentTag"),
     ...require("./shared/message"),
     ...require("./shared/skillReference"),
+    ...require("./shared/skillConfig"),
 
     ...require("./root/main"),
     ...require("./root/config"),

@@ -186,6 +186,31 @@ function getMessageContentLength(messageContent)
 
     return 0;
 }
+function getMessageContentAsText(message)
+{
+    const content = getMessageContent(message);
+
+    if (typeof content === "string")
+    {
+        return content;
+    }
+    else if (Array.isArray(content))
+    {
+        return content
+            .filter(
+                item =>
+                    item
+                    && item.type === "text"
+                    && typeof item.text === "string"
+            )
+            .map(item => item.text)
+            .join("\n");
+    }
+    else
+    {
+        return "";
+    }
+}
 
 function getMessageName(message)
 {
@@ -258,5 +283,6 @@ module.exports = {
     getMessageRole,
     getMessageContent,
     getMessageContentLength,
+    getMessageContentAsText,
     logMessageOnAgent
 };

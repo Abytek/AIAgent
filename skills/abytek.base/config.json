@@ -1,0 +1,26 @@
+{
+    "name": "abytek.base",
+    "tags": [
+        {
+            "name": "abytek.memory",
+            "brief": "For accessing previous conversations (long-term memory)"
+        },
+        {
+            "name": "abytek.communication",
+            "brief": "Provide abilities for AI agents to communicate with other AI agents"
+        },
+        {
+            "name": "abytek.terminal",
+            "brief": "Provide access to the terminal tool."
+        },
+        {
+            "name": "abytek.default",
+            "brief": "Default tag for AI agents",
+            "dependencies": [
+                "abytek.memory",
+                "abytek.communication",
+                "abytek.terminal"
+            ]
+        }
+    ]
+}

@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const chalk = require("chalk");
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
+const { marked } = require("marked");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 const { 
     makeAIMessage,
@@ -13,7 +14,9 @@ const {
     getMessageRole,
     getMessageContent,
     getMessageContentLength,
+    getMessageContentAsText,
 } = require("../shared/message");
+const { textToHTML } = require("../utilities/textToHTML");
 
 const MAX_MESSAGE_CHARACTERS = (
     4000 
@@ -113,6 +116,8 @@ function importTextAttachmentTools(agentContext)
 
 function createAgentLLMContext(agent)
 {
+    const gameLoopServer = agent.subsystems.server;
+
     const agentContextDirectory = path.resolve(agent.dataDirectory, "agentContexts");
     fs.mkdirSync(agentContextDirectory, { recursive: true });
 
@@ -245,6 +250,66 @@ function createAgentLLMContext(agent)
 
     //
     importTextAttachmentTools(agentContext);
+
+    // game loop server events
+    gameLoopServer.on(
+        "setup",
+        async () => {
+            gameLoopServer.app.get("/llmContext/messages", async (req, res) => {
+                res.status(200).json(agentContext.messages);
+            });
+            gameLoopServer.app.get("/llmContext/textAttachments", async (req, res) => {
+                res.status(200).json([ ...agentContext.textAttachments.values() ]);
+            });
+            gameLoopServer.app.get("/llmContext/approximatedText", async (req, res) => {
+                let result = `
+                    <body style="
+                        background:rgba(40, 40, 40);
+                    ">
+                    `;
+                for (const message of agentContext.messages)
+                {
+                    const role = getMessageRole(message);
+                    const contentAsText = getMessageContentAsText(message);
+            
+                    if (!contentAsText.trim())
+                    {
+                        continue;
+                    }
+            
+                    result += `
+                        <div style="
+                            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+                            background:#f5f5f7;
+                            border-radius:12px;
+                            padding:12px 16px;
+                            margin:10px 0;
+                        ">
+                            <div style="
+                                font-size:18px;
+                                font-weight:500;
+                                color:#86868b;
+                                text-transform:uppercase;
+                                letter-spacing:.04em;
+                                margin-bottom:8px;
+                            ">
+                                ${role}
+                            </div>
+                            <div>
+                                ${marked.parse(contentAsText)}
+                            </div>
+                        </div>
+                        `;
+                }
+                result += `
+                    </body>
+                    `;
+                res.status(200).send(
+                    result
+                );
+            });
+        }
+    );
     return agentContext;
 }
 

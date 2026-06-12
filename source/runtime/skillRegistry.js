@@ -35,9 +35,20 @@ function createRuntimeSkillRegistry(runtime)
             }
         }
 
-        runtimeSkillRegistry.set({
-            path: path.resolve(__dirname, "../../skills/abytek.base"),
-        });
+        {
+            const skillsDir = path.resolve(__dirname, "../../skills");
+            for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true }))
+            {
+                if (!entry.isDirectory())
+                {
+                    continue;
+                }
+
+                runtimeSkillRegistry.set({
+                    path: path.join(skillsDir, entry.name),
+                });
+            }
+        }
     }
     runtimeSkillRegistry.save = function()
     {

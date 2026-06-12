@@ -14,7 +14,6 @@ function makeSkill(agent, reference)
         ...loadSkillConfig(reference.path),
         subsystems: {},
     });
-    console.log(skill);
     return skill;
 }
 

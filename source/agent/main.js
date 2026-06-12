@@ -17,7 +17,6 @@ function createAgent(options) {
         Buffer.from(process.argv[2], "base64").toString()
     );
     const agentDesc = spawnServiceInstanceInfo.args[0];
-    console.log(agentDesc);
 
     const agent = makeGameLoop({
         path: options.path || process.cwd(),

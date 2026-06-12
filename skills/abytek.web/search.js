@@ -111,11 +111,15 @@ function importSearch(skill)
 
                         try
                         {
-                            return await searchDuckDuckGo(
-                                query,
-                                numResultsPerPage,
-                                pageIndex
-                            );
+                            return JSON.stringify(
+                                    await searchDuckDuckGo(
+                                        query,
+                                        numResultsPerPage,
+                                        pageIndex
+                                    ), 
+                                    null, 
+                                    4
+                                );
                         }
                         catch (err)
                         {

@@ -168,55 +168,10 @@ function importAgentManagement(skill)
                         description:
                             [
                                 "Register a new agent into agent registry.",
-                                "If agent already exists, it will be overwritten."
-                            ].join("\n"),
-
-                        schema: z.object({
-                            agentInfo: z.object({
-                                id: z.string(),
-                                runtimeId: z.string().optional(),
-                                brief: z.string().optional(),
-                                tags: z.array(z.string()).optional(),
-                                config: z.any().optional(),
-                            }),
-                        }),
-                    }
-                )
-            );
-            agent.tool(
-                tool(
-                    async ({ agentInfo }) => {
-                        try
-                        {
-                            const response = await fetch(
-                                `${agent.rootURL}/agentRegistry/set`,
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify(agentInfo),
-                                }
-                            );
-
-                            if (!response.ok)
-                            {
-                                return `Failed to update agent: ` + await response.text();
-                            }
-
-                            return `Updated agent ${agentInfo.id}`;
-                        }
-                        catch(err)
-                        {
-                            return `Failed to update agent, error: ${err.message}`;
-                        }
-                    },
-                    {
-                        name: "update_agent_info",
-
-                        description:
-                            [
-                                "Update an existing agent info in registry."
+                                "If agent already exists, it will be overwritten.",
+                                "Note that this tool does not spawn the agent, just register its info before spawning.",
+                                "If you want to a running agent, you MUST kill the agent, update it then re-spawning.",
+                                "For agent tags, only registered tags (provided by the target runtime) are allowed",
                             ].join("\n"),
 
                         schema: z.object({

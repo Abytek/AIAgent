@@ -74,6 +74,31 @@ function createRootRuntimeTracker(root)
             rootServer.app.get("/runtimeTracker/list", (req, res) => {
                 res.status(200).json(rootRuntimeTracker.list());
             });
+            rootServer.app.get("/runtimeTracker/has/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
+                {
+                    return res.status(400).send(`Require "id" parameter`);
+                }
+                const id = req.params.id;
+                res.status(200).json(rootruntimeTracker.has(id));
+            });
+            rootServer.app.get("/runtimeTracker/get/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
+                {
+                    return res.status(400).send(`Require "id" parameter`);
+                }
+                const id = req.params.id;
+                try
+                {
+                    res.status(200).json(rootruntimeTracker.get(id));
+                }
+                catch(err)
+                {
+                    res.status(400).send(err.message);
+                }
+            });
         }
     );
     rootServer.on(

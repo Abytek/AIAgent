@@ -212,6 +212,19 @@ function getMessageContentAsText(message)
     }
 }
 
+function setMessageContent(message, newContent)
+{
+    if ("kwargs" in message)
+    {
+        const kwargs = message.kwargs;
+        if ("content" in kwargs)
+        {
+            message.kwargs.content = newContent;
+        }
+    }
+    message.content = newContent;   
+}
+
 function getMessageName(message)
 {
     let messageName = null;
@@ -284,5 +297,6 @@ module.exports = {
     getMessageContent,
     getMessageContentLength,
     getMessageContentAsText,
+    setMessageContent,
     logMessageOnAgent
 };

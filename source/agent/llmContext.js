@@ -15,6 +15,7 @@ const {
     getMessageContent,
     getMessageContentLength,
     getMessageContentAsText,
+    setMessageContent,
 } = require("../shared/message");
 const { textToHTML } = require("../utilities/textToHTML");
 
@@ -207,13 +208,14 @@ function createAgentLLMContext(agent)
                 }
             );
 
-            const attachmentMessage = {
-                type: messageRole,
-                content: [
-                        `[Text Attachment Id: ${textAttachmentId}] [Original content length: ${getMessageContentLength(messageContent)}]\n`,
-                        messageContent.slice(0, MAX_MESSAGE_CHARACTERS),
-                    ].join(''),
-            };
+            const attachmentMessage = JSON.parse(JSON.stringify(message));
+            setMessageContent(
+                attachmentMessage,
+                [
+                    `[Text Attachment Id: ${textAttachmentId}] [Original content length: ${getMessageContentLength(messageContent)}]\n`,
+                    messageContent.slice(0, MAX_MESSAGE_CHARACTERS),
+                ].join('')
+            );
 
             if (!agentContext.isConversationStarted)
             {

@@ -124,7 +124,7 @@ function importOpen(skill)
                         try
                         {
                             return JSON.stringify(
-                                    await webOpen(url), 
+                                    await webOpen({ url }), 
                                     null, 
                                     4
                                 );
@@ -138,7 +138,7 @@ function importOpen(skill)
                         name: "web_open",
 
                         description:
-                            "Open web by url.",
+                            "Open web by url. Prefer using web_open to using terminal for opening websites, website URLs,...",
 
                         schema: z.object({
 

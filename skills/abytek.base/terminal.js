@@ -19,9 +19,7 @@ function importTerminal(skill) {
         "construct",
         async () => {
             skill.tag("abytek.terminal")
-                .setBrief(`
-AI agents with this tag will have access to the terminal tool.
-`);
+                .setBrief(`Provide access to the terminal tool.`);
         }
     );
     skill.on(

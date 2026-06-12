@@ -54,6 +54,11 @@ function setupServer(skill) {
     skill.on(
         "setup",
         async () => {
+            if (!agent.tags.includes("abytek.communication"))
+            {
+                return;
+            }
+
             const server = agent.subsystems.server;
             server.on(
                 "setup",
@@ -100,14 +105,6 @@ function setupServer(skill) {
 function importCommunicationTools(skill) {
 
     const agent = skill.agent;
-
-    skill.on(
-        "construct",
-        async () => {
-
-            skill.tag("abytek.communication");
-        }
-    );
 
     skill.on(
         "setup",
@@ -200,10 +197,24 @@ function importCommunication(skill) {
 
     const agent = skill.agent;
 
+    skill.on(
+        "construct",
+        async () => {
+
+            skill.tag("abytek.communication")
+                .setBrief("Provide abilities for AI agents to communicate with other AI agents");
+        }
+    );
+
     setupServer(skill);
     skill.on(
         "setup",
         async () => {
+            if (!agent.tags.includes("abytek.communication"))
+            {
+                return;
+            }
+
             agent.message(
                 makeSystemMessage({
                     content: `

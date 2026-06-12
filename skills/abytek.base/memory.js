@@ -121,7 +121,8 @@ function importMemory(skill) {
         "construct",
         async () => {
 
-            skill.tag("abytek.memory");
+            skill.tag("abytek.memory")
+                .setBrief("For accessing previous conversations (long-term memory)");
         }
     );
 

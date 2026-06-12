@@ -339,6 +339,27 @@ function createAgentSkillManager(agent)
     });
     resolveTags();
     minimalSetupAgent(agent);
+    for (const tag of agent.tags)
+    {
+        for (const skill of agentSkillManager.sortedSkills)
+        {
+            if (skill.tags.has(tag))
+            {
+                const tagInfo = skill.tags.get(tag);
+                agent.message(
+                    makeSystemMessage({
+                        content: `
+[AGENT TAG]
+- Name: ${tag}.
+- Brief: ${tagInfo.brief}.
+- Dependencies: ${tagInfo.dependencies}.
+`,
+                    })
+                );
+                break;
+            }
+        }
+    }
     doSync(async () => {
         for (const skill of agentSkillManager.sortedSkills)
         {

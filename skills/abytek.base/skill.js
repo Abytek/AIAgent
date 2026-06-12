@@ -10,6 +10,7 @@ const { importRootAgentSpawnerManager } = require("./rootAgentSpawnerManager");
 const { importRootAgentTracker } = require("./rootAgentTracker");
 const { importRuntime } = require("./runtime");
 const { importRuntimeAgentTracker } = require("./runtimeAgentTracker");
+const { importRuntimeSkillRegistry } = require("./runtimeSkillRegistry");
 const { importCommunication } = require("./communication");
 
 const { importTerminal } = require("./terminal");
@@ -27,6 +28,7 @@ module.exports = skill => {
     importRootAgentTracker(skill);
     importRuntime(skill);
     importRuntimeAgentTracker(skill);
+    importRuntimeSkillRegistry(skill);
     importCommunication(skill);
     
     importTerminal(skill);

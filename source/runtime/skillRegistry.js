@@ -4,6 +4,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const { getMessageRole, getMessageContent } = require("../shared/message");
 const { skillReferenceSchema } = require("../shared/skillReference");
+const { loadSkillConfig } = require("../shared/skillConfig");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
 
 function createRuntimeSkillRegistry(runtime)
@@ -95,6 +96,17 @@ function createRuntimeSkillRegistry(runtime)
         }
         return runtimeSkillRegistry.data.get(path);
     }
+    runtimeSkillRegistry.gatherTags = function()
+    {
+        let tags = [];
+        runtimeSkillRegistry.data.forEach(
+            skillReference => {
+                const skillConfig = loadSkillConfig(skillReference.path);
+                tags = [ ...tags, ...skillConfig.tags ];
+            }
+        );
+        return tags;
+    }
 
     // runtime server events
     runtimeServer.on(
@@ -103,6 +115,17 @@ function createRuntimeSkillRegistry(runtime)
             runtimeServer.app.get("/skillRegistry/list", async (req, res) =>
             {
                 res.status(200).json(runtimeSkillRegistry.list());
+            });
+            runtimeServer.app.get("/skillRegistry/tags", async (req, res) =>
+            {
+                try
+                {
+                    return res.status(200).json(runtimeSkillRegistry.gatherTags());
+                }
+                catch(err)
+                {
+                    return res.status(400).send(`Failed to get tags: ` + err.message);
+                }
             });
             runtimeServer.app.get("/skillRegistry/has/:path", async (req, res) =>
             {

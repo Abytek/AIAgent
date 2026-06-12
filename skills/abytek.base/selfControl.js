@@ -15,7 +15,7 @@ function importSelfControl(skill) {
                         return `Shutting down ${agent.id}...`;
                     },
                     {
-                        name: "shutdown_self_agent",
+                        name: "selfControl.shutdown",
                         description: "Immediately terminate your own agent instance and stop all further processing, reasoning, message handling, and tool execution."
                     }
                 )
@@ -26,7 +26,7 @@ function importSelfControl(skill) {
                         return `${agent.id}'s process env: ${JSON.stringify(process.env, null, 4)}`;
                     },
                     {
-                        name: "self_agent_process_env",
+                        name: "selfControl.processEnv",
                         description: "Get your own runtime process env."
                     }
                 )

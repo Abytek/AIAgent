@@ -77,7 +77,7 @@ function importTextAttachmentTools(agentContext)
                 }
             },
             {
-                name: "read_text_attachment",
+                name: "readTextAttachment",
 
                 description:
                     [

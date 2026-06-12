@@ -14,7 +14,7 @@ function importRuntime(skill) {
                         return agent.runtimeURL;
                     },
                     {
-                        name: "get_default_runtime_url",
+                        name: "runtime.url",
                         description:
                             [
                                 "Get URL of the runtime that is managing you.",

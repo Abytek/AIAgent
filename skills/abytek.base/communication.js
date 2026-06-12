@@ -138,7 +138,7 @@ function importCommunicationTools(skill) {
                         }
                     },
                     {
-                        name: "send_message_to_agent",
+                        name: "sendMessageToAgent",
 
                         description:
                             [

@@ -135,7 +135,7 @@ function importTerminal(skill) {
                         }
                     },
                     {
-                        name: "create_terminal",
+                        name: "createTerminal",
 
                         description:
                             [
@@ -204,7 +204,7 @@ function importTerminal(skill) {
                         }
                     },
                     {
-                        name: "get_terminal_exit_code",
+                        name: "getTerminalExitCode",
 
                         description:
                             [
@@ -244,7 +244,7 @@ function importTerminal(skill) {
                         }
                     },
                     {
-                        name: "kill_terminal",
+                        name: "killTerminal",
 
                         description:
                             [
@@ -284,7 +284,7 @@ function importTerminal(skill) {
                         }
                     },
                     {
-                        name: "add_terminal_input",
+                        name: "addTerminalInput",
 
                         description:
                             [
@@ -335,7 +335,7 @@ function importTerminal(skill) {
                         }
                     },
                     {
-                        name: "read_terminal_output",
+                        name: "readTerminalOutput",
 
                         description:
                             [
@@ -382,7 +382,7 @@ function importTerminal(skill) {
                         return JSON.stringify(terminalIds, null, 4);
                     },
                     {
-                        name: "get_terminal_list",
+                        name: "getTerminalList",
 
                         description:
                             [

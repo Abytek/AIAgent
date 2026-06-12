@@ -283,8 +283,9 @@ function logMessageOnAgent(agent, message)
             }
         }
 
-        const messageContent = getMessageContent(message);
-        agent.logger.log(tags, messageContent);
+        const messageContentAsText = getMessageContentAsText(message);
+        const contentLimit = 500;
+        agent.logger.log(tags, messageContentAsText.slice(0, Math.min(messageContentAsText.length, contentLimit)) + ((messageContentAsText.length > contentLimit) ? "..." : ""));
     }
 }
 

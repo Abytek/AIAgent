@@ -118,8 +118,20 @@ function importMemory(skill) {
     const agent = skill.agent;
 
     skill.on(
+        "construct",
+        async () => {
+
+            skill.tag("abytek.memory");
+        }
+    );
+
+    skill.on(
         "lateSetup",
         async () => {
+            if (!agent.tags.includes("abytek.memory"))
+            {
+                return;
+            }
 
             agent.message(
                 makeSystemMessage({

@@ -21,6 +21,8 @@ module.exports = skill => {
         "construct",
         async () => {
             skill.tag("abytek.default")
+                .depends("abytek.memory")
+                .depends("abytek.communication")
                 .depends("abytek.terminal");
         }
     );

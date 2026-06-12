@@ -102,8 +102,21 @@ function importAgentCommunicationTools(skill) {
     const agent = skill.agent;
 
     skill.on(
+        "construct",
+        async () => {
+
+            skill.tag("abytek.communication");
+        }
+    );
+
+    skill.on(
         "setup",
         async () => {
+            if (!agent.tags.includes("abytek.communication"))
+            {
+                return;
+            }
+
             agent.tool(
                 tool(
                     async ({

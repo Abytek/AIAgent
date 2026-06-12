@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 const { makeEventEmitter } = require("../utilities/eventEmitter");
+const { agentTagSchema } = require("../shared/agentTag");
 
 function makeSkill(agent, reference)
 {
@@ -24,6 +25,18 @@ function makeSkill(agent, reference)
         }
         skill.name = options.name;
 
+        {
+            const tagsJSONFile = path.resolve(reference.path, "tags.json");
+            if (fs.existsSync(tagsJSONFile))
+            {
+                const tags = JSON.parse(fs.readFileSync(tagsJSONFile, "utf8"));
+                for (const tag of tags)
+                {
+                    const finalizedTag = agentTagSchema.finalize(tag);
+                    skill.tags.set(finalizedTag.name, finalizedTag);
+                }
+            }
+        }
         return skill;
     }
     skill.depends = function(skillName)

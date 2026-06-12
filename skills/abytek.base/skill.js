@@ -17,16 +17,7 @@ module.exports = skill => {
     skill.setup({
         name: "abytek.base"
     });
-    skill.on(
-        "construct",
-        async () => {
-            skill.tag("abytek.default")
-                .depends("abytek.memory")
-                .depends("abytek.communication")
-                .depends("abytek.terminal");
-        }
-    );
-
+    
     importMemory(skill);
 
     importSelfControl(skill);

@@ -21,6 +21,7 @@ module.exports = {
     ...require("./shared/agentInfo"),
     ...require("./shared/agentTracker"),
     ...require("./shared/agentTrackingData"),
+    ...require("./shared/agentTag"),
     ...require("./shared/message"),
     ...require("./shared/skillReference"),
 

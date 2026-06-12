@@ -118,15 +118,6 @@ function importMemory(skill) {
     const agent = skill.agent;
 
     skill.on(
-        "construct",
-        async () => {
-
-            skill.tag("abytek.memory")
-                .setBrief("For accessing previous conversations (long-term memory)");
-        }
-    );
-
-    skill.on(
         "lateSetup",
         async () => {
             if (!agent.tags.includes("abytek.memory"))

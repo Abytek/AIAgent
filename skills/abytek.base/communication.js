@@ -197,15 +197,6 @@ function importCommunication(skill) {
 
     const agent = skill.agent;
 
-    skill.on(
-        "construct",
-        async () => {
-
-            skill.tag("abytek.communication")
-                .setBrief("Provide abilities for AI agents to communicate with other AI agents");
-        }
-    );
-
     setupServer(skill);
     skill.on(
         "setup",

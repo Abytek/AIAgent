@@ -76,7 +76,7 @@ function importRuntimeAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "runtime_agent_tracker.has",
+                        name: "runtimeAgentTracker.has",
                         description:
                             "Checks whether an agent is currently connected to this runtime.",
                         schema: z.object({
@@ -120,7 +120,7 @@ function importRuntimeAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "runtime_agent_tracker.get",
+                        name: "runtimeAgentTracker.get",
                         description:
                             "Returns tracking information about a currently connected agent.",
                         schema: z.object({

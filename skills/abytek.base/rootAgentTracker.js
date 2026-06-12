@@ -76,7 +76,7 @@ function importRootAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "root_agent_tracker.has",
+                        name: "rootAgentTracker.has",
                         description:
                             "Checks whether an agent is currently connected to this root.",
                         schema: z.object({
@@ -120,7 +120,7 @@ function importRootAgentTracker(skill) {
                         }
                     },
                     {
-                        name: "root_agent_tracker.get",
+                        name: "rootAgentTracker.get",
                         description:
                             "Returns tracking information about a currently connected agent.",
                         schema: z.object({

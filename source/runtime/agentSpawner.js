@@ -19,6 +19,7 @@ function createRuntimeAgentSpawner(runtime)
 
     runtimeAgentSpawner.numAgents = 0;
     runtimeAgentSpawner.queues = [];
+    runtimeAgentSpawner.idToURL = new Map();
 
     runtimeAgentSpawner.spawn = async function(options) {
         options = options || {};
@@ -77,8 +78,9 @@ function createRuntimeAgentSpawner(runtime)
         )
         serviceInstance.on(
             "ready",
-            async (context) => {
-                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} ready`);
+            async (context, agentURL) => {
+                runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} ready, url: ${agentURL}`);
+                runtimeAgentSpawner.idToURL.set(parsedOptions.id, agentURL);
                 ready = true;
                 sync.resolve();
             }
@@ -87,6 +89,10 @@ function createRuntimeAgentSpawner(runtime)
             "close",
             async (context) => {
                 runtimeAgentSpawner.numAgents -= 1;
+                if (runtimeAgentSpawner.idToURL.has(parsedOptions.id))
+                {
+                    runtimeAgentSpawner.idToURL.delete(parsedOptions.id);
+                }
                 runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} closed`);
                 if (!ready)
                 {
@@ -98,6 +104,10 @@ function createRuntimeAgentSpawner(runtime)
             "error",
             async (err) => {
                 runtimeAgentSpawner.numAgents -= 1;
+                if (runtimeAgentSpawner.idToURL.has(parsedOptions.id))
+                {
+                    runtimeAgentSpawner.idToURL.delete(parsedOptions.id);
+                }
                 if (ready)
                 {
                     runtime.logger.log([ chalk.rgb(60, 200, 30)("Agent") ], `${parsedOptions.id} crashed:`, err.message);
@@ -134,6 +144,18 @@ function createRuntimeAgentSpawner(runtime)
                 );
             }
         );
+    }
+    runtimeAgentSpawner.kill = async function(options) {
+        if (!runtimeAgentSpawner.idToURL.has(options.id))
+        {
+            throw new Error(`Not found agent with id: ${options.id}`);
+        }
+        const agentURL = runtimeAgentSpawner.idToURL.get(options.id);
+        const response = await fetch(`${agentURL}/stop`, { method: "POST" });
+        if (!response.ok)
+        {
+            throw new Error(`Cannot kill agent: ` + await response.text());
+        }
     }
     runtimeAgentSpawner.flush = async function() {
         const commands = [ ...runtimeAgentSpawner.queues ];
@@ -187,6 +209,28 @@ function createRuntimeAgentSpawner(runtime)
                         ...req.body,
                     });
                     return res.status(200).send("Spawned agent successfully");
+                }
+                catch(err)
+                {
+                    return res.status(400).send(err.message);
+                }
+            });
+            gameLoopServer.app.post("/agentSpawner/kill", async (req, res) => {
+                if (req.body == null)
+                {
+                    return res.status(400).send(`Requires request body`);
+                }
+                if (typeof req.body !== "object")
+                {
+                    return res.status(400).send(`Requires object request body`);
+                }
+
+                try
+                {
+                    await runtimeAgentSpawner.kill({
+                        ...req.body,
+                    });
+                    return res.status(200).send("Killed agent successfully");
                 }
                 catch(err)
                 {

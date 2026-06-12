@@ -67,7 +67,6 @@ function createRuntimeTracking(runtime)
             
                     runtimeTracking.io.on("disconnect", (reason) => {
                         runtime.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], "Disconnected from root:", reason);
-                        process.exit(1);
                         sync();
                     });
                 }

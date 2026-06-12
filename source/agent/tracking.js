@@ -67,7 +67,6 @@ function createAgentTracking(agent, ownerName, url)
             
                     agentTracking.io.on("disconnect", (reason) => {
                         agent.logger.log([ chalk.rgb(60, 200, 30)("Tracking") ], `Disconnected from ${ownerName}:`, reason);
-                        process.exit(1);
                         sync();
                     });
                 }

@@ -15,7 +15,7 @@ function createAgentServiceRegistry(agent)
     agentServiceRegistry.service(
         "/runtimeManagement",
         async (context, agentDesc) => {
-            await context.emit("ready");
+            await context.emit("ready", gameLoopServer.url);
             await agentLifetimeSync.wait();
         }
     );

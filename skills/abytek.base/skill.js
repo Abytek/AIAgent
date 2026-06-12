@@ -7,7 +7,9 @@ const { importSelfControl } = require("./selfControl");
 const { importRoot } = require("./root");
 const { importRootAgentRegistry } = require("./rootAgentRegistry");
 const { importRootAgentSpawnerManager } = require("./rootAgentSpawnerManager");
+const { importRootAgentTracker } = require("./rootAgentTracker");
 const { importRuntime } = require("./runtime");
+const { importRuntimeAgentTracker } = require("./runtimeAgentTracker");
 const { importCommunication } = require("./communication");
 
 const { importTerminal } = require("./terminal");
@@ -22,7 +24,9 @@ module.exports = skill => {
     importRoot(skill);
     importRootAgentRegistry(skill);
     importRootAgentSpawnerManager(skill);
+    importRootAgentTracker(skill);
     importRuntime(skill);
+    importRuntimeAgentTracker(skill);
     importCommunication(skill);
     
     importTerminal(skill);

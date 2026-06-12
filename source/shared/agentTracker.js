@@ -88,6 +88,31 @@ function createAgentTracker(options)
             gameLoopServer.app.get("/agentTracker/list", (req, res) => {
                 res.status(200).json(agentTracker.list());
             });
+            gameLoopServer.app.get("/agentTracker/has/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
+                {
+                    return res.status(400).send(`Require "id" parameter`);
+                }
+                const id = req.params.id;
+                res.status(200).json(agentTracker.has(id));
+            });
+            gameLoopServer.app.get("/agentTracker/get/:id", async (req, res) =>
+            {
+                if (!("id" in req.params))
+                {
+                    return res.status(400).send(`Require "id" parameter`);
+                }
+                const id = req.params.id;
+                try
+                {
+                    res.status(200).json(agentTracker.get(id));
+                }
+                catch(err)
+                {
+                    res.status(400).send(err.message);
+                }
+            });
         }
     );
     gameLoopServer.on(

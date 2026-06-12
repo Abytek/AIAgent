@@ -1,0 +1,1 @@
+Provide abilities to open/scan web sites

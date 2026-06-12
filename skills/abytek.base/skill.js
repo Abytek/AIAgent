@@ -11,6 +11,7 @@ const { importRootAgentTracker } = require("./rootAgentTracker");
 const { importRuntime } = require("./runtime");
 const { importRuntimeAgentTracker } = require("./runtimeAgentTracker");
 const { importRuntimeSkillRegistry } = require("./runtimeSkillRegistry");
+const { importDate } = require("./date");
 const { importCommunication } = require("./communication");
 
 const { importTerminal } = require("./terminal");
@@ -29,6 +30,7 @@ module.exports = skill => {
     importRuntime(skill);
     importRuntimeAgentTracker(skill);
     importRuntimeSkillRegistry(skill);
+    importDate(skill);
     importCommunication(skill);
     
     importTerminal(skill);

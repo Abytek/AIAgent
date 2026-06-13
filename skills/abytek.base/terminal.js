@@ -10,6 +10,16 @@ const shell = process.platform === "win32"
     ? "powershell.exe"
     : "bash";
 
+const shellArgs = process.platform === "win32"
+    ? [ 
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+    ]
+    : [
+    ];
+
 const MAX_CHUNK_CHARS = 2000;
 
 function importTerminal(skill) {
@@ -81,7 +91,7 @@ function importTerminal(skill) {
                             };
                             terminalManager.terminals[terminal.id] = terminal;
 
-                            const ptyInstance = pty.spawn(shell, [], {
+                            const ptyInstance = pty.spawn(shell, shellArgs, {
                                 name: `${agent.id}.${terminal.id}`,
                                 cwd,
                                 env,

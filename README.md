@@ -14,14 +14,12 @@
    ```
    Follow the prompts in the UI to set up 9router and add a combo named default.
 
-3. **Run the root manager**
+3. **Run the root**
    ```powershell
-   abytek-aiagent-cli root
+   abytek-aiagent-cli root.default
    ```
 
-4. **Run the sample agent**
+4. **Run the runtime**
    ```powershell
-   cd templates/agents/simple_agent
-   abytek-aiagent-cli agent
+   abytek-aiagent-cli runtime.default
    ```
-These commands will get the project up and running on a Windows machine with PowerShell.
